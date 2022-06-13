@@ -1,14 +1,14 @@
 package com.bekzodkeldiyarov.collectionstore.bootstrap;
 
-import com.bekzodkeldiyarov.collectionstore.model.Privilege;
-import com.bekzodkeldiyarov.collectionstore.service.PrivilegeService;
+import com.bekzodkeldiyarov.collectionstore.model.Role;
+import com.bekzodkeldiyarov.collectionstore.model.User;
 import com.bekzodkeldiyarov.collectionstore.service.RoleService;
 import com.bekzodkeldiyarov.collectionstore.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -18,26 +18,33 @@ import javax.transaction.Transactional;
 public class BootstrapData implements ApplicationListener<ContextRefreshedEvent> {
     private final UserService userService;
     private final RoleService roleService;
-    private final PrivilegeService privilegeService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    public BootstrapData(UserService userService, RoleService roleService, PrivilegeService privilegeService) {
+    public BootstrapData(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
-        this.privilegeService = privilegeService;
     }
 
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
+        User user = new User();
+        user.setUsername("admin");
+        user.setPassword(passwordEncoder.encode("admin"));
+        user.setEnabled(true);
+
+
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+
+        user.getRoles().add(role);
+        role.getUsers().add(user);
+        userService.save(user);
+        roleService.save(role);
+
+        log.info("Bootstrap data loaded");
     }
 
-    public Privilege createPrivilege(String name) {
-        if (privilegeService.findByName(name) != null) {
-            log.error("Privilege with name " + name + " already exists");
-        }
-        Privilege privilege = new Privilege();
-        privilege.setName(name);
-        return privilegeService.save(privilege);
-    }
 }

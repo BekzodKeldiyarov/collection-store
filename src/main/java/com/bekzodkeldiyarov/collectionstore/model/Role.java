@@ -10,7 +10,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -20,14 +22,5 @@ public class Role extends BaseEntity {
 
     private String name;
     @ManyToMany(mappedBy = "roles")
-    private List<User> users;
-
-    @ManyToMany
-    @JoinTable(
-            name = "roles_privileges",
-            joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "id")
-    )
-    private List<Privilege> privileges;
-
+    private Set<User> users = new HashSet<>();
 }
