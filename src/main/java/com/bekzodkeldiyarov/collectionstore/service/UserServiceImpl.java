@@ -91,10 +91,7 @@ public class UserServiceImpl implements UserService {
     public UserCommand saveUserCommand(UserCommand userCommand) {
         User userToSave = userCommandToUser.convert(userCommand);
         if (userToSave != null) {
-            log.info(userToSave.toString());
-            log.info(userToSave.getRoles() + "");
             User savedUser = userRepository.save(userToSave);
-            log.info(savedUser.toString());
             return userToUserCommand.convert(savedUser);
         }
         log.error("Failed to save changes for user " + userCommand.getUsername());

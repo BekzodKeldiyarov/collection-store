@@ -43,7 +43,6 @@ public class RegisterController {
         }
         try {
             UserCommand savedUserCommand = userService.registerUserCommand(user);
-            log.info("Saved userCommand " + savedUserCommand.getUsername());
         } catch (UserExistsException e) {
             return "redirect:/register";
         }
