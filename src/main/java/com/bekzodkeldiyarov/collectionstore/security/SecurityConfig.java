@@ -32,13 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin();
     }
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.inMemoryAuthentication()
-//                .withUser("admin").password(passwordEncoder.encode("admin")).roles("ADMIN")
-//                .and().withUser("user").password(passwordEncoder.encode("user")).roles("USER")
-//                .and().withUser("reader").password(passwordEncoder.encode("reader")).roles("READER");
-//    }
 
     @Bean
     public UserDetailsService userDetailsService() {

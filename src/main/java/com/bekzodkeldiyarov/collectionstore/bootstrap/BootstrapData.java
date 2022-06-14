@@ -46,5 +46,4 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
 
         log.info("Bootstrap data loaded");
     }
-
 }

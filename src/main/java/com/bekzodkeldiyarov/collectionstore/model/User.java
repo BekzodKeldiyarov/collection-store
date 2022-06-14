@@ -18,6 +18,7 @@ import java.util.Set;
 public class User extends BaseEntity {
     private String username;
     private String password;
+    private String email;
     private boolean isEnabled;
 
     @ManyToMany(fetch = FetchType.EAGER)

@@ -1,15 +1,33 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
+import com.bekzodkeldiyarov.collectionstore.commands.UserCommand;
+import com.bekzodkeldiyarov.collectionstore.converters.UserCommandToUser;
+import com.bekzodkeldiyarov.collectionstore.converters.UserToUserCommand;
+import com.bekzodkeldiyarov.collectionstore.exceptions.UserExistsException;
 import com.bekzodkeldiyarov.collectionstore.model.User;
 import com.bekzodkeldiyarov.collectionstore.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserCommandToUser userCommandToUser;
+    private final UserToUserCommand userToUserCommand;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserCommandToUser userCommandToUser, UserToUserCommand userToUserCommand) {
         this.userRepository = userRepository;
+        this.userCommandToUser = userCommandToUser;
+        this.userToUserCommand = userToUserCommand;
+    }
+
+    @Override
+    public User findById(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        return optionalUser.orElse(null);
     }
 
     @Override
@@ -20,5 +38,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(User user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public UserCommand saveUserCommand(UserCommand userCommand) throws UserExistsException {
+        User userToSave;
+        if (findByUsername(userCommand.getUsername()) == null) {
+            userToSave = userCommandToUser.convert(userCommand);
+            if (userToSave != null) {
+                userRepository.save(userToSave);
+            } else {
+                log.error("Failed to save");
+            }
+        } else {
+            throw new UserExistsException("The user with username " + userCommand.getUsername() + " exists");
+        }
+        return userToUserCommand.convert(userToSave);
     }
 }
