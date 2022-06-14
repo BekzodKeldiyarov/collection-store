@@ -27,7 +27,4 @@ public class UserCommand {
     @Email(message = "enter valid email")
     private String email;
 
-    @NotNull(message = "password matching  cannot be empty.")
-    @NotEmpty(message = "password matching  cannot be empty.")
-    private String matchingPassword;
 }
