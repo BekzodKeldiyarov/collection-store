@@ -30,21 +30,37 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
+        User admin = new User();
+        admin.setUsername("admin");
+        admin.setEmail("admin@gmail.com");
+        admin.setPassword(passwordEncoder.encode("admin"));
+        admin.setEnabled(true);
+
         User user = new User();
-        user.setUsername("admin");
-        user.setEmail("admin@gmail.com");
-        user.setPassword(passwordEncoder.encode("admin"));
+        user.setUsername("bekzod");
+        user.setEmail("bekzod@gmail.com");
+        user.setPassword(passwordEncoder.encode("bekzod"));
         user.setEnabled(true);
+
+        User blockedUser = new User();
+        blockedUser.setUsername("user");
+        blockedUser.setEmail("user@gmail.com");
+        blockedUser.setPassword(passwordEncoder.encode("user"));
+        blockedUser.setEnabled(false);
+
 
         Role role = new Role();
         role.setName("ROLE_ADMIN");
-        role.getUsers().add(user);
+        role.getUsers().add(admin);
 
-        user.getRoles().add(role);
+        admin.getRoles().add(role);
+
+        userService.save(admin);
+        roleService.save(role);
 
         userService.save(user);
-        roleService.save(role);
-        log.info("test");
+        userService.save(blockedUser);
+        log.info("Data Bootstrapped");
 
     }
 }

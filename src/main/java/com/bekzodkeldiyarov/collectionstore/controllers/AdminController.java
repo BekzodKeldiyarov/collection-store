@@ -6,8 +6,7 @@ import com.bekzodkeldiyarov.collectionstore.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,5 +31,26 @@ public class AdminController {
         List<UserCommand> users = userService.findAll();
         model.addAttribute("users", users);
         return "admin/index";
+    }
+
+
+    @PostMapping(value = "/allusers", params = "action=block")
+    public String blockUsers(@RequestParam(required = false) Integer[] ids) {
+        for (Integer id : ids) {
+            UserCommand userCommand = userService.findUserCommandById(id.longValue());
+            userCommand.setEnabled(false);
+            userService.saveUserCommand(userCommand);
+        }
+        return "redirect:/admin/allusers";
+    }
+
+    @PostMapping(value = "/allusers", params = "action=unblock")
+    public String unblockUsers(@RequestParam(required = false) Integer[] ids) {
+        for (Integer id : ids) {
+            UserCommand userCommand = userService.findUserCommandById(id.longValue());
+            userCommand.setEnabled(true);
+            userService.saveUserCommand(userCommand);
+        }
+        return "redirect:/admin/allusers";
     }
 }

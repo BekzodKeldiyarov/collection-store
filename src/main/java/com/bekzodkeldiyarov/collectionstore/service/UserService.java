@@ -10,10 +10,15 @@ import java.util.Optional;
 public interface UserService {
     User findById(Long id);
 
+    UserCommand findUserCommandById(Long id);
+
     User findByUsername(String username);
 
     User save(User user);
 
-    UserCommand saveUserCommand(UserCommand userCommand) throws UserExistsException;
+    UserCommand registerUserCommand(UserCommand userCommand) throws UserExistsException;
+
+    UserCommand saveUserCommand(UserCommand userCommand);
+
     List<UserCommand> findAll();
 }

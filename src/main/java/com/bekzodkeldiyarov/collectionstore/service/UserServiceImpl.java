@@ -7,6 +7,7 @@ import com.bekzodkeldiyarov.collectionstore.exceptions.UserExistsException;
 import com.bekzodkeldiyarov.collectionstore.model.User;
 import com.bekzodkeldiyarov.collectionstore.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,17 +20,29 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserCommandToUser userCommandToUser;
     private final UserToUserCommand userToUserCommand;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, UserCommandToUser userCommandToUser, UserToUserCommand userToUserCommand) {
+    public UserServiceImpl(UserRepository userRepository, UserCommandToUser userCommandToUser, UserToUserCommand userToUserCommand, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userCommandToUser = userCommandToUser;
         this.userToUserCommand = userToUserCommand;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public User findById(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         return optionalUser.orElse(null);
+    }
+
+    @Override
+    public UserCommand findUserCommandById(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        UserCommand userCommand = null;
+        if (optionalUser.isPresent()) {
+            userCommand = userToUserCommand.convert(optionalUser.get());
+        }
+        return userCommand;
     }
 
     @Override
@@ -43,11 +56,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserCommand saveUserCommand(UserCommand userCommand) throws UserExistsException {
+    public UserCommand registerUserCommand(UserCommand userCommand) throws UserExistsException {
         User userToSave;
         if (findByUsername(userCommand.getUsername()) == null) {
             userToSave = userCommandToUser.convert(userCommand);
             if (userToSave != null) {
+                userToSave.setPassword(passwordEncoder.encode(userToSave.getPassword()));
+                userToSave.setEnabled(true);
                 userRepository.save(userToSave);
             } else {
                 log.error("Failed to save");
@@ -69,5 +84,20 @@ public class UserServiceImpl implements UserService {
             }
         }
         return usersToReturn;
+    }
+
+
+    @Override
+    public UserCommand saveUserCommand(UserCommand userCommand) {
+        User userToSave = userCommandToUser.convert(userCommand);
+        if (userToSave != null) {
+            log.info(userToSave.toString());
+            log.info(userToSave.getRoles() + "");
+            User savedUser = userRepository.save(userToSave);
+            log.info(savedUser.toString());
+            return userToUserCommand.convert(savedUser);
+        }
+        log.error("Failed to save changes for user " + userCommand.getUsername());
+        return userCommand;
     }
 }
