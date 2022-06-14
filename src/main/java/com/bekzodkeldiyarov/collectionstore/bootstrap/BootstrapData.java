@@ -32,18 +32,19 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
 
         User user = new User();
         user.setUsername("admin");
+        user.setEmail("admin@gmail.com");
         user.setPassword(passwordEncoder.encode("admin"));
         user.setEnabled(true);
 
-
         Role role = new Role();
         role.setName("ROLE_ADMIN");
+        role.getUsers().add(user);
 
         user.getRoles().add(role);
-        role.getUsers().add(user);
+
         userService.save(user);
         roleService.save(role);
+        log.info("test");
 
-        log.info("Bootstrap data loaded");
     }
 }

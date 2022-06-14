@@ -1,16 +1,18 @@
 package com.bekzodkeldiyarov.collectionstore.commands;
 
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.bekzodkeldiyarov.collectionstore.model.Role;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
-@Setter
+@Data
 @Getter
+@Setter
 @NoArgsConstructor
 public class UserCommand {
     private Long id;
@@ -27,4 +29,6 @@ public class UserCommand {
     @Email(message = "enter valid email")
     private String email;
 
+    private boolean isEnabled;
+    private Set<Role> roles = new HashSet<>();
 }

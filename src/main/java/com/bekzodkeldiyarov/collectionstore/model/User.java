@@ -1,19 +1,18 @@
 package com.bekzodkeldiyarov.collectionstore.model;
 
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
-@NoArgsConstructor
-@Setter
 @Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "usr")
 public class User extends BaseEntity {
     private String username;
@@ -28,5 +27,4 @@ public class User extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private Set<Role> roles = new HashSet<>();
-
 }

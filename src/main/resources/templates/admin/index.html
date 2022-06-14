@@ -26,7 +26,7 @@
 
                 <!-- Content Row -->
                 <div class="row">
-
+                    <h1 th:if="${users!=null}" th:replace="fragments/admin/users-list::users-list"></h1>
                 </div>
 
 
@@ -40,7 +40,7 @@
         <footer class="sticky-footer bg-white">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Your Website 2021</span>
+                    <span>Copyright &copy; Bekzod Keldiyarov</span>
                 </div>
             </div>
         </footer>

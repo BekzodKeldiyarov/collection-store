@@ -9,6 +9,8 @@ import com.bekzodkeldiyarov.collectionstore.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,5 +56,18 @@ public class UserServiceImpl implements UserService {
             throw new UserExistsException("The user with username " + userCommand.getUsername() + " exists");
         }
         return userToUserCommand.convert(userToSave);
+    }
+
+    @Override
+    public List<UserCommand> findAll() {
+        List<User> users = userRepository.findAll();
+        List<UserCommand> usersToReturn = new ArrayList<>();
+        for (User user : users) {
+            UserCommand userCommand = userToUserCommand.convert(user);
+            if (userCommand != null) {
+                usersToReturn.add(userCommand);
+            }
+        }
+        return usersToReturn;
     }
 }
