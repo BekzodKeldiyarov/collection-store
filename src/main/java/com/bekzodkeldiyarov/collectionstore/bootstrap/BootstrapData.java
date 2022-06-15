@@ -1,10 +1,11 @@
 package com.bekzodkeldiyarov.collectionstore.bootstrap;
 
 import com.bekzodkeldiyarov.collectionstore.model.Collection;
+import com.bekzodkeldiyarov.collectionstore.model.Item;
 import com.bekzodkeldiyarov.collectionstore.model.Role;
 import com.bekzodkeldiyarov.collectionstore.model.User;
-import com.bekzodkeldiyarov.collectionstore.repository.CollectionRepository;
 import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
+import com.bekzodkeldiyarov.collectionstore.service.ItemService;
 import com.bekzodkeldiyarov.collectionstore.service.RoleService;
 import com.bekzodkeldiyarov.collectionstore.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +23,15 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     private final UserService userService;
     private final RoleService roleService;
     private final CollectionService collectionService;
+    private final ItemService itemService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public BootstrapData(UserService userService, RoleService roleService, CollectionService collectionService) {
+    public BootstrapData(UserService userService, RoleService roleService, CollectionService collectionService, ItemService itemService) {
         this.userService = userService;
         this.roleService = roleService;
         this.collectionService = collectionService;
+        this.itemService = itemService;
     }
 
     @Override
@@ -58,6 +61,12 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         collection.setName("My book");
         collection.setDescription("My books collection");
 
+        Item item = new Item();
+        item.setName("Robinzon");
+        item.setCollection(collection);
+        collection.getItems().add(item);
+
+
         Role role = new Role();
         role.setName("ROLE_ADMIN");
         role.getUsers().add(admin);
@@ -69,7 +78,7 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         userService.save(admin);
         roleService.save(role);
         collectionService.save(collection);
-
+        itemService.save(item);
         userService.save(user);
         userService.save(blockedUser);
         log.info("Data Bootstrapped");
