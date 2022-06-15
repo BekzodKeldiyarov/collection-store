@@ -1,34 +1,38 @@
-<form class="col-md-12" action="/admin/allusers" method="post" th:fragment="users-list">
-    <table class="table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>View</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="user:${users}">
-            <td th:text="${user.id}">User id</td>
-            <td th:text="${user.username}">Username</td>
-            <td th:text="${user.email}">Email</td>
-            <td><a href="" class="btn btn-primary">View Profile</a></td>
-            <td>
+<div th:fragment="users-list">
+    <form class="col-md-12" action="/admin/allusers" method="post">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>View</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user:${users}">
+                <td th:text="${user.id}">User id</td>
+                <td th:text="${user.username}">Username</td>
+                <td th:text="${user.email}">Email</td>
+                <td><a href="" class="btn btn-primary">View Profile</a></td>
+                <td>
                 <span th:text="${user.isEnabled}?'Active':'Blocked'"
                       class="badge badge-pill"
                       th:classappend="${user.isEnabled} ? badge-success : badge-danger">
                 </span>
 
-            </td>
-            <td><input name="ids" th:value="${user.id}" type="checkbox" class="form-check-input"></td>
-        </tr>
-        </tbody>
-    </table>
-    <button name="action" value="block" class="btn btn-primary" type="submit">Block</button>
-    <button name="action" value="unblock" class="btn btn-primary" type="submit">Unblock</button>
-    <button name="action" value="addAdmin" class="btn btn-primary" type="submit">Add to Admin</button>
-    <button name="action" value="removeAdmin" class="btn btn-primary" type="submit">Remove admin</button>
-</form>
+                </td>
+                <td><input name="ids" th:value="${user.id}" type="checkbox" class="form-check-input"></td>
+            </tr>
+            </tbody>
+        </table>
+        <button name="action" value="block" class="btn btn-primary" type="submit">Block</button>
+        <button name="action" value="unblock" class="btn btn-primary" type="submit">Unblock</button>
+        <button name="action" value="addAdmin" class="btn btn-primary" type="submit">Add to Admin</button>
+        <button name="action" value="removeAdmin" class="btn btn-primary" type="submit">Remove admin</button>
+    </form>
+</div>
+
+
