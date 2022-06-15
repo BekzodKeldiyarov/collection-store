@@ -1,7 +1,10 @@
 package com.bekzodkeldiyarov.collectionstore.bootstrap;
 
+import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.model.Role;
 import com.bekzodkeldiyarov.collectionstore.model.User;
+import com.bekzodkeldiyarov.collectionstore.repository.CollectionRepository;
+import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
 import com.bekzodkeldiyarov.collectionstore.service.RoleService;
 import com.bekzodkeldiyarov.collectionstore.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +21,14 @@ import javax.transaction.Transactional;
 public class BootstrapData implements ApplicationListener<ContextRefreshedEvent> {
     private final UserService userService;
     private final RoleService roleService;
+    private final CollectionService collectionService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public BootstrapData(UserService userService, RoleService roleService) {
+    public BootstrapData(UserService userService, RoleService roleService, CollectionService collectionService) {
         this.userService = userService;
         this.roleService = roleService;
+        this.collectionService = collectionService;
     }
 
     @Override
@@ -48,6 +53,10 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         blockedUser.setPassword(passwordEncoder.encode("user"));
         blockedUser.setEnabled(false);
 
+        Collection collection = new Collection();
+        collection.setUser(admin);
+        collection.setName("My book");
+        collection.setDescription("My books collection");
 
         Role role = new Role();
         role.setName("ROLE_ADMIN");
@@ -55,8 +64,11 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
 
         admin.getRoles().add(role);
 
+        admin.getCollections().add(collection);
+
         userService.save(admin);
         roleService.save(role);
+        collectionService.save(collection);
 
         userService.save(user);
         userService.save(blockedUser);
