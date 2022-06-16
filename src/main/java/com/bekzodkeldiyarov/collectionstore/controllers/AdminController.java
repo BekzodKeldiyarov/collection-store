@@ -1,8 +1,10 @@
 package com.bekzodkeldiyarov.collectionstore.controllers;
 
 import com.bekzodkeldiyarov.collectionstore.commands.UserCommand;
+import com.bekzodkeldiyarov.collectionstore.model.Attribute;
 import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.model.Role;
+import com.bekzodkeldiyarov.collectionstore.repository.AttributeRepository;
 import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
 import com.bekzodkeldiyarov.collectionstore.service.RoleService;
 import com.bekzodkeldiyarov.collectionstore.service.UserService;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 import java.util.List;
 
 @Controller
@@ -20,11 +24,13 @@ public class AdminController {
     private final UserService userService;
     private final RoleService roleService;
     private final CollectionService collectionService;
+    private final AttributeRepository attributeRepository; //todo change reposityory implementation to service
 
-    public AdminController(UserService userService, RoleService roleService, CollectionService collectionService) {
+    public AdminController(UserService userService, RoleService roleService, CollectionService collectionService, AttributeRepository attributeRepository) {
         this.userService = userService;
         this.roleService = roleService;
         this.collectionService = collectionService;
+        this.attributeRepository = attributeRepository;
     }
 
     @GetMapping("")
@@ -60,30 +66,6 @@ public class AdminController {
         }
         return "redirect:/admin/allusers";
     }
-
-
-    @GetMapping("/collections")
-    public String getCollections(Model model) {
-        List<Collection> collections = collectionService.findAll();
-        model.addAttribute("collections", collections);
-        return "admin/collections/list";
-    }
-
-    @GetMapping("/collections/add")
-    public String getAddNewCollectionView(Model model) {
-        Collection collection = new Collection();
-        model.addAttribute("collection", collection);
-        return "admin/collections/add";
-    }
-
-    @PostMapping("/collections/add")
-    public String addNewCollection(@ModelAttribute("collection") Collection collection) {
-        log.info(collection.toString());
-        collection.setUser(userService.findByUsername("admin"));
-        collectionService.save(collection);
-        return "redirect:/admin/collections";
-    }
-
 
     private void changeUserStatus(String action, UserCommand userCommand) {
         switch (action) {

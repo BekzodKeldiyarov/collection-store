@@ -3,7 +3,6 @@ package com.bekzodkeldiyarov.collectionstore.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.Entity;
@@ -19,7 +18,6 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 public class Collection extends BaseEntity {
     private String name;
     private String description;
@@ -30,6 +28,9 @@ public class Collection extends BaseEntity {
 
     @OneToMany(mappedBy = "collection")
     private Set<Item> items = new HashSet<>();
+
+    @OneToMany(mappedBy = "collection")
+    private Set<Attribute> attributes = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
@@ -42,5 +43,16 @@ public class Collection extends BaseEntity {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Collection{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", user=" + user +
+                ", items=" + items +
+                ", attributes=" + attributes +
+                "} " + super.toString();
     }
 }

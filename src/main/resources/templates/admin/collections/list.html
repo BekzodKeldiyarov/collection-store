@@ -26,7 +26,26 @@
 
 
                 <div class="row">
-                    <div th:replace="fragments/admin/collections::collections"></div>
+                    <form class="col-md-12" action="/admin/collections" method="post">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Collection Name</th>
+                                <th>Collection Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="collection:${collections}">
+                                <td th:text="${collection.id}">User id</td>
+                                <td th:text="${collection.name}">Username</td>
+                                <td th:text="${collection.description}">Email</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+
+                    <a href="/admin/collections/add" class="btn btn-primary">Add new collection</a>
                 </div>
 
             </div>
