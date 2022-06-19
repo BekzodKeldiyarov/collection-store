@@ -1,20 +1,28 @@
 package com.bekzodkeldiyarov.collectionstore.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Attribute extends BaseEntity {
     private String attributeName;
     private String type;
+
+    @Builder
+    public Attribute(Long id, String attributeName, String type, Collection collection) {
+        super(id);
+        this.attributeName = attributeName;
+        this.type = type;
+        this.collection = collection;
+    }
 
     @ManyToOne
     @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = false)
@@ -27,7 +35,8 @@ public class Attribute extends BaseEntity {
 
         Attribute attribute = (Attribute) o;
 
-        if (attributeName != null ? !attributeName.equals(attribute.attributeName) : attribute.attributeName != null) return false;
+        if (attributeName != null ? !attributeName.equals(attribute.attributeName) : attribute.attributeName != null)
+            return false;
         if (type != null ? !type.equals(attribute.type) : attribute.type != null) return false;
         return collection != null ? collection.equals(attribute.collection) : attribute.collection == null;
     }

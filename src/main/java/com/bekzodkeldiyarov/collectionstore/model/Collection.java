@@ -1,8 +1,6 @@
 package com.bekzodkeldiyarov.collectionstore.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.Entity;
@@ -31,6 +29,16 @@ public class Collection extends BaseEntity {
 
     @OneToMany(mappedBy = "collection")
     private Set<Attribute> attributes = new HashSet<>();
+
+    @Builder
+    public Collection(Long id, String name, String description, User user, Set<Item> items, Set<Attribute> attributes) {
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.user = user;
+        this.items = items;
+        this.attributes = attributes;
+    }
 
     @Override
     public boolean equals(Object o) {
