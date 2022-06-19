@@ -1,8 +1,6 @@
 package com.bekzodkeldiyarov.collectionstore.controllers;
 
 import com.bekzodkeldiyarov.collectionstore.commands.UserCommand;
-import com.bekzodkeldiyarov.collectionstore.model.Attribute;
-import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.model.Role;
 import com.bekzodkeldiyarov.collectionstore.repository.AttributeRepository;
 import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
@@ -13,8 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
+
 import java.util.List;
 
 @Controller

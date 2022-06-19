@@ -1,9 +1,7 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
 import com.bekzodkeldiyarov.collectionstore.model.Attribute;
-import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.repository.AttributeRepository;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
