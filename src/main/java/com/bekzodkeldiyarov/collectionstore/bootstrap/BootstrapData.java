@@ -1,5 +1,6 @@
 package com.bekzodkeldiyarov.collectionstore.bootstrap;
 
+import com.bekzodkeldiyarov.collectionstore.commands.CollectionCommand;
 import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.model.Item;
 import com.bekzodkeldiyarov.collectionstore.model.Role;
@@ -56,15 +57,17 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         blockedUser.setPassword(passwordEncoder.encode("user"));
         blockedUser.setEnabled(false);
 
-        Collection collection = new Collection();
-        collection.setUser(admin);
-        collection.setName("My book");
-        collection.setDescription("My books collection");
+
+        CollectionCommand collectionCommand = CollectionCommand.builder()
+                .name("My book")
+                .description("My books collection")
+                .user(admin).build();
+
 
         Item item = new Item();
         item.setName("Robinzon");
-        item.setCollection(collection);
-        collection.getItems().add(item);
+
+
 
 
         Role role = new Role();
@@ -73,12 +76,12 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
 
         admin.getRoles().add(role);
 
-        admin.getCollections().add(collection);
+//        admin.getCollections().add(collection);
 
         userService.save(admin);
         roleService.save(role);
-        collectionService.save(collection);
-        itemService.save(item);
+        collectionService.save(collectionCommand);
+//        itemService.save(item);
         userService.save(user);
         userService.save(blockedUser);
         log.info("Data Bootstrapped");

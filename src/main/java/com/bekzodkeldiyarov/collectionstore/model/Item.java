@@ -1,9 +1,6 @@
 package com.bekzodkeldiyarov.collectionstore.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -24,4 +21,11 @@ public class Item extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = false)
     private Collection collection;
+
+    @Builder
+    public Item(Long id, String name, Collection collection) {
+        super(id);
+        this.name = name;
+        this.collection = collection;
+    }
 }

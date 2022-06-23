@@ -1,4 +1,7 @@
 let index = 1;
+$(document).ready(function () {
+    addNewAttribute();
+});
 
 function addNewAttribute() {
     var template = Handlebars.compile($("#newAttributeTemplate").html());
@@ -6,7 +9,5 @@ function addNewAttribute() {
         index: index++
     };
     $('#newAttributesSection').append(template(context));
-
-    // $title.val('');
-    // tinymce.get("messageBody").setContent('');
 }
+

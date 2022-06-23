@@ -33,6 +33,7 @@
                                 <th>ID</th>
                                 <th>Collection Name</th>
                                 <th>Collection Description</th>
+                                <th>Edit</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -40,6 +41,8 @@
                                 <td th:text="${collection.id}">User id</td>
                                 <td th:text="${collection.name}">Username</td>
                                 <td th:text="${collection.description}">Email</td>
+                                <td><a th:href="@{/admin/collections/edit/{id}(id=${collection.id})}"
+                                       class="btn btn-outline-primary">Edit</a></td>
                             </tr>
                             </tbody>
                         </table>

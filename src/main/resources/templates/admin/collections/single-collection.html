@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/fragments::headerfiles"></head>
+<body>
+<div class="container">
+    <h1>Collection Page</h1>
+    <h2 th:text="${collection.name}"></h2>
+    <h3 th:text="${collection.description}"></h3>
+    <a th:href="@{/admin/collections/{id}/attributes/add(id=${collection.id})}" class="btn btn-primary">Add New
+        Attribute</a>
+    <h4>Items</h4>
+    <table class="table">
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Tags</th>
+            <th th:each="attribute:${attributes}"><p th:text="${attribute.attributeName}"></p></th>
+        </tr>
+    </table>
+    <tr th:each="item:${items}">
+        <td th:text="${item.id}"></td>
+        <td th:text="${item.name}"></td>
+        <td></td>
+    </tr>
+</div>
+<div th:replace="fragments/fragments::scripts"></div>
+</body>
+</html>

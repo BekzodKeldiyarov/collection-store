@@ -1,20 +1,19 @@
 package com.bekzodkeldiyarov.collectionstore.controllers;
 
-import com.bekzodkeldiyarov.collectionstore.model.Attribute;
-import com.bekzodkeldiyarov.collectionstore.model.Collection;
-import com.bekzodkeldiyarov.collectionstore.repository.AttributeRepository;
+import com.bekzodkeldiyarov.collectionstore.commands.AttributeCommand;
+import com.bekzodkeldiyarov.collectionstore.commands.CollectionCommand;
+import com.bekzodkeldiyarov.collectionstore.commands.ItemCommand;
+import com.bekzodkeldiyarov.collectionstore.model.Item;
+import com.bekzodkeldiyarov.collectionstore.service.AttributeService;
 import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
+import com.bekzodkeldiyarov.collectionstore.service.ItemService;
 import com.bekzodkeldiyarov.collectionstore.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
 import java.util.List;
 
 @Controller
@@ -23,49 +22,47 @@ import java.util.List;
 public class CollectionController {
     private final CollectionService collectionService;
     private final UserService userService;
-    private final AttributeRepository attributeRepository;
-    public CollectionController(CollectionService collectionService, UserService userService, AttributeRepository attributeRepository) {
+    private final AttributeService attributeService;
+    private final ItemService itemService;
+
+    public CollectionController(CollectionService collectionService, UserService userService, AttributeService attributeService, ItemService itemService) {
         this.collectionService = collectionService;
         this.userService = userService;
-        this.attributeRepository = attributeRepository;
+        this.attributeService = attributeService;
+        this.itemService = itemService;
     }
 
     @GetMapping("/collections")
-    public String getCollections(Model model) {
-        List<Collection> collections = collectionService.findAll();
+    public String getAllCollections(Model model) {
+        List<CollectionCommand> collections = collectionService.getAllCollectionCommands();
         model.addAttribute("collections", collections);
         return "admin/collections/list";
     }
 
     @GetMapping("/collections/add")
-    public String getAddNewCollectionView(Model model) {
-        Collection collection = new Collection();
-        model.addAttribute("collection", collection);
+    public String getAddNewCollectionPage(Model model, CollectionCommand collectionCommand) {
+        model.addAttribute("collection", collectionCommand);
         return "admin/collections/add";
     }
 
     @PostMapping("/collections/add")
-    public String addNewCollection(@ModelAttribute("collection") Collection collection, HttpServletRequest request) {
-        collection.setUser(userService.findByUsername("admin"));
-        Enumeration<String> keys = request.getParameterNames();
-
-        while (keys.hasMoreElements()) {
-            String attributeNameKey = (String) keys.nextElement();
-            String attributeNameValue = request.getParameter(attributeNameKey);
-            if (!attributeNameKey.contains("attribute_name")) {
-                continue;
-            }
-            String attributeTypeKey = (String) keys.nextElement();
-            String attributeTypeValue = request.getParameter(attributeTypeKey);
-
-            Attribute attribute = new Attribute();
-            attribute.setAttributeName(attributeNameValue);
-            attribute.setType(attributeTypeValue);
-            attribute.setCollection(collection);
-            collection.getAttributes().add(attribute);
-            collectionService.save(collection);
-            attributeRepository.save(attribute);
-        }
+    public String addNewCollection(@ModelAttribute("collection") CollectionCommand collectionCommand, HttpServletRequest request) {
+        collectionCommand.setUser(userService.findByUsername("admin"));
+        collectionService.save(collectionCommand);
         return "redirect:/admin/collections";
     }
+
+    @GetMapping("/collections/edit/{id}")
+    public String getUpdateCollectionPage(@PathVariable Long id, Model model) {
+        CollectionCommand collectionCommand = collectionService.findCollectionCommandById(id);
+        List<AttributeCommand> attributes = attributeService.getAllAttributesOfCollection(collectionCommand.getId());
+        List<ItemCommand> items = itemService.getAllItemsOfCollection(id);
+        model.addAttribute("collection", collectionCommand);
+        model.addAttribute("attributes", attributes);
+        model.addAttribute("items", items);
+        return "admin/collections/single-collection";
+    }
+
+
+
 }
