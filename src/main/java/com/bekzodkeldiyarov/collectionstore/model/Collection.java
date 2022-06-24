@@ -16,12 +16,13 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class Collection extends BaseEntity {
     private String name;
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "collection")

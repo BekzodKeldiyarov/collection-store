@@ -1,8 +1,11 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
+import com.bekzodkeldiyarov.collectionstore.commands.CollectionCommand;
 import com.bekzodkeldiyarov.collectionstore.commands.ItemCommand;
+import com.bekzodkeldiyarov.collectionstore.converters.CollectionCommandToCollection;
 import com.bekzodkeldiyarov.collectionstore.converters.ItemCommandToItem;
 import com.bekzodkeldiyarov.collectionstore.converters.ItemToItemCommand;
+import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.model.Item;
 import com.bekzodkeldiyarov.collectionstore.repository.ItemRepository;
 import org.springframework.stereotype.Service;
@@ -16,10 +19,13 @@ public class ItemServiceImpl implements ItemService {
     private final ItemCommandToItem itemCommandToItem;
     private final ItemToItemCommand itemToItemCommand;
 
-    public ItemServiceImpl(ItemRepository itemRepository, ItemCommandToItem itemCommandToItem, ItemToItemCommand itemToItemCommand) {
+    private final CollectionCommandToCollection collectionCommandToCollection;
+
+    public ItemServiceImpl(ItemRepository itemRepository, ItemCommandToItem itemCommandToItem, ItemToItemCommand itemToItemCommand, CollectionCommandToCollection collectionCommandToCollection) {
         this.itemRepository = itemRepository;
         this.itemCommandToItem = itemCommandToItem;
         this.itemToItemCommand = itemToItemCommand;
+        this.collectionCommandToCollection = collectionCommandToCollection;
     }
 
     @Override
@@ -28,13 +34,29 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public ItemCommand saveItemCommand(ItemCommand command) {
+        return null;
+    }
+
+    @Override
     public List<ItemCommand> getAllItemsOfCollection(Long id) {
         List<Item> items = itemRepository.findByCollectionId(id);
         List<ItemCommand> itemCommands = new ArrayList<>();
-        for (Item item :
-                items) {
+        for (Item item : items) {
             itemCommands.add(itemToItemCommand.convert(item));
         }
         return itemCommands;
+    }
+
+    @Override
+    public ItemCommand saveItemCommandAndBindCollectionCommand(ItemCommand itemCommand, CollectionCommand collectionCommand) {
+        Collection collection = collectionCommandToCollection.convert(collectionCommand);
+        itemCommand.setCollection(collection);
+        Item item = itemCommandToItem.convert(itemCommand);
+        if (item != null) {
+            itemRepository.save(item);
+            return itemToItemCommand.convert(item);
+        }
+        return null;
     }
 }

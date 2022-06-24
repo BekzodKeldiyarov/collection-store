@@ -43,8 +43,8 @@ public class AttributeController {
 
         attributeService.bindAttributesToCollection(attributeCommands, collectionCommand);
 
-        collectionService.save(collectionCommand);
-        return "index";
+        collectionService.saveCollectionCommand(collectionCommand);
+        return "redirect:/collections/view" + collectionId;
     }
 
 

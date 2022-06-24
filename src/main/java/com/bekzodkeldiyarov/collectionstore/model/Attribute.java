@@ -2,9 +2,9 @@ package com.bekzodkeldiyarov.collectionstore.model;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -27,6 +27,10 @@ public class Attribute extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = false)
     private Collection collection;
+
+
+    @ManyToMany(mappedBy = "attributes")
+    private Set<Item> items = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
@@ -57,4 +61,6 @@ public class Attribute extends BaseEntity {
                 ", collection=" + collection +
                 "} " + super.toString();
     }
+
+
 }

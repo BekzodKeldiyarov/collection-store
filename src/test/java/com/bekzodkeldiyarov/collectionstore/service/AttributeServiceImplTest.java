@@ -32,12 +32,13 @@ class AttributeServiceImplTest {
     AttributeToAttributeCommand attributeToAttributeCommand;
     @Mock
     CollectionCommandToCollection collectionCommandToCollection;
-
+    @Mock
+    CollectionService collectionService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        attributeService = new AttributeServiceImpl(attributeRepository, attributeCommandToAttribute, attributeToAttributeCommand, collectionCommandToCollection);
+        attributeService = new AttributeServiceImpl(attributeRepository, attributeCommandToAttribute, attributeToAttributeCommand, collectionService, collectionCommandToCollection);
     }
 
     @Test

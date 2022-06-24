@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 @ToString
 @Builder
 public class AttributeCommand {
+    private Long id;
     @NotEmpty
     @NotNull
     private String attributeName;

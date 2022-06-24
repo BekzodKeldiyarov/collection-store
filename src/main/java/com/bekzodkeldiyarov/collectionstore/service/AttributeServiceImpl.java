@@ -8,6 +8,7 @@ import com.bekzodkeldiyarov.collectionstore.converters.CollectionCommandToCollec
 import com.bekzodkeldiyarov.collectionstore.model.Attribute;
 import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.repository.AttributeRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,16 +16,19 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class AttributeServiceImpl implements AttributeService {
     private final AttributeRepository attributeRepository;
     private final AttributeCommandToAttribute attributeCommandToAttribute;
     private final AttributeToAttributeCommand attributeToAttributeCommand;
+    private final CollectionService collectionService;
     private final CollectionCommandToCollection collectionCommandToCollection;
 
-    public AttributeServiceImpl(AttributeRepository attributeRepository, AttributeCommandToAttribute attributeCommandToAttribute, AttributeToAttributeCommand attributeToAttributeCommand, CollectionCommandToCollection collectionCommandToCollection) {
+    public AttributeServiceImpl(AttributeRepository attributeRepository, AttributeCommandToAttribute attributeCommandToAttribute, AttributeToAttributeCommand attributeToAttributeCommand, CollectionService collectionService, CollectionCommandToCollection collectionCommandToCollection) {
         this.attributeRepository = attributeRepository;
         this.attributeCommandToAttribute = attributeCommandToAttribute;
         this.attributeToAttributeCommand = attributeToAttributeCommand;
+        this.collectionService = collectionService;
         this.collectionCommandToCollection = collectionCommandToCollection;
     }
 
@@ -53,13 +57,16 @@ public class AttributeServiceImpl implements AttributeService {
     @Override
     public void bindAttributesToCollection(Set<AttributeCommand> attributeCommands, CollectionCommand collectionCommand) {
         Collection collection = collectionCommandToCollection.convert(collectionCommand);
+        log.info("Collection found : " + collection);
         for (AttributeCommand attributeCommand : attributeCommands) {
             Attribute attribute = attributeCommandToAttribute.convert(attributeCommand);
             if (attribute != null && collection != null) {
                 attribute.setCollection(collection);
                 collection.getAttributes().add(attribute);
+                collectionService.save(collection);
                 attributeRepository.save(attribute);
             }
         }
+
     }
 }

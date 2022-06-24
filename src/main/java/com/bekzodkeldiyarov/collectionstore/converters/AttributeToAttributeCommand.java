@@ -11,7 +11,9 @@ public class AttributeToAttributeCommand implements Converter<Attribute, Attribu
     public AttributeCommand convert(Attribute source) {
 
         AttributeCommand attributeCommand = AttributeCommand
-                .builder().attributeName(source.getAttributeName())
+                .builder()
+                .id(source.getId())
+                .attributeName(source.getAttributeName())
                 .type(source.getType())
                 .collection(source.getCollection()).build();
         return attributeCommand;

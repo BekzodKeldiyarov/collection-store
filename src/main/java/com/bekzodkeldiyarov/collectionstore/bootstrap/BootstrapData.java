@@ -1,14 +1,9 @@
 package com.bekzodkeldiyarov.collectionstore.bootstrap;
 
+import com.bekzodkeldiyarov.collectionstore.commands.AttributeCommand;
 import com.bekzodkeldiyarov.collectionstore.commands.CollectionCommand;
-import com.bekzodkeldiyarov.collectionstore.model.Collection;
-import com.bekzodkeldiyarov.collectionstore.model.Item;
-import com.bekzodkeldiyarov.collectionstore.model.Role;
-import com.bekzodkeldiyarov.collectionstore.model.User;
-import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
-import com.bekzodkeldiyarov.collectionstore.service.ItemService;
-import com.bekzodkeldiyarov.collectionstore.service.RoleService;
-import com.bekzodkeldiyarov.collectionstore.service.UserService;
+import com.bekzodkeldiyarov.collectionstore.model.*;
+import com.bekzodkeldiyarov.collectionstore.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -17,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 @Slf4j
@@ -25,14 +22,16 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     private final RoleService roleService;
     private final CollectionService collectionService;
     private final ItemService itemService;
+    private final AttributeService attributeService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public BootstrapData(UserService userService, RoleService roleService, CollectionService collectionService, ItemService itemService) {
+    public BootstrapData(UserService userService, RoleService roleService, CollectionService collectionService, ItemService itemService, AttributeService attributeService) {
         this.userService = userService;
         this.roleService = roleService;
         this.collectionService = collectionService;
         this.itemService = itemService;
+        this.attributeService = attributeService;
     }
 
     @Override
@@ -50,24 +49,37 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         user.setEmail("bekzod@gmail.com");
         user.setPassword(passwordEncoder.encode("bekzod"));
         user.setEnabled(true);
+        userService.save(user);
 
         User blockedUser = new User();
         blockedUser.setUsername("user");
         blockedUser.setEmail("user@gmail.com");
         blockedUser.setPassword(passwordEncoder.encode("user"));
         blockedUser.setEnabled(false);
+        userService.save(blockedUser);
 
 
         CollectionCommand collectionCommand = CollectionCommand.builder()
                 .name("My book")
                 .description("My books collection")
-                .user(admin).build();
+                .user(admin)
+                .items(new HashSet<>())
+                .attributes(new HashSet<>())
+                .build();
+
+        Set<AttributeCommand> attributeCommands = new HashSet<>();
+        attributeCommands.add(AttributeCommand.builder()
+                .attributeName("Author")
+                .type("String")
+                .build());
+        attributeCommands.add(AttributeCommand.builder()
+                .attributeName("Published in")
+                .type("Date")
+                .build());
 
 
         Item item = new Item();
         item.setName("Robinzon");
-
-
 
 
         Role role = new Role();
@@ -80,10 +92,9 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
 
         userService.save(admin);
         roleService.save(role);
-        collectionService.save(collectionCommand);
+        collectionService.saveCollectionCommand(collectionCommand);
+        attributeService.bindAttributesToCollection(attributeCommands, collectionCommand);
 //        itemService.save(item);
-        userService.save(user);
-        userService.save(blockedUser);
         log.info("Data Bootstrapped");
 
     }

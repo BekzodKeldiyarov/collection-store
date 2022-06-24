@@ -19,30 +19,34 @@
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Add Collection</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Adding Item</h1>
+                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                            class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
                 </div>
 
                 <!-- Content Row -->
 
                 <div class="row">
-                    <form action="/admin/collections/add" method="post" class="form col-md-6" th:object="${collection}">
+                    <form th:action="@{/admin/collections/{id}/items/add(id=${collection.id})}" method="post"
+                          class="form col-md-6" th:object="${item}">
                         <div class="row">
                             <div class="col-md-6">
                                 <input th:field="*{name}" type="text" class="form-control"
-                                       placeholder="Enter name for collection">
-                            </div>
-                            <div class="col-md-6">
-                                <input th:field="*{description}" type="text" class="form-control"
-                                       placeholder="Enter description for collection">
+                                       placeholder="Enter name of item">
                             </div>
                         </div>
-                        <div id="newAttributesSection">
-
+                        <div class="row">
+                            <div th:each="attribute:${attributes}" class="col-md-7">
+                                <label th:text="${attribute.attributeName}">
+                                </label>
+                                <div th:switch="${attribute.type}">
+                                    <input th:case="${'String'}" type="text" th:name="${attribute.id}"
+                                           class="form-control">
+                                    <input th:case="${'Date'}" type="date" th:name="${attribute.id}"
+                                           class="form-control">
+                                </div>
+                            </div>
                         </div>
-                        <button class="btn btn-outline-primary" type="button" onclick="addNewAttribute()">Add new
-                            attribute
-                        </button>
-
                         <button class="btn btn-primary">Submit</button>
                     </form>
                 </div>
@@ -112,7 +116,6 @@
 </script>
 
 <div th:replace="fragments/fragments::scripts"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
 </body>
 
 </html>

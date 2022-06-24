@@ -23,7 +23,12 @@ public class CollectionServiceImpl implements CollectionService {
     }
 
     @Override
-    public CollectionCommand save(CollectionCommand collectionCommand) {
+    public Collection save(Collection collection) {
+        return collectionRepository.save(collection);
+    }
+
+    @Override
+    public CollectionCommand saveCollectionCommand(CollectionCommand collectionCommand) {
         Collection collectionToSave = collectionCommandToCollection.convert(collectionCommand);
         Collection savedCollection = collectionRepository.save(collectionToSave);
         CollectionCommand savedCollectionCommand = collectionToCollectionCommand.convert(savedCollection);

@@ -33,7 +33,7 @@
                                 <th>ID</th>
                                 <th>Collection Name</th>
                                 <th>Collection Description</th>
-                                <th>Edit</th>
+                                <th>View</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -41,8 +41,8 @@
                                 <td th:text="${collection.id}">User id</td>
                                 <td th:text="${collection.name}">Username</td>
                                 <td th:text="${collection.description}">Email</td>
-                                <td><a th:href="@{/admin/collections/edit/{id}(id=${collection.id})}"
-                                       class="btn btn-outline-primary">Edit</a></td>
+                                <td><a th:href="@{/admin/collections/view/{id}(id=${collection.id})}"
+                                       class="btn btn-outline-primary">View</a></td>
                             </tr>
                             </tbody>
                         </table>

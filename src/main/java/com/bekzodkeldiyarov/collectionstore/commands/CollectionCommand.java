@@ -37,4 +37,15 @@ public class CollectionCommand {
 
     private Set<Attribute> attributes = new HashSet<>();
 
+    public CollectionCommand(Long id, String name, String description, User user, Set<Item> items, Set<Attribute> attributes) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.user = user;
+        this.items = items;
+        this.attributes = attributes;
+    }
+
+    public CollectionCommand() {
+    }
 }

@@ -6,7 +6,9 @@ import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import java.util.List;
 
 public interface CollectionService {
-    CollectionCommand save(CollectionCommand collectionCommand);
+    Collection save(Collection collection);
+
+    CollectionCommand saveCollectionCommand(CollectionCommand collectionCommand);
 
     List<CollectionCommand> getAllCollectionCommands();
 

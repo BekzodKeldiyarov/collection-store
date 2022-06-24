@@ -3,7 +3,6 @@ package com.bekzodkeldiyarov.collectionstore.controllers;
 import com.bekzodkeldiyarov.collectionstore.commands.AttributeCommand;
 import com.bekzodkeldiyarov.collectionstore.commands.CollectionCommand;
 import com.bekzodkeldiyarov.collectionstore.commands.ItemCommand;
-import com.bekzodkeldiyarov.collectionstore.model.Item;
 import com.bekzodkeldiyarov.collectionstore.service.AttributeService;
 import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
 import com.bekzodkeldiyarov.collectionstore.service.ItemService;
@@ -46,13 +45,13 @@ public class CollectionController {
     }
 
     @PostMapping("/collections/add")
-    public String addNewCollection(@ModelAttribute("collection") CollectionCommand collectionCommand, HttpServletRequest request) {
+    public String addNewCollection(@ModelAttribute("collection") CollectionCommand collectionCommand) {
         collectionCommand.setUser(userService.findByUsername("admin"));
-        collectionService.save(collectionCommand);
+        collectionService.saveCollectionCommand(collectionCommand);
         return "redirect:/admin/collections";
     }
 
-    @GetMapping("/collections/edit/{id}")
+    @GetMapping("/collections/view/{id}")
     public String getUpdateCollectionPage(@PathVariable Long id, Model model) {
         CollectionCommand collectionCommand = collectionService.findCollectionCommandById(id);
         List<AttributeCommand> attributes = attributeService.getAllAttributesOfCollection(collectionCommand.getId());
@@ -62,7 +61,6 @@ public class CollectionController {
         model.addAttribute("items", items);
         return "admin/collections/single-collection";
     }
-
 
 
 }
