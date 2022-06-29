@@ -3,6 +3,7 @@ package com.bekzodkeldiyarov.collectionstore.bootstrap;
 import com.bekzodkeldiyarov.collectionstore.commands.AttributeCommand;
 import com.bekzodkeldiyarov.collectionstore.commands.CollectionCommand;
 import com.bekzodkeldiyarov.collectionstore.model.*;
+import com.bekzodkeldiyarov.collectionstore.repository.ItemAttributeValueRepository;
 import com.bekzodkeldiyarov.collectionstore.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     private final AttributeService attributeService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ItemAttributeValueRepository itemAttributeValueRepository;
 
     public BootstrapData(UserService userService, RoleService roleService, CollectionService collectionService, ItemService itemService, AttributeService attributeService) {
         this.userService = userService;
@@ -59,23 +62,11 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         userService.save(blockedUser);
 
 
-        CollectionCommand collectionCommand = CollectionCommand.builder()
-                .name("My book")
-                .description("My books collection")
-                .user(admin)
-                .items(new HashSet<>())
-                .attributes(new HashSet<>())
-                .build();
+        CollectionCommand collectionCommand = CollectionCommand.builder().name("My book").description("My books collection").user(admin).items(new HashSet<>()).attributes(new HashSet<>()).build();
 
         Set<AttributeCommand> attributeCommands = new HashSet<>();
-        attributeCommands.add(AttributeCommand.builder()
-                .attributeName("Author")
-                .type("String")
-                .build());
-        attributeCommands.add(AttributeCommand.builder()
-                .attributeName("Published in")
-                .type("Date")
-                .build());
+        attributeCommands.add(AttributeCommand.builder().attributeName("Author").type("String").build());
+        attributeCommands.add(AttributeCommand.builder().attributeName("Published in").type("Date").build());
 
 
         Item item = new Item();
@@ -94,6 +85,24 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         roleService.save(role);
         collectionService.saveCollectionCommand(collectionCommand);
         attributeService.bindAttributesToCollection(attributeCommands, collectionCommand);
+        ItemAttributeValue itemAttributeValue = new ItemAttributeValue();
+        Collection collection = Collection.builder().name("New Collection").description("Collection for many-to-many relationship").user(admin).attributes(new HashSet<>()).build();
+
+        Attribute attribute = Attribute.builder().attributeName("Test").type("String").collection(collection).build();
+        collection.getAttributes().add(attribute);
+
+        itemAttributeValue.setAttribute(attribute);
+        itemAttributeValue.setItem(item);
+
+        item.getItemAttributeValues().add(itemAttributeValue);
+        item.setCollection(collection);
+
+        attribute.getItemAttributeValues().add(itemAttributeValue);
+
+        collectionService.save(collection);
+        attributeService.save(attribute);
+        itemService.save(item);
+        itemAttributeValueRepository.save(itemAttributeValue);
 //        itemService.save(item);
         log.info("Data Bootstrapped");
 

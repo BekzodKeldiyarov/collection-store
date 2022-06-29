@@ -54,10 +54,10 @@ public class CollectionController {
     @GetMapping("/collections/view/{id}")
     public String getUpdateCollectionPage(@PathVariable Long id, Model model) {
         CollectionCommand collectionCommand = collectionService.findCollectionCommandById(id);
-        List<AttributeCommand> attributes = attributeService.getAllAttributesOfCollection(collectionCommand.getId());
+//        List<AttributeCommand> attributes = attributeService.getAllAttributesOfCollection(collectionCommand.getId());
         List<ItemCommand> items = itemService.getAllItemsOfCollection(id);
         model.addAttribute("collection", collectionCommand);
-        model.addAttribute("attributes", attributes);
+//        model.addAttribute("attributes", attributes);
         model.addAttribute("items", items);
         return "admin/collections/single-collection";
     }

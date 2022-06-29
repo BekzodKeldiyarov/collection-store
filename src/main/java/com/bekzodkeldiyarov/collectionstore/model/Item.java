@@ -1,8 +1,15 @@
 package com.bekzodkeldiyarov.collectionstore.model;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,7 +18,6 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 public class Item extends BaseEntity {
     private String name;
 //    private Set<Tag> tags = new HashSet<>();
@@ -22,16 +28,22 @@ public class Item extends BaseEntity {
 
 
     @Builder
-    public Item(Long id, String name, Collection collection) {
+    public Item(Long id, String name, Collection collection, List<ItemAttributeValue> itemAttributeValues) {
         super(id);
         this.name = name;
         this.collection = collection;
+        this.itemAttributeValues = itemAttributeValues;
     }
 
-    @ManyToMany
-    @JoinTable(
-            name = "item_attribute",
-            joinColumns = @JoinColumn(name = "item_id"),
-            inverseJoinColumns = @JoinColumn(name = "attr_id"))
-    private Set<Attribute> attributes = new HashSet<>();
+    @OneToMany(mappedBy = "item")
+    List<ItemAttributeValue> itemAttributeValues = new ArrayList<>();
+
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + getId() + ", " +
+                "name = " + getName() + ", " +
+                "collection = " + getCollection() + ")";
+    }
 }

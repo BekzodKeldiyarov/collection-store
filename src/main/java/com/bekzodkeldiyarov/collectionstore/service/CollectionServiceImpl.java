@@ -54,4 +54,25 @@ public class CollectionServiceImpl implements CollectionService {
         }
         return collectionToCollectionCommand.convert(foundCollection);
     }
+
+    @Override
+    public Collection findCollectionById(Long id) {
+        Collection collection = new Collection();
+        if (collectionRepository.findById(id).isPresent()) {
+            collection = collectionRepository.findById(id).get();
+        }
+        return collection;
+    }
+
+//    ItemCommand(
+//            id=null,
+//            name=test,
+//            collection=Collection(name=My book, description=My books collection, user=User(username=admin, email=admin@gmail.com, isEnabled=true, roles=[Role(name=ROLE_ADMIN)])),
+//    itemAttributeValues=[
+//            ItemAttributeValue(value=paul,
+//                               item=null,
+//                               attribute=Attribute(attributeName=Author, type=String, collection=Collection(name=My book, description=My books collection, user=User(username=admin, email=admin@gmail.com, isEnabled=true, roles=[Role(name=ROLE_ADMIN)])))),
+//            ItemAttributeValue(value=2333-02-11,
+//                               item=null,
+//                               attribute=Attribute(attributeName=Published in, type=Date, collection=Collection(name=My book, description=My books collection, user=User(username=admin, email=admin@gmail.com, isEnabled=true, roles=[Role(name=ROLE_ADMIN)]))))])
 }

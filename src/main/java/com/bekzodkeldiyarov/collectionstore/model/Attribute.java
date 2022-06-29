@@ -12,6 +12,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Attribute extends BaseEntity {
     private String attributeName;
     private String type;
@@ -29,8 +30,12 @@ public class Attribute extends BaseEntity {
     private Collection collection;
 
 
-    @ManyToMany(mappedBy = "attributes")
-    private Set<Item> items = new HashSet<>();
+//    @ManyToMany(mappedBy = "attributes")
+//    private Set<Item> items = new HashSet<>();
+
+    @OneToMany(mappedBy = "attribute")
+    @ToString.Exclude
+    Set<ItemAttributeValue> itemAttributeValues = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
@@ -52,15 +57,5 @@ public class Attribute extends BaseEntity {
         result = 31 * result + (collection != null ? collection.hashCode() : 0);
         return result;
     }
-
-    @Override
-    public String toString() {
-        return "Attribute{" +
-                "name='" + attributeName + '\'' +
-                ", type='" + type + '\'' +
-                ", collection=" + collection +
-                "} " + super.toString();
-    }
-
 
 }

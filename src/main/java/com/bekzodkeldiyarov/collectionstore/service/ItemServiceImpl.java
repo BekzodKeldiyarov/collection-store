@@ -1,19 +1,22 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
-import com.bekzodkeldiyarov.collectionstore.commands.CollectionCommand;
 import com.bekzodkeldiyarov.collectionstore.commands.ItemCommand;
 import com.bekzodkeldiyarov.collectionstore.converters.CollectionCommandToCollection;
 import com.bekzodkeldiyarov.collectionstore.converters.ItemCommandToItem;
 import com.bekzodkeldiyarov.collectionstore.converters.ItemToItemCommand;
+import com.bekzodkeldiyarov.collectionstore.model.Attribute;
 import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.model.Item;
+import com.bekzodkeldiyarov.collectionstore.model.ItemAttributeValue;
 import com.bekzodkeldiyarov.collectionstore.repository.ItemRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final ItemCommandToItem itemCommandToItem;
@@ -21,11 +24,19 @@ public class ItemServiceImpl implements ItemService {
 
     private final CollectionCommandToCollection collectionCommandToCollection;
 
-    public ItemServiceImpl(ItemRepository itemRepository, ItemCommandToItem itemCommandToItem, ItemToItemCommand itemToItemCommand, CollectionCommandToCollection collectionCommandToCollection) {
+    private final CollectionService collectionService;
+    private final AttributeService attributeService;
+    private final ItemAttributeValueService itemAttributeValueService;
+
+    public ItemServiceImpl(ItemRepository itemRepository, ItemCommandToItem itemCommandToItem, ItemToItemCommand itemToItemCommand, CollectionCommandToCollection collectionCommandToCollection, CollectionService collectionService, AttributeService attributeService, ItemAttributeValueService itemAttributeValueService) {
         this.itemRepository = itemRepository;
         this.itemCommandToItem = itemCommandToItem;
         this.itemToItemCommand = itemToItemCommand;
         this.collectionCommandToCollection = collectionCommandToCollection;
+        this.collectionService = collectionService;
+
+        this.attributeService = attributeService;
+        this.itemAttributeValueService = itemAttributeValueService;
     }
 
     @Override
@@ -35,7 +46,15 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemCommand saveItemCommand(ItemCommand command) {
-        return null;
+        Item item = itemCommandToItem.convert(command);
+        if (item != null) {
+            for (ItemAttributeValue itemAttributeValues : item.getItemAttributeValues()) {
+                itemAttributeValues.setItem(item);
+            }
+        }
+        Item savedItem = itemRepository.save(item);
+        itemAttributeValueService.save(savedItem.getItemAttributeValues());
+        return itemToItemCommand.convert(savedItem);
     }
 
     @Override
@@ -49,14 +68,21 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemCommand saveItemCommandAndBindCollectionCommand(ItemCommand itemCommand, CollectionCommand collectionCommand) {
-        Collection collection = collectionCommandToCollection.convert(collectionCommand);
-        itemCommand.setCollection(collection);
-        Item item = itemCommandToItem.convert(itemCommand);
-        if (item != null) {
-            itemRepository.save(item);
-            return itemToItemCommand.convert(item);
+    public ItemCommand getNewItemCommandInstance(Long collectionId) {
+        Collection collection = collectionService.findCollectionById(collectionId);
+        List<Attribute> attributesForCollection = attributeService.getAllAttributesOfCollection(collectionId);
+        Item item = new Item();
+        for (Attribute attribute : attributesForCollection) {
+
+            ItemAttributeValue itemAttributeValue = new ItemAttributeValue();
+            itemAttributeValue.setItem(item);
+            item.getItemAttributeValues().add(itemAttributeValue);
+
+            itemAttributeValue.setAttribute(attribute);
+            attribute.getItemAttributeValues().add(itemAttributeValue);
         }
-        return null;
+        item.setCollection(collection);
+
+        return itemToItemCommand.convert(item);
     }
 }

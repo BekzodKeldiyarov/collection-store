@@ -3,15 +3,20 @@ package com.bekzodkeldiyarov.collectionstore.controllers;
 import com.bekzodkeldiyarov.collectionstore.commands.AttributeCommand;
 import com.bekzodkeldiyarov.collectionstore.commands.CollectionCommand;
 import com.bekzodkeldiyarov.collectionstore.commands.ItemCommand;
+import com.bekzodkeldiyarov.collectionstore.model.ItemAttributeValue;
+import com.bekzodkeldiyarov.collectionstore.repository.ItemAttributeValueRepository;
 import com.bekzodkeldiyarov.collectionstore.service.AttributeService;
 import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
+import com.bekzodkeldiyarov.collectionstore.service.ItemAttributeValueService;
 import com.bekzodkeldiyarov.collectionstore.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.validation.Valid;
+import java.util.*;
 
 @Controller
 @RequestMapping("/admin")
@@ -20,32 +25,30 @@ public class ItemController {
     private final ItemService itemService;
     private final AttributeService attributeService;
     private final CollectionService collectionService;
+    private final ItemAttributeValueService itemAttributeValueService;
 
-    public ItemController(ItemService itemService, AttributeService attributeService, CollectionService collectionService) {
+    public ItemController(ItemService itemService, AttributeService attributeService, CollectionService collectionService, ItemAttributeValueService itemAttributeValueService) {
         this.itemService = itemService;
         this.attributeService = attributeService;
         this.collectionService = collectionService;
+        this.itemAttributeValueService = itemAttributeValueService;
     }
 
     @GetMapping("/collections/{collectionId}/items/add")
     public String getNewItemToCollection(@PathVariable Long collectionId, Model model) {
-        ItemCommand itemCommand = new ItemCommand();
-        List<AttributeCommand> attributes = attributeService.getAllAttributesOfCollection(collectionId);
-        CollectionCommand collection = collectionService.findCollectionCommandById(collectionId);
-        model.addAttribute("collection", collection);
-        model.addAttribute("attributes", attributes);
+        ItemCommand itemCommand = itemService.getNewItemCommandInstance(collectionId);
         model.addAttribute("item", itemCommand);
-
         return "admin/items/add";
     }
 
     @PostMapping("/collections/{collectionId}/items/add")
-    public String postNewItemToCollection(@ModelAttribute("item") ItemCommand itemCommand,
-                                          @PathVariable Long collectionId) {
-        CollectionCommand collectionCommand = collectionService.findCollectionCommandById(collectionId);
-        itemService.saveItemCommandAndBindCollectionCommand(itemCommand, collectionCommand);
-
-
+    public String postNewItemToCollection(@Valid ItemCommand itemCommand, BindingResult result, @PathVariable Long collectionId) {
+        if (result.hasErrors()) {
+            log.error(result.getAllErrors().toString());
+        }
+        itemService.saveItemCommand(itemCommand);
         return "redirect:/admin/collections";
     }
+
+
 }

@@ -13,8 +13,10 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Table(name = "usr")
+@ToString
 public class User extends BaseEntity {
     private String username;
+    @ToString.Exclude
     private String password;
     private String email;
     private boolean isEnabled;
@@ -24,6 +26,7 @@ public class User extends BaseEntity {
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
+    @ToString.Exclude
     private Set<Collection> collections = new HashSet<>();
 
     @Override

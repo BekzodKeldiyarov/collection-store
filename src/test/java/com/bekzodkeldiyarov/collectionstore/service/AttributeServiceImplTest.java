@@ -49,7 +49,7 @@ class AttributeServiceImplTest {
 
         when(attributeRepository.save(Mockito.any(Attribute.class))).thenReturn(attribute);
 
-        attributeService.save(attributeCommand);
+        attributeService.saveAttributeCommand(attributeCommand);
         assertEquals(Long.valueOf(1L), attribute.getId());
         verify(attributeRepository, times(1)).save(any());
 

@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.Set;
 
 public interface AttributeService {
-    AttributeCommand save(AttributeCommand attributeCommand);
+    Attribute save(Attribute attribute);
+
+    AttributeCommand saveAttributeCommand(AttributeCommand attributeCommand);
 
     List<Attribute> findAll();
 
-    List<AttributeCommand> getAllAttributesOfCollection(Long collectionId);
+    List<Attribute> getAllAttributesOfCollection(Long collectionId);
 
     void bindAttributesToCollection(Set<AttributeCommand> attributeCommands, CollectionCommand collectionCommand);
 }

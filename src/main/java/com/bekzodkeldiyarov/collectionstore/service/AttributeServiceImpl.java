@@ -33,7 +33,12 @@ public class AttributeServiceImpl implements AttributeService {
     }
 
     @Override
-    public AttributeCommand save(AttributeCommand attributeCommand) {
+    public Attribute save(Attribute attribute) {
+        return attributeRepository.save(attribute);
+    }
+
+    @Override
+    public AttributeCommand saveAttributeCommand(AttributeCommand attributeCommand) {
         Attribute attributeToSave = attributeCommandToAttribute.convert(attributeCommand);
         Attribute savedAttribute = attributeRepository.save(attributeToSave);
         return attributeToAttributeCommand.convert(savedAttribute);
@@ -45,13 +50,9 @@ public class AttributeServiceImpl implements AttributeService {
     }
 
     @Override
-    public List<AttributeCommand> getAllAttributesOfCollection(Long collectionId) {
+    public List<Attribute> getAllAttributesOfCollection(Long collectionId) {
         List<Attribute> attributes = attributeRepository.findByCollectionId(collectionId);
-        List<AttributeCommand> attributeCommands = new ArrayList<>();
-        for (Attribute attribute : attributes) {
-            attributeCommands.add(attributeToAttributeCommand.convert(attribute));
-        }
-        return attributeCommands;
+        return attributes;
     }
 
     @Override

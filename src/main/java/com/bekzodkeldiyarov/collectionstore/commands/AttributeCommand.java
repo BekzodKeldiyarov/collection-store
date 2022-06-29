@@ -1,10 +1,13 @@
 package com.bekzodkeldiyarov.collectionstore.commands;
 
 import com.bekzodkeldiyarov.collectionstore.model.Collection;
+import com.bekzodkeldiyarov.collectionstore.model.Item;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Data
@@ -23,6 +26,8 @@ public class AttributeCommand {
     private String type;
 
     private Collection collection;
+
+    private Set<Item> items = new HashSet<>();
 
 
 }

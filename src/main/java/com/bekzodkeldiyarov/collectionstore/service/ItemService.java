@@ -5,6 +5,7 @@ import com.bekzodkeldiyarov.collectionstore.commands.ItemCommand;
 import com.bekzodkeldiyarov.collectionstore.model.Item;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ItemService {
     Item save(Item collection);
@@ -13,5 +14,5 @@ public interface ItemService {
 
     List<ItemCommand> getAllItemsOfCollection(Long id);
 
-    ItemCommand saveItemCommandAndBindCollectionCommand(ItemCommand itemCommand, CollectionCommand collectionCommand);
+    ItemCommand getNewItemCommandInstance(Long collectionId);
 }

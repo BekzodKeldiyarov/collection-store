@@ -27,22 +27,37 @@
                 <!-- Content Row -->
 
                 <div class="row">
-                    <form th:action="@{/admin/collections/{id}/items/add(id=${collection.id})}" method="post"
+                    <form th:action="@{/admin/collections/{id}/items/add(id=${collection})}" method="post"
                           class="form col-md-6" th:object="${item}">
                         <div class="row">
                             <div class="col-md-6">
                                 <input th:field="*{name}" type="text" class="form-control"
                                        placeholder="Enter name of item">
                             </div>
+                            <div class="col-md-6">
+                                <input th:field="*{collection}" type="text" class="form-control"
+                                       th:value="${collection}" readonly>
+                            </div>
                         </div>
                         <div class="row">
-                            <div th:each="attribute:${attributes}" class="col-md-7">
-                                <label th:text="${attribute.attributeName}">
-                                </label>
-                                <div th:switch="${attribute.type}">
-                                    <input th:case="${'String'}" type="text" th:name="${attribute.id}"
+                            <div th:each="itemAttributeValue, itemStat: *{itemAttributeValues}"
+                                 class="col-md-7">
+
+                                <div class="mt-2" th:switch="${itemAttributeValue.attribute.type}">
+                                    <label th:text="${itemAttributeValue.attribute.attributeName}"></label>
+                                    <input th:case="${'String'}"
+                                           th:field="*{itemAttributeValues[__${itemStat.index}__].value}"
+                                           type="text"
                                            class="form-control">
-                                    <input th:case="${'Date'}" type="date" th:name="${attribute.id}"
+                                    <input th:case="${'Date'}"
+                                           th:field="*{itemAttributeValues[__${itemStat.index}__].value}"
+                                           type="date"
+                                           class="form-control">
+                                    <input th:field="*{itemAttributeValues[__${itemStat.index}__].item}"
+                                           type="hidden"
+                                           class="form-control">
+                                    <input th:field="*{itemAttributeValues[__${itemStat.index}__].attribute}"
+                                           type="hidden"
                                            class="form-control">
                                 </div>
                             </div>
@@ -107,9 +122,9 @@
             <select class="form-select form-control" name="attribute_type_{{index}}">
                 <option value="string">String</option>
                 <option value="text">Text</option>
-                <option value="int">Integer</option>
-                <option value="date">Date</option>
-                <option value="boolean">Boolean</option>
+                <option value="Int">Integer</option>
+                <option value="Date">Date</option>
+                <option value="Boolean">Boolean</option>
             </select>
         </div>
     </div>

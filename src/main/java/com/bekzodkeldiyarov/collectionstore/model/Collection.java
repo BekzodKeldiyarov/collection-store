@@ -26,9 +26,11 @@ public class Collection extends BaseEntity {
     private User user;
 
     @OneToMany(mappedBy = "collection")
+    @ToString.Exclude
     private Set<Item> items = new HashSet<>();
 
     @OneToMany(mappedBy = "collection")
+    @ToString.Exclude
     private Set<Attribute> attributes = new HashSet<>();
 
     @Builder
@@ -54,14 +56,4 @@ public class Collection extends BaseEntity {
         return getClass().hashCode();
     }
 
-    @Override
-    public String toString() {
-        return "Collection{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", user=" + user +
-                ", items=" + items +
-                ", attributes=" + attributes +
-                "} " + super.toString();
-    }
 }

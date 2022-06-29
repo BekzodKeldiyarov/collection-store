@@ -13,4 +13,6 @@ public interface CollectionService {
     List<CollectionCommand> getAllCollectionCommands();
 
     CollectionCommand findCollectionCommandById(Long id);
+
+    Collection findCollectionById(Long id);
 }

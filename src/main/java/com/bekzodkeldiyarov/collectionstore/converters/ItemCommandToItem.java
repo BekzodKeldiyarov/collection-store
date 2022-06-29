@@ -12,6 +12,7 @@ public class ItemCommandToItem implements Converter<ItemCommand, Item> {
         Item item = Item.builder()
                 .id(source.getId())
                 .name(source.getName())
+                .itemAttributeValues(source.getItemAttributeValues())
                 .collection(source.getCollection())
                 .build();
         return item;
