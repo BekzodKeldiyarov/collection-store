@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -44,18 +46,40 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.save(item);
     }
 
+
     @Override
     public ItemCommand saveItemCommand(ItemCommand command) {
-        Item item = itemCommandToItem.convert(command);
-        if (item != null) {
-            for (ItemAttributeValue itemAttributeValues : item.getItemAttributeValues()) {
-                itemAttributeValues.setItem(item);
+        Item savedItem = null;
+        if (command.getId() == null) {
+            Item itemToSave = itemCommandToItem.convert(command);
+            assert itemToSave != null : "Item to save is null";
+            for (ItemAttributeValue itemAttributeValue : itemToSave.getItemAttributeValues()) {
+                itemAttributeValue.setItem(itemToSave);
+            }
+            savedItem = itemRepository.save(itemToSave);
+            itemAttributeValueService.save(savedItem.getItemAttributeValues());
+        } else {
+            Optional<Item> optionalItem = itemRepository.findById(command.getId());
+            if (optionalItem.isPresent()) {
+                Item itemToSave = optionalItem.get();
+                itemToSave.setName(command.getName());
+                itemToSave.setItemAttributeValues(command.getItemAttributeValues());
+                for (ItemAttributeValue itemAttributeValue : itemToSave.getItemAttributeValues()) {
+                    ItemAttributeValue itemAttributeValueToSave = itemAttributeValueService.findById(itemAttributeValue.getId());
+                    itemAttributeValueToSave.setItem(itemAttributeValue.getItem());
+                    itemAttributeValueToSave.setValue(itemAttributeValue.getValue());
+                    itemAttributeValue.setAttribute(itemAttributeValue.getAttribute());
+                    log.info(itemAttributeValueToSave + "");
+                    itemAttributeValueService.save(itemAttributeValueToSave);
+                }
+                log.info(itemToSave.getItemAttributeValues() + "");
+                savedItem = itemRepository.save(itemToSave);
+                itemAttributeValueService.save(savedItem.getItemAttributeValues());
             }
         }
-        Item savedItem = itemRepository.save(item);
-        itemAttributeValueService.save(savedItem.getItemAttributeValues());
         return itemToItemCommand.convert(savedItem);
     }
+
 
     @Override
     public List<ItemCommand> getAllItemsOfCollection(Long id) {
@@ -65,6 +89,21 @@ public class ItemServiceImpl implements ItemService {
             itemCommands.add(itemToItemCommand.convert(item));
         }
         return itemCommands;
+    }
+
+    @Override
+    public List<ItemCommand> getAllItemsOfUser(Long userId) {
+        List<Collection> collectionsOfUser = collectionService.getAllCollectionsOfUser(userId);
+        log.info("All collections of user" + collectionsOfUser);
+        List<Item> items = new ArrayList<>();
+        List<ItemCommand> itemsToReturn = new ArrayList<>();
+        for (Collection collection : collectionsOfUser) {
+            items.addAll(itemRepository.findByCollectionId(collection.getId()));
+        }
+        for (Item item : items) {
+            itemsToReturn.add(itemToItemCommand.convert(item));
+        }
+        return itemsToReturn;
     }
 
     @Override
@@ -85,4 +124,13 @@ public class ItemServiceImpl implements ItemService {
 
         return itemToItemCommand.convert(item);
     }
+
+
+    @Override
+    public ItemCommand findItemCommandById(Long id) {
+        Item item = itemRepository.findById(id).get();
+
+        return itemToItemCommand.convert(item);
+    }
+
 }

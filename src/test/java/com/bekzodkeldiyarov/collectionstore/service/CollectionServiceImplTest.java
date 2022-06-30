@@ -12,7 +12,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -24,12 +23,15 @@ class CollectionServiceImplTest {
     CollectionToCollectionCommand collectionToCollectionCommand;
     @Mock
     CollectionCommandToCollection collectionCommandToCollection;
-
+    @Mock
+    UserService userService;
+    @Mock
+    AttributeService attributeService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        service = new CollectionServiceImpl(collectionRepository, collectionToCollectionCommand, collectionCommandToCollection);
+        service = new CollectionServiceImpl(collectionRepository, collectionToCollectionCommand, collectionCommandToCollection, userService);
     }
 
     @Test

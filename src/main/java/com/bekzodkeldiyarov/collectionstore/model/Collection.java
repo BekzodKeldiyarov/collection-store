@@ -7,9 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -56,4 +54,12 @@ public class Collection extends BaseEntity {
         return getClass().hashCode();
     }
 
+    public List<Attribute> getAttributesAsList() {
+        List<Attribute> attributes = new ArrayList<>(this.attributes);
+        return attributes;
+    }
+
+    public void setAttributesAsList(List<Attribute> attributes) {
+        this.attributes = new HashSet<>(attributes);
+    }
 }

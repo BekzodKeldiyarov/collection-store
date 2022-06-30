@@ -30,9 +30,6 @@ public class Attribute extends BaseEntity {
     private Collection collection;
 
 
-//    @ManyToMany(mappedBy = "attributes")
-//    private Set<Item> items = new HashSet<>();
-
     @OneToMany(mappedBy = "attribute")
     @ToString.Exclude
     Set<ItemAttributeValue> itemAttributeValues = new HashSet<>();

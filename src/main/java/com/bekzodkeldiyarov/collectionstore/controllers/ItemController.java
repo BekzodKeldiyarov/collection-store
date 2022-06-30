@@ -35,19 +35,37 @@ public class ItemController {
     }
 
     @GetMapping("/collections/{collectionId}/items/add")
-    public String getNewItemToCollection(@PathVariable Long collectionId, Model model) {
+    public String getAddNewItemPage(@PathVariable Long collectionId, Model model) {
         ItemCommand itemCommand = itemService.getNewItemCommandInstance(collectionId);
         model.addAttribute("item", itemCommand);
+        model.addAttribute("pageName", "Add Item");
         return "admin/items/add";
     }
 
     @PostMapping("/collections/{collectionId}/items/add")
-    public String postNewItemToCollection(@Valid ItemCommand itemCommand, BindingResult result, @PathVariable Long collectionId) {
+    public String postNewItemToCollection(@Valid ItemCommand itemCommand, BindingResult result) {
         if (result.hasErrors()) {
             log.error(result.getAllErrors().toString());
         }
         itemService.saveItemCommand(itemCommand);
         return "redirect:/admin/collections";
+    }
+
+    @GetMapping("/collections/{collectionId}/items/{itemId}/edit")
+    public String getUpdateItemPage(@PathVariable Long collectionId, @PathVariable Long itemId, Model model) {
+        ItemCommand itemCommand = itemService.findItemCommandById(itemId);
+        model.addAttribute("item", itemCommand);
+        model.addAttribute("pageName", "Edit Item");
+        return "admin/items/add";
+    }
+
+    @GetMapping("/items")
+    public String getAllItemsOfUser(Model model) {
+        List<ItemCommand> allItems = itemService.getAllItemsOfUser(3L);
+
+        model.addAttribute("items", allItems);
+        model.addAttribute("pageName", "All my items");
+        return "admin/items/list";
     }
 
 

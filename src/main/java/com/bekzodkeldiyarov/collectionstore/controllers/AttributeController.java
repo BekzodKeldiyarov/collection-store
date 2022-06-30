@@ -39,33 +39,8 @@ public class AttributeController {
     @PostMapping("/collections/{collectionId}/attributes/add")
     public String addNewAttribute(@PathVariable Long collectionId, HttpServletRequest request) {
         CollectionCommand collectionCommand = collectionService.findCollectionCommandById(collectionId);
-        Set<AttributeCommand> attributeCommands = createAttributesFromHttpRequest(request);
-
-        attributeService.bindAttributesToCollection(attributeCommands, collectionCommand);
 
         collectionService.saveCollectionCommand(collectionCommand);
         return "redirect:/collections/view" + collectionId;
-    }
-
-
-    private Set<AttributeCommand> createAttributesFromHttpRequest(HttpServletRequest request) {
-        Set<AttributeCommand> attributes = new HashSet<>();
-        Enumeration<String> keys = request.getParameterNames();
-        while (keys.hasMoreElements()) {
-            String attributeNameKey = keys.nextElement();
-            String attributeNameValue = request.getParameter(attributeNameKey);
-            if (!attributeNameKey.contains("attribute_name")) {
-                continue;
-            }
-            String attributeTypeKey = keys.nextElement();
-            String attributeTypeValue = request.getParameter(attributeTypeKey);
-
-            AttributeCommand attributeCommand = AttributeCommand.builder()
-                    .attributeName(attributeNameValue)
-                    .type(attributeTypeValue)
-                    .build();
-            attributes.add(attributeCommand);
-        }
-        return attributes;
     }
 }

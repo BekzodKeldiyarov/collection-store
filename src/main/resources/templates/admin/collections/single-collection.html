@@ -2,29 +2,45 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/fragments::headerfiles"></head>
 <body>
-<div class="container">
-    <h1>Collection Page</h1>
-    <h2 th:text="${collection.name}"></h2>
-    <h3 th:text="${collection.description}"></h3>
-    <a th:href="@{/admin/collections/{id}/attributes/add(id=${collection.id})}" class="btn btn-primary">Add New
-        Attribute</a>
-    <h4>Items</h4>
-    <table class="table">
-        <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Tags</th>
-            <th th:each="attribute:${attributes}"><p th:text="${attribute.attributeName}"></p></th>
-        </tr>
-        <tbody>
-        <tr th:each="item:${items}">
-            <td th:text="${item.id}"></td>
-            <td th:text="${item.name}"></td>
-            <td></td>
-        </tr>
-        </tbody>
-    </table>
-
+<div class="container pt-3">
+    <div class="row mb-2">
+        <h2 class="col-md-4" th:text="${collection.name}"></h2>
+        <h3 class="col-md-4 offset-md-2" th:text="${collection.description}"></h3>
+    </div>
+    <a th:href="@{/admin/collections/{id}/items/add(id=${collection.id})}" class="btn btn-primary mb-4">Add New
+        Item</a>
+    <div th:if="${items!=null}">
+        <h4>Items</h4>
+        <table class="table">
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Tags</th>
+                <div th:if="${items}" th:each="itemAttributeValue, itemStat: ${items[0].itemAttributeValues}"
+                     class="col-md-7">
+                    <th th:text="${items[0].itemAttributeValues[__${itemStat.index}__].attribute.attributeName}"></th>
+                </div>
+                <th>Edit/view</th>
+            </tr>
+            <tbody>
+            <tr th:each="item:${items}">
+                <td th:text="${item.id}"></td>
+                <td th:text="${item.name}"></td>
+                <td></td>
+                <div th:each="itemAttributeValue, itemStat: ${item.itemAttributeValues}"
+                     class="col-md-7">
+                    <th th:text="${item.itemAttributeValues[__${itemStat.index}__].value}"></th>
+                </div>
+                <td><a th:href="@{'/admin/collections/'+${item.collection.id}+'/items/'+${item.id}+'/edit'}"
+                       class="btn btn-primary">Edit</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${items==null}">
+        <h6>No items in this collection, try to add some!</h6>
+    </div>
 </div>
 <div th:replace="fragments/fragments::scripts"></div>
 </body>

@@ -43,4 +43,14 @@ public class ItemAttributeValueServiceImpl implements ItemAttributeValueService 
     public List<ItemAttributeValue> save(List<ItemAttributeValue> itemAttributeValues) {
         return repository.saveAll(itemAttributeValues);
     }
+
+    @Override
+    public List<ItemAttributeValue> findByItemId(Long id) {
+        return repository.findByItemId(id);
+    }
+
+    @Override
+    public ItemAttributeValue findById(Long id) {
+        return repository.findById(id).get();
+    }
 }

@@ -11,4 +11,7 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("select i from Item i where i.collection.id = ?1")
     List<Item> findByCollectionId(Long id);
+
+    @Query("select i from Item i where i.collection.id = ?1")
+    List<Item> findAllByCollectionId(Long collectionId);
 }
