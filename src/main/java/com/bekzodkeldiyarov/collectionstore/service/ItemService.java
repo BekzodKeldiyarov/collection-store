@@ -16,6 +16,8 @@ public interface ItemService {
 
     List<ItemCommand> getAllItemsOfUser(Long userId);
 
+    List<ItemCommand> getAllItems();
+
     ItemCommand getNewItemCommandInstance(Long collectionId);
 
     ItemCommand findItemCommandById(Long id);

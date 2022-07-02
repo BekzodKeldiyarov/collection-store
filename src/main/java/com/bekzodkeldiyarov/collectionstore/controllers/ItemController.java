@@ -1,6 +1,7 @@
 package com.bekzodkeldiyarov.collectionstore.controllers;
 
 import com.bekzodkeldiyarov.collectionstore.commands.ItemCommand;
+import com.bekzodkeldiyarov.collectionstore.model.Tag;
 import com.bekzodkeldiyarov.collectionstore.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -61,5 +62,20 @@ public class ItemController {
         return "admin/items/list";
     }
 
+    @GetMapping("/items/tags/{id}")
+    public String getItemsByTag(@PathVariable Long id, Model model) {
+        Tag tag = tagService.findById(id);
+        List<ItemCommand> allItems = itemService.getAllItems();
+        List<ItemCommand> itemsContainsTag = new ArrayList<>();
+        for (ItemCommand itemCommand : allItems) {
+            if (itemCommand.getTags().contains(tag)) {
+                itemsContainsTag.add(itemCommand);
+            }
+        }
+        model.addAttribute("items", itemsContainsTag);
+        model.addAttribute("pageName", tag.getName());
+
+        return "admin/items/list";
+    }
 
 }

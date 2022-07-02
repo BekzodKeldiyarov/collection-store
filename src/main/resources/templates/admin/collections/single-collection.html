@@ -26,7 +26,11 @@
             <tr th:each="item:${items}">
                 <td th:text="${item.id}"></td>
                 <td th:text="${item.name}"></td>
-                <td></td>
+                <td>
+                    <a th:href="@{'/admin/items/tags/'+${tag.id}}" class="badge badge-secondary mr-1"
+                       th:each="tag:${item.tags}"
+                       th:text="${tag.name}"></a>
+                </td>
                 <div th:each="itemAttributeValue, itemStat: ${item.itemAttributeValues}"
                      class="col-md-7">
                     <th th:text="${item.itemAttributeValues[__${itemStat.index}__].value}"></th>

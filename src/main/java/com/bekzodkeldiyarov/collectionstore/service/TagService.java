@@ -10,6 +10,8 @@ public interface TagService {
 
     List<Tag> save(Set<Tag> tags);
 
+    Tag findById(Long id);
+
     List<Tag> getAllTags();
 
     Tag findByName(String name);

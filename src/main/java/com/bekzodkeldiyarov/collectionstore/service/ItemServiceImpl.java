@@ -150,4 +150,14 @@ public class ItemServiceImpl implements ItemService {
         log.info("Tags of itemCommand" + itemCommand.getTags());
         return itemCommand;
     }
+
+    @Override
+    public List<ItemCommand> getAllItems() {
+        List<Item> items = itemRepository.findAll();
+        List<ItemCommand> itemsToReturn = new ArrayList<>();
+        for (Item item : items) {
+            itemsToReturn.add(itemToItemCommand.convert(item));
+        }
+        return itemsToReturn;
+    }
 }
