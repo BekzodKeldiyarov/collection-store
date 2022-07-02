@@ -5,6 +5,8 @@ import com.bekzodkeldiyarov.collectionstore.model.Item;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+
 @Component
 public class ItemCommandToItem implements Converter<ItemCommand, Item> {
     @Override
@@ -14,6 +16,7 @@ public class ItemCommandToItem implements Converter<ItemCommand, Item> {
                 .name(source.getName())
                 .itemAttributeValues(source.getItemAttributeValues())
                 .collection(source.getCollection())
+                .tags(new HashSet<>(source.getTags()))
                 .build();
         return item;
     }

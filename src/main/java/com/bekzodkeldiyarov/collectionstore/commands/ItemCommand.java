@@ -3,6 +3,7 @@ package com.bekzodkeldiyarov.collectionstore.commands;
 import com.bekzodkeldiyarov.collectionstore.model.Attribute;
 import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.model.ItemAttributeValue;
+import com.bekzodkeldiyarov.collectionstore.model.Tag;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -24,5 +25,6 @@ public class ItemCommand {
 
 
     List<ItemAttributeValue> itemAttributeValues = new ArrayList<>();
+    private List<Tag> tags = new ArrayList<>();
 
 }

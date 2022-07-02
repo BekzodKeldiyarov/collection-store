@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/fragments::headerfiles"></head>
 <body id="page-top">
-
 <!-- Page Wrapper -->
 <div id="wrapper">
 
@@ -37,6 +36,17 @@
                             <div class="col-md-6">
                                 <input th:field="*{collection}" type="text" class="form-control"
                                        th:value="${collection}" readonly>
+                            </div>
+                            <div class="col-md-6 mt-4">
+                                <label>Tags</label>
+                                <select name="selectedTags" id="" multiple multiselect-search="true">
+                                    <div th:each="tag:${tags}">
+                                        <option th:selected="${#lists.contains(item.tags, tag)}"
+                                                th:value="${tag.name}"
+                                                th:text="${tag.name}">One
+                                        </option>
+                                    </div>
+                                </select>
                             </div>
                         </div>
                         <div class="row">
@@ -73,8 +83,6 @@
 
         </div>
         <!-- End of Main Content -->
-
-
         <div th:replace="fragments/fragments::scripts"></div>
     </div>
 

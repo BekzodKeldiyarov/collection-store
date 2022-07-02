@@ -1,0 +1,6 @@
+.multiselect-dropdown {
+    width: 100% !important;
+}
+.multiselect-dropdown:nth-child(2) {
+    display: none;
+}

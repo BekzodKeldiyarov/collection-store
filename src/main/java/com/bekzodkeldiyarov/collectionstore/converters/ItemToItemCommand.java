@@ -5,6 +5,8 @@ import com.bekzodkeldiyarov.collectionstore.model.Item;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class ItemToItemCommand implements Converter<Item, ItemCommand> {
     @Override
@@ -14,6 +16,7 @@ public class ItemToItemCommand implements Converter<Item, ItemCommand> {
                 .name(source.getName())
                 .itemAttributeValues(source.getItemAttributeValues())
                 .collection(source.getCollection())
+                .tags(new ArrayList<>(source.getTags()))
                 .build();
         return item;
     }

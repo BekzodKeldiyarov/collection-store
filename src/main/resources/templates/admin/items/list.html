@@ -40,7 +40,12 @@
                                 <td th:text="${item.id}"></td>
                                 <td th:text="${item.name}"></td>
                                 <td th:text="${item.collection.name}">Email</td>
-                                <td></td>
+                                <td>
+                                    <p th:text="${#lists.size(item.tags)}"></p>
+                                    <div th:each="tag:${item.tags}">
+                                        <span class="badge badge-secondary" th:text="${tag}"></span>
+                                    </div>
+                                </td>
                                 <td>
                                     <a th:href="@{'/admin/collections/'+${item.collection.id}+'/items/'+${item.id}+'/edit'}"
                                        class="btn btn-primary">Edit</a>

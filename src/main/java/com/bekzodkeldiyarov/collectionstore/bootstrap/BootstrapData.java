@@ -24,17 +24,19 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     private final CollectionService collectionService;
     private final ItemService itemService;
     private final AttributeService attributeService;
+    private final TagService tagService;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ItemAttributeValueRepository itemAttributeValueRepository;
 
-    public BootstrapData(UserService userService, RoleService roleService, CollectionService collectionService, ItemService itemService, AttributeService attributeService) {
+    public BootstrapData(UserService userService, RoleService roleService, CollectionService collectionService, ItemService itemService, AttributeService attributeService, TagService tagService) {
         this.userService = userService;
         this.roleService = roleService;
         this.collectionService = collectionService;
         this.itemService = itemService;
         this.attributeService = attributeService;
+        this.tagService = tagService;
     }
 
     @Override
@@ -91,6 +93,15 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         Attribute attribute = Attribute.builder().attributeName("Test").type("string").collection(collection).build();
         collection.getAttributes().add(attribute);
 
+        Tag tag = Tag.builder().name("books").build();
+        item.getTags().add(tag);
+        tag.getItems().add(item);
+
+        tagService.save(Tag.builder().name("wines").build());
+        tagService.save(Tag.builder().name("phones").build());
+        tagService.save(Tag.builder().name("mac").build());
+        tagService.save(Tag.builder().name("summer").build());
+
         itemAttributeValue.setAttribute(attribute);
         itemAttributeValue.setItem(item);
 
@@ -99,6 +110,7 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
 
         attribute.getItemAttributeValues().add(itemAttributeValue);
 
+        tagService.save(tag);
         collectionService.save(collection);
         attributeService.save(attribute);
         itemService.save(item);

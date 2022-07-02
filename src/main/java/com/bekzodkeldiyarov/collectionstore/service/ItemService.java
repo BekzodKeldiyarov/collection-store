@@ -19,4 +19,6 @@ public interface ItemService {
     ItemCommand getNewItemCommandInstance(Long collectionId);
 
     ItemCommand findItemCommandById(Long id);
+
+    ItemCommand bindTagsToItemCommand(ItemCommand itemCommand, String[] tags);
 }

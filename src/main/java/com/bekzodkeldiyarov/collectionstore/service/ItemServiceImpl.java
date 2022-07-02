@@ -4,18 +4,15 @@ import com.bekzodkeldiyarov.collectionstore.commands.ItemCommand;
 import com.bekzodkeldiyarov.collectionstore.converters.CollectionCommandToCollection;
 import com.bekzodkeldiyarov.collectionstore.converters.ItemCommandToItem;
 import com.bekzodkeldiyarov.collectionstore.converters.ItemToItemCommand;
-import com.bekzodkeldiyarov.collectionstore.model.Attribute;
-import com.bekzodkeldiyarov.collectionstore.model.Collection;
-import com.bekzodkeldiyarov.collectionstore.model.Item;
-import com.bekzodkeldiyarov.collectionstore.model.ItemAttributeValue;
+import com.bekzodkeldiyarov.collectionstore.model.*;
 import com.bekzodkeldiyarov.collectionstore.repository.ItemRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -29,8 +26,9 @@ public class ItemServiceImpl implements ItemService {
     private final CollectionService collectionService;
     private final AttributeService attributeService;
     private final ItemAttributeValueService itemAttributeValueService;
+    private final TagService tagService;
 
-    public ItemServiceImpl(ItemRepository itemRepository, ItemCommandToItem itemCommandToItem, ItemToItemCommand itemToItemCommand, CollectionCommandToCollection collectionCommandToCollection, CollectionService collectionService, AttributeService attributeService, ItemAttributeValueService itemAttributeValueService) {
+    public ItemServiceImpl(ItemRepository itemRepository, ItemCommandToItem itemCommandToItem, ItemToItemCommand itemToItemCommand, CollectionCommandToCollection collectionCommandToCollection, CollectionService collectionService, AttributeService attributeService, ItemAttributeValueService itemAttributeValueService, TagService tagService) {
         this.itemRepository = itemRepository;
         this.itemCommandToItem = itemCommandToItem;
         this.itemToItemCommand = itemToItemCommand;
@@ -39,6 +37,7 @@ public class ItemServiceImpl implements ItemService {
 
         this.attributeService = attributeService;
         this.itemAttributeValueService = itemAttributeValueService;
+        this.tagService = tagService;
     }
 
     @Override
@@ -49,34 +48,39 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemCommand saveItemCommand(ItemCommand command) {
-        Item savedItem = null;
+        Item savedItem = new Item();
+        Item itemToSave = new Item();
         if (command.getId() == null) {
-            Item itemToSave = itemCommandToItem.convert(command);
+            itemToSave = itemCommandToItem.convert(command);
             assert itemToSave != null : "Item to save is null";
             for (ItemAttributeValue itemAttributeValue : itemToSave.getItemAttributeValues()) {
                 itemAttributeValue.setItem(itemToSave);
             }
-            savedItem = itemRepository.save(itemToSave);
-            itemAttributeValueService.save(savedItem.getItemAttributeValues());
         } else {
             Optional<Item> optionalItem = itemRepository.findById(command.getId());
             if (optionalItem.isPresent()) {
-                Item itemToSave = optionalItem.get();
+                itemToSave = optionalItem.get();
                 itemToSave.setName(command.getName());
                 itemToSave.setItemAttributeValues(command.getItemAttributeValues());
+                itemToSave.setTags(new HashSet<>(command.getTags()));
+                for (Tag tag : itemToSave.getTags()) {
+                    Tag tagToSave = tagService.findByName(tag.getName());
+                    tagToSave.getItems().add(itemToSave);
+                    tagService.save(tagToSave);
+                }
                 for (ItemAttributeValue itemAttributeValue : itemToSave.getItemAttributeValues()) {
                     ItemAttributeValue itemAttributeValueToSave = itemAttributeValueService.findById(itemAttributeValue.getId());
                     itemAttributeValueToSave.setItem(itemAttributeValue.getItem());
                     itemAttributeValueToSave.setValue(itemAttributeValue.getValue());
                     itemAttributeValue.setAttribute(itemAttributeValue.getAttribute());
-                    log.info(itemAttributeValueToSave + "");
                     itemAttributeValueService.save(itemAttributeValueToSave);
                 }
-                log.info(itemToSave.getItemAttributeValues() + "");
-                savedItem = itemRepository.save(itemToSave);
-                itemAttributeValueService.save(savedItem.getItemAttributeValues());
             }
         }
+
+        savedItem = itemRepository.save(itemToSave);
+        itemAttributeValueService.save(savedItem.getItemAttributeValues());
+        tagService.save(savedItem.getTags());
         return itemToItemCommand.convert(savedItem);
     }
 
@@ -94,7 +98,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemCommand> getAllItemsOfUser(Long userId) {
         List<Collection> collectionsOfUser = collectionService.getAllCollectionsOfUser(userId);
-        log.info("All collections of user" + collectionsOfUser);
         List<Item> items = new ArrayList<>();
         List<ItemCommand> itemsToReturn = new ArrayList<>();
         for (Collection collection : collectionsOfUser) {
@@ -129,8 +132,22 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemCommand findItemCommandById(Long id) {
         Item item = itemRepository.findById(id).get();
-
         return itemToItemCommand.convert(item);
     }
 
+    @Override
+    public ItemCommand bindTagsToItemCommand(ItemCommand itemCommand, String[] tags) {
+        itemCommand.setTags(new ArrayList<>());
+        for (String tag : tags) {
+            Tag tagFromDb = tagService.findByName(tag);
+            if (tagFromDb == null) {
+                tagFromDb = new Tag();
+                tagFromDb.setName(tag);
+                tagService.save(tagFromDb);
+            }
+            itemCommand.getTags().add(tagFromDb);
+        }
+        log.info("Tags of itemCommand" + itemCommand.getTags());
+        return itemCommand;
+    }
 }

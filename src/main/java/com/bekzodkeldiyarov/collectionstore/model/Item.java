@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -20,7 +17,10 @@ import java.util.Set;
 @NoArgsConstructor
 public class Item extends BaseEntity {
     private String name;
-//    private Set<Tag> tags = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "item_tags", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "tab_id"))
+    private Set<Tag> tags = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = false)
@@ -28,11 +28,12 @@ public class Item extends BaseEntity {
 
 
     @Builder
-    public Item(Long id, String name, Collection collection, List<ItemAttributeValue> itemAttributeValues) {
+    public Item(Long id, String name, Collection collection, List<ItemAttributeValue> itemAttributeValues, Set<Tag> tags) {
         super(id);
         this.name = name;
         this.collection = collection;
         this.itemAttributeValues = itemAttributeValues;
+        this.tags = tags;
     }
 
     @OneToMany(mappedBy = "item")
@@ -41,9 +42,6 @@ public class Item extends BaseEntity {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "id = " + getId() + ", " +
-                "name = " + getName() + ", " +
-                "collection = " + getCollection() + ")";
+        return getClass().getSimpleName() + "(" + "id = " + getId() + ", " + "name = " + getName() + ", " + "collection = " + getCollection() + ")";
     }
 }
