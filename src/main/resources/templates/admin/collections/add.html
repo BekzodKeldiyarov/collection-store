@@ -25,7 +25,8 @@
                 <!-- Content Row -->
 
                 <div class="row">
-                    <form action="/admin/collections/add" method="post" class="form col-md-6" th:object="${collection}">
+                    <form action="/dashboard/collections/add" method="post" class="form col-md-6"
+                          th:object="${collection}">
                         <div class="row">
                             <div class="col-md-6">
                                 <input th:field="*{name}" type="text" class="form-control"

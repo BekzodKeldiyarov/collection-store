@@ -38,7 +38,6 @@ public class CollectionServiceImpl implements CollectionService {
     @Override
     public CollectionCommand saveCollectionCommand(CollectionCommand collectionCommand) {
         Collection collectionToSave = collectionCommandToCollection.convert(collectionCommand);
-        collectionToSave.setUser(userService.findByUsername("admin"));
         Collection savedCollection = collectionRepository.save(collectionToSave);
         CollectionCommand savedCollectionCommand = collectionToCollectionCommand.convert(savedCollection);
         return savedCollectionCommand;
@@ -47,7 +46,6 @@ public class CollectionServiceImpl implements CollectionService {
     @Override
     public CollectionCommand saveCollectionCommand(CollectionCommand collectionCommand, Set<Attribute> attributes) {
         Collection collectionToSave = collectionCommandToCollection.convert(collectionCommand);
-        collectionToSave.setUser(userService.findByUsername("admin"));
         Collection savedCollection = new Collection();
         for (Attribute attribute : attributes) {
             attribute.setCollection(collectionToSave);

@@ -16,7 +16,7 @@ import java.util.List;
 
 @Controller
 @Slf4j
-@RequestMapping("/admin")
+@RequestMapping("/dashboard")
 public class AdminController {
     private final UserService userService;
     private final RoleService roleService;
@@ -36,7 +36,7 @@ public class AdminController {
     }
 
 
-    @GetMapping("/allusers")
+    @GetMapping("/users")
     public String getAllUsers(Model model) {
         List<UserCommand> users = userService.findAll();
         model.addAttribute("users", users);
@@ -44,24 +44,24 @@ public class AdminController {
     }
 
 
-    @PostMapping(value = "/allusers")
+    @PostMapping(value = "/users")
     public String blockUsers(@RequestParam(required = false) Integer[] ids, @RequestParam String action) {
         for (Integer id : ids) {
             UserCommand userCommand = userService.findUserCommandById(id.longValue());
             changeUserStatus(action, userCommand);
             userService.saveUserCommand(userCommand);
         }
-        return "redirect:/admin/allusers";
+        return "redirect:/dashboard/users";
     }
 
-    @PostMapping(value = "/allusers", params = "action=add-admin")
+    @PostMapping(value = "/users", params = "action=add-admin")
     public String addAdmin(@RequestParam(required = false) Integer[] ids) {
         for (Integer id : ids) {
             UserCommand userCommand = userService.findUserCommandById(id.longValue());
             userCommand.setEnabled(true);
             userService.saveUserCommand(userCommand);
         }
-        return "redirect:/admin/allusers";
+        return "redirect:/dashboard/users";
     }
 
     private void changeUserStatus(String action, UserCommand userCommand) {

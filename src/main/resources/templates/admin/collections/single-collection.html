@@ -7,7 +7,7 @@
         <h2 class="col-md-4" th:text="${collection.name}"></h2>
         <h3 class="col-md-4 offset-md-2" th:text="${collection.description}"></h3>
     </div>
-    <a th:href="@{/admin/collections/{id}/items/add(id=${collection.id})}" class="btn btn-primary mb-4">Add New
+    <a th:href="@{/dashboard/collections/{id}/items/add(id=${collection.id})}" class="btn btn-primary mb-4">Add New
         Item</a>
     <div th:if="${items!=null}">
         <h4>Items</h4>
@@ -27,7 +27,7 @@
                 <td th:text="${item.id}"></td>
                 <td th:text="${item.name}"></td>
                 <td>
-                    <a th:href="@{'/admin/items/tags/'+${tag.id}}" class="badge badge-secondary mr-1"
+                    <a th:href="@{'/dashboard/items/tags/'+${tag.id}}" class="badge badge-secondary mr-1"
                        th:each="tag:${item.tags}"
                        th:text="${tag.name}"></a>
                 </td>
@@ -35,7 +35,7 @@
                      class="col-md-7">
                     <th th:text="${item.itemAttributeValues[__${itemStat.index}__].value}"></th>
                 </div>
-                <td><a th:href="@{'/admin/collections/'+${item.collection.id}+'/items/'+${item.id}+'/edit'}"
+                <td><a th:href="@{'/dashboard/collections/'+${item.collection.id}+'/items/'+${item.id}+'/edit'}"
                        class="btn btn-primary">Edit</a>
                 </td>
             </tr>

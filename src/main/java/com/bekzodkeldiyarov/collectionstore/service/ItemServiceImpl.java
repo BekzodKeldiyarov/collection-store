@@ -7,6 +7,7 @@ import com.bekzodkeldiyarov.collectionstore.converters.ItemToItemCommand;
 import com.bekzodkeldiyarov.collectionstore.model.*;
 import com.bekzodkeldiyarov.collectionstore.repository.ItemRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
+    @PreAuthorize(value = "hasAuthority('ADMIN')" + "or authentication.principal.equals(#command.member) ")
     public ItemCommand saveItemCommand(ItemCommand command) {
         Item savedItem = new Item();
         Item itemToSave = new Item();

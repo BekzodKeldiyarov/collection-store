@@ -4,10 +4,7 @@
 <body id="page-top">
 <!-- Page Wrapper -->
 <div id="wrapper">
-
     <div th:replace="fragments/admin-sidebar.html :: sidebar"></div>
-    <!-- Content Wrapper -->
-    <!-- End of Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
         <!-- Main Content -->
         <div id="content">
@@ -25,7 +22,7 @@
                 <!-- Content Row -->
 
                 <div class="row">
-                    <form th:action="@{/admin/collections/{id}/items/add(id=${item.collection.id})}" method="post"
+                    <form th:action="@{/dashboard/collections/{id}/items/add(id=${item.collection.id})}" method="post"
                           class="form col-md-6" th:object="${item}">
                         <input th:field="*{id}" type="hidden" class="form-control">
                         <div class="row">

@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/dashboard")
 public class AttributeController {
     private final AttributeService attributeService;
     private final CollectionService collectionService;
@@ -41,6 +41,6 @@ public class AttributeController {
         CollectionCommand collectionCommand = collectionService.findCollectionCommandById(collectionId);
 
         collectionService.saveCollectionCommand(collectionCommand);
-        return "redirect:/collections/view" + collectionId;
+        return "redirect:/collections/" + collectionId;
     }
 }

@@ -10,10 +10,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.*;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/dashboard")
 @Slf4j
 public class ItemController {
     private final ItemService itemService;
@@ -25,7 +26,8 @@ public class ItemController {
     }
 
     @GetMapping("/collections/{collectionId}/items/add")
-    public String getAddNewItemPage(@PathVariable Long collectionId, Model model) {
+    public String getAddNewItemPage(@PathVariable Long collectionId, Model model, Principal principal) {
+        log.info(principal + "");
         ItemCommand itemCommand = itemService.getNewItemCommandInstance(collectionId);
         model.addAttribute("tags", tagService.getAllTags());
         model.addAttribute("item", itemCommand);
@@ -40,8 +42,8 @@ public class ItemController {
         }
         log.info(Arrays.toString(selectedTags));
         ItemCommand itemCommandToSave = itemService.bindTagsToItemCommand(itemCommand, selectedTags);
-        itemService.saveItemCommand(itemCommandToSave);
-        return "redirect:/admin/collections";
+        ItemCommand savedItemCommand = itemService.saveItemCommand(itemCommandToSave);
+        return "redirect:/dashboard/collections/" + savedItemCommand.getCollection().getId();
     }
 
     @GetMapping("/collections/{collectionId}/items/{itemId}/edit")

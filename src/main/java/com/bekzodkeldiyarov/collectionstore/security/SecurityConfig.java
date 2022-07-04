@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -26,7 +27,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/dashboard/collections/add").authenticated()
+                .antMatchers("/dashboard/collections/**").hasRole("ADMIN")
+                .antMatchers("/dashboard/collections/{collectionId}/**")
+                .access("@userSecurity.hasUserId(authentication,#collectionId)")
+                .antMatchers("/dashboard/**").authenticated()
                 .antMatchers("**").permitAll()
                 .and()
                 .formLogin()
@@ -48,5 +53,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         authenticationProvider.setUserDetailsService(userDetailsService());
         return authenticationProvider;
     }
+
 
 }

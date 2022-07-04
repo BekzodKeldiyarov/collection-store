@@ -4,16 +4,20 @@ import com.bekzodkeldiyarov.collectionstore.commands.AttributeCommand;
 import com.bekzodkeldiyarov.collectionstore.commands.CollectionCommand;
 import com.bekzodkeldiyarov.collectionstore.commands.ItemCommand;
 import com.bekzodkeldiyarov.collectionstore.model.Attribute;
+import com.bekzodkeldiyarov.collectionstore.model.User;
 import com.bekzodkeldiyarov.collectionstore.service.AttributeService;
 import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
 import com.bekzodkeldiyarov.collectionstore.service.ItemService;
 import com.bekzodkeldiyarov.collectionstore.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +25,7 @@ import java.util.Set;
 
 @Controller
 @Slf4j
-@RequestMapping("/admin")
+@RequestMapping("/dashboard")
 public class CollectionController {
     private final CollectionService collectionService;
     private final UserService userService;
@@ -49,17 +53,19 @@ public class CollectionController {
     }
 
     @PostMapping("/collections/add")
-    public String addNewCollection(@ModelAttribute("collection") CollectionCommand collectionCommand, HttpServletRequest request) {
+    public String addNewCollection(@ModelAttribute("collection") CollectionCommand collectionCommand, HttpServletRequest request, @AuthenticationPrincipal UserDetails currentUser) {
+        User user = userService.findByUsername(currentUser.getUsername());
+        collectionCommand.setUser(user);
         Set<Attribute> attributes = attributeService.createAttributesForCollectionFromHttpServletRequest(request);
         if (attributes.size() > 0) {
             collectionService.saveCollectionCommand(collectionCommand, attributes);
         } else {
             collectionService.saveCollectionCommand(collectionCommand);
         }
-        return "redirect:/admin/collections";
+        return "redirect:/dashboard/collections";
     }
 
-    @GetMapping("/collections/view/{id}")
+    @GetMapping("/collections/{id}")
     public String getUpdateCollectionPage(@PathVariable Long id, Model model) {
         CollectionCommand collectionCommand = collectionService.findCollectionCommandById(id);
         List<ItemCommand> items = itemService.getAllItemsOfCollection(id);
@@ -67,7 +73,6 @@ public class CollectionController {
         if (items.size() > 0) {
             model.addAttribute("items", items);
         }
-
         return "admin/collections/single-collection";
     }
 
