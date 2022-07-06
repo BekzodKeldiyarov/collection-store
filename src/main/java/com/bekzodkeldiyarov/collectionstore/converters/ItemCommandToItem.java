@@ -17,6 +17,7 @@ public class ItemCommandToItem implements Converter<ItemCommand, Item> {
                 .itemAttributeValues(source.getItemAttributeValues())
                 .collection(source.getCollection())
                 .tags(new HashSet<>(source.getTags()))
+                .comments(source.getComments())
                 .build();
         return item;
     }

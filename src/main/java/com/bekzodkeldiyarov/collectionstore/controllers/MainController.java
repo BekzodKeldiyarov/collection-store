@@ -2,6 +2,7 @@ package com.bekzodkeldiyarov.collectionstore.controllers;
 
 import com.bekzodkeldiyarov.collectionstore.commands.CollectionCommand;
 import com.bekzodkeldiyarov.collectionstore.commands.ItemCommand;
+import com.bekzodkeldiyarov.collectionstore.model.Comment;
 import com.bekzodkeldiyarov.collectionstore.model.Tag;
 import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
 import com.bekzodkeldiyarov.collectionstore.service.ItemService;
@@ -9,6 +10,7 @@ import com.bekzodkeldiyarov.collectionstore.service.TagService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -35,5 +37,13 @@ public class MainController {
         model.addAttribute("collections", collections);
         model.addAttribute("tags", tags);
         return "index";
+    }
+
+    @GetMapping("/items/{id}")
+    public String getItemPage(@PathVariable Long id, Model model) {
+        ItemCommand itemCommand = itemService.findItemCommandById(id);
+        model.addAttribute("item", itemCommand);
+        model.addAttribute("comment", new Comment());
+        return "item";
     }
 }

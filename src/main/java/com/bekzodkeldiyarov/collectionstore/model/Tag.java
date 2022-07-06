@@ -1,5 +1,6 @@
 package com.bekzodkeldiyarov.collectionstore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -22,5 +23,6 @@ public class Tag extends BaseEntity {
     private String name;
     @ManyToMany(mappedBy = "tags")
     @ToString.Exclude
+    @JsonIgnore
     private Set<Item> items = new HashSet<>();
 }

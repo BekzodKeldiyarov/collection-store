@@ -22,5 +22,7 @@ public interface ItemService {
 
     ItemCommand findItemCommandById(Long id);
 
+    Item findItemById(Long id);
+
     ItemCommand bindTagsToItemCommand(ItemCommand itemCommand, String[] tags);
 }

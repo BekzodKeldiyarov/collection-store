@@ -1,6 +1,7 @@
 package com.bekzodkeldiyarov.collectionstore.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -21,6 +22,7 @@ public class Role extends BaseEntity {
 
     @ManyToMany(mappedBy = "roles")
     @ToString.Exclude
+    @JsonIgnore
     private Set<User> users = new HashSet<>();
 
     @Override

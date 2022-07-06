@@ -1,5 +1,6 @@
 package com.bekzodkeldiyarov.collectionstore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,10 +28,12 @@ public class Attribute extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
     private Collection collection;
 
 
     @OneToMany(mappedBy = "attribute")
+    @JsonIgnore
     @ToString.Exclude
     Set<ItemAttributeValue> itemAttributeValues = new HashSet<>();
 

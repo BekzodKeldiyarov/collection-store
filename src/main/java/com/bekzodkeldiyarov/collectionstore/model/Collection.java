@@ -1,5 +1,6 @@
 package com.bekzodkeldiyarov.collectionstore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -21,14 +22,17 @@ public class Collection extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @OneToMany(mappedBy = "collection")
     @ToString.Exclude
+    @JsonIgnore
     private Set<Item> items = new HashSet<>();
 
     @OneToMany(mappedBy = "collection")
     @ToString.Exclude
+    @JsonIgnore
     private Set<Attribute> attributes = new HashSet<>();
 
     @Builder
@@ -54,11 +58,13 @@ public class Collection extends BaseEntity {
         return getClass().hashCode();
     }
 
+    @JsonIgnore
     public List<Attribute> getAttributesAsList() {
         List<Attribute> attributes = new ArrayList<>(this.attributes);
         return attributes;
     }
 
+    @JsonIgnore
     public void setAttributesAsList(List<Attribute> attributes) {
         this.attributes = new HashSet<>(attributes);
     }

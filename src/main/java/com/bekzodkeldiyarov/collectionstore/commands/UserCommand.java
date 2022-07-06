@@ -1,13 +1,16 @@
 package com.bekzodkeldiyarov.collectionstore.commands;
 
 
+import com.bekzodkeldiyarov.collectionstore.model.Comment;
 import com.bekzodkeldiyarov.collectionstore.model.Role;
 import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -31,4 +34,6 @@ public class UserCommand {
 
     private boolean isEnabled;
     private Set<Role> roles = new HashSet<>();
+
+    private List<Comment> comments = new ArrayList<>();
 }

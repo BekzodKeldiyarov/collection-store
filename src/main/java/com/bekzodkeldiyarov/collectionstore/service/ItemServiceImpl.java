@@ -132,9 +132,13 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
+    public Item findItemById(Long id) {
+        return itemRepository.findById(id).get();
+    }
+
+    @Override
     public ItemCommand findItemCommandById(Long id) {
-        Item item = itemRepository.findById(id).get();
-        return itemToItemCommand.convert(item);
+        return itemToItemCommand.convert(findItemById(id));
     }
 
     @Override

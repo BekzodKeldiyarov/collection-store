@@ -1,10 +1,13 @@
 package com.bekzodkeldiyarov.collectionstore.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -17,17 +20,27 @@ import java.util.Set;
 public class User extends BaseEntity {
     private String username;
     @ToString.Exclude
+    @JsonIgnore
     private String password;
+    @JsonIgnore
     private String email;
+    @JsonIgnore
     private boolean isEnabled;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @JsonIgnore
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
     @ToString.Exclude
+    @JsonIgnore
     private Set<Collection> collections = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    @JsonIgnore
+    private List<Comment> comments = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

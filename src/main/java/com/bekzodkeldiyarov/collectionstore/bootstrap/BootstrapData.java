@@ -25,18 +25,20 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     private final ItemService itemService;
     private final AttributeService attributeService;
     private final TagService tagService;
+    private final CommentService commentService;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ItemAttributeValueRepository itemAttributeValueRepository;
 
-    public BootstrapData(UserService userService, RoleService roleService, CollectionService collectionService, ItemService itemService, AttributeService attributeService, TagService tagService) {
+    public BootstrapData(UserService userService, RoleService roleService, CollectionService collectionService, ItemService itemService, AttributeService attributeService, TagService tagService, CommentService commentService) {
         this.userService = userService;
         this.roleService = roleService;
         this.collectionService = collectionService;
         this.itemService = itemService;
         this.attributeService = attributeService;
         this.tagService = tagService;
+        this.commentService = commentService;
     }
 
     @Override
@@ -110,6 +112,10 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
 
         attribute.getItemAttributeValues().add(itemAttributeValue);
 
+
+        commentService.save(Comment.builder().user(admin).text("test comment").item(item).build());
+        commentService.save(Comment.builder().user(admin).text("second test comment").item(item).build());
+        commentService.save(Comment.builder().user(admin).text("third test comment").item(item).build());
         tagService.save(tag);
         collectionService.save(collection);
         attributeService.save(attribute);
