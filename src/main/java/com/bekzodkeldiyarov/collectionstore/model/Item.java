@@ -34,14 +34,19 @@ public class Item extends BaseEntity {
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "item")
+    @JsonIgnore
+    private List<Like> likes = new ArrayList<>();
+
     @Builder
-    public Item(Long id, String name, Collection collection, List<ItemAttributeValue> itemAttributeValues, Set<Tag> tags, List<Comment> comments) {
+    public Item(Long id, String name, Collection collection, List<ItemAttributeValue> itemAttributeValues, Set<Tag> tags, List<Comment> comments, List<Like> likes) {
         super(id);
         this.name = name;
         this.collection = collection;
         this.itemAttributeValues = itemAttributeValues;
         this.tags = tags;
         this.comments = comments;
+        this.likes = likes;
     }
 
     @OneToMany(mappedBy = "item")

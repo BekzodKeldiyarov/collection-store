@@ -27,9 +27,7 @@ public class CommentController {
     @MessageMapping("/chat/{id}")
     public void addComment(@DestinationVariable Long id, CommentCommand comment, Authentication auth) {
         MyUserDetails userDetail = (MyUserDetails) auth.getPrincipal();
-        log.info("Sending Comment");
         Comment savedComment = commentService.save(id, userDetail.getUsername(), comment.getText());
-
         simpMessagingTemplate.convertAndSend("/topic/messages/" + id, savedComment);
     }
 }

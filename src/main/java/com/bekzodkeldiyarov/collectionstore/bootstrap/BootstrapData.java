@@ -26,12 +26,14 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     private final AttributeService attributeService;
     private final TagService tagService;
     private final CommentService commentService;
+    private final LikeService likeService;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ItemAttributeValueRepository itemAttributeValueRepository;
 
-    public BootstrapData(UserService userService, RoleService roleService, CollectionService collectionService, ItemService itemService, AttributeService attributeService, TagService tagService, CommentService commentService) {
+    public BootstrapData(UserService userService, RoleService roleService, CollectionService collectionService, ItemService itemService, AttributeService attributeService, TagService tagService, CommentService commentService, LikeService likeService) {
         this.userService = userService;
         this.roleService = roleService;
         this.collectionService = collectionService;
@@ -39,6 +41,7 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         this.attributeService = attributeService;
         this.tagService = tagService;
         this.commentService = commentService;
+        this.likeService = likeService;
     }
 
     @Override
@@ -113,6 +116,20 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         attribute.getItemAttributeValues().add(itemAttributeValue);
 
 
+        Like like = new Like();
+        like.setUser(user);
+        like.setItem(item);
+        user.getLikes().add(like);
+        item.getLikes().add(like);
+
+        Like like2 = new Like();
+        like2.setUser(blockedUser);
+        like2.setItem(item);
+        blockedUser.getLikes().add(like2);
+        item.getLikes().add(like2);
+
+        likeService.save(like);
+        likeService.save(like2);
         commentService.save(Comment.builder().user(admin).text("test comment").item(item).build());
         commentService.save(Comment.builder().user(admin).text("second test comment").item(item).build());
         commentService.save(Comment.builder().user(admin).text("third test comment").item(item).build());

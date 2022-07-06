@@ -18,6 +18,7 @@ public class ItemToItemCommand implements Converter<Item, ItemCommand> {
                 .collection(source.getCollection())
                 .tags(new ArrayList<>(source.getTags()))
                 .comments(source.getComments())
+                .likes(source.getLikes())
                 .build();
         return item;
     }

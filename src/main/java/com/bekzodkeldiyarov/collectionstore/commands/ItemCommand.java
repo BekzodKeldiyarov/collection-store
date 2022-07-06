@@ -25,5 +25,5 @@ public class ItemCommand {
     private List<Tag> tags = new ArrayList<>();
 
     private List<Comment> comments = new ArrayList<>();
-
+    private List<Like> likes = new ArrayList<>();
 }

@@ -85,7 +85,20 @@
                 <p th:text="${attributeValue.attribute.attributeName}">Author of item</p>
                 <p th:text="${attributeValue.value}">Author of item</p>
             </div>
-
+            <h6>Likes: <span id="likesCount" th:text="${#lists.size(item.likes)}"></span></h6>
+            <div sec:authorize="isAnonymous()">
+                <span>Only logged in users are able to like</span>
+            </div>
+            <div sec:authorize="isAuthenticated()">
+                <div th:each="like:${item.likes}">
+                    <div th:if="${#strings.equals(#authentication.getPrincipal(), like.user.username)}">
+                        <button id="dislikeButton" onclick="dislikeItem()" class="btn btn-outline-primary">Dislike
+                        </button>
+                    </div>
+                </div>
+                <button id="likeButton" onclick="likeItem()" class="btn btn-outline-primary">Like</button>
+                <button onclick="dislikeItem()" class="dislikeButton btn btn-outline-primary d-none">Dislike</button>
+            </div>
             <div class="comments mt-2">
                 <h2>Comments</h2>
                 <input id="itemId" type="hidden" th:value="${item.id}">

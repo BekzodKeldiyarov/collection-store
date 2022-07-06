@@ -42,6 +42,11 @@ public class User extends BaseEntity {
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    @JsonIgnore
+    private List<Like> likes = new ArrayList<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -61,3 +61,31 @@ function addMessageEnter(event) {
 
 init();
 
+if ($('#dislikeButton').length) {
+    $('#likeButton').addClass('d-none');
+}
+
+function likeItem() {
+    let itemId = $('#itemId').val();
+    $.post('/items/' + itemId + '/like', {}, function () {
+    })
+
+    $('#likeButton').addClass('d-none');
+    $('.dislikeButton').removeClass('d-none')
+    let count = parseInt($('#likesCount').html()) + 1;
+    $('#likesCount').html(count)
+}
+
+function dislikeItem() {
+    let itemId = $('#itemId').val();
+    $.post('/items/' + itemId + '/dislike', {}, function () {
+    })
+
+    $('#likeButton').removeClass('d-none');
+    $('.dislikeButton').addClass('d-none')
+    $('#dislikeButton').addClass('d-none')
+    let count = parseInt($('#likesCount').html()) - 1;
+    $('#likesCount').html(count)
+}
+
+

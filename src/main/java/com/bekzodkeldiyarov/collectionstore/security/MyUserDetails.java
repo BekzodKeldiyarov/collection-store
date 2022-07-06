@@ -58,4 +58,8 @@ public class MyUserDetails implements UserDetails {
         return user.isEnabled();
     }
 
+    @Override
+    public String toString() {
+        return getUsername();
+    }
 }
