@@ -1,6 +1,7 @@
 package com.bekzodkeldiyarov.collectionstore.security;
 
 import com.bekzodkeldiyarov.collectionstore.service.UserDetailsServiceImpl;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -79,4 +80,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public HttpSessionEventPublisher httpSessionEventPublisher() {
         return new HttpSessionEventPublisher();
     }
+
 }
