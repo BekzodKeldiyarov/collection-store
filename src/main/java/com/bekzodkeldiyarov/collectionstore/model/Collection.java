@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.*;
 
 
@@ -18,6 +15,9 @@ import java.util.*;
 @ToString
 public class Collection extends BaseEntity {
     private String name;
+
+
+    @Column(columnDefinition="TEXT")
     private String description;
 
     @ManyToOne

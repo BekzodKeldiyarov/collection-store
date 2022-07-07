@@ -32,17 +32,17 @@ public class User extends BaseEntity {
     @JsonIgnore
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     @JsonIgnore
     private Set<Collection> collections = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     @JsonIgnore
     private List<Like> likes = new ArrayList<>();

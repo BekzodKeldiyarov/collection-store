@@ -20,4 +20,8 @@ public interface UserService {
     UserCommand saveUserCommand(UserCommand userCommand);
 
     List<UserCommand> findAll();
+
+    void deleteById(Long id);
+
+    void refreshUserSession();
 }

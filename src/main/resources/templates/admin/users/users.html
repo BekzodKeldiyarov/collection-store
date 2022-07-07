@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/fragments::headerfiles"></head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <div th:replace="fragments/admin-sidebar.html :: sidebar"></div>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+
+            <nav th:replace="fragments/admin-topbar.html :: topbar"></nav>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                </div>
+
+                <!-- Content Row -->
+                <div class="row">
+                    <form class="col-md-12" action="/dashboard/users" method="post">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>View</th>
+                                <th>Status</th>
+                                <th>Roles</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="user:${users}">
+                                <td th:text="${user.id}">User id</td>
+                                <td th:text="${user.username}">Username</td>
+                                <td th:text="${user.email}">Email</td>
+                                <td><a href="" class="btn btn-primary">View Profile</a></td>
+                                <td>
+                <span th:text="${user.isEnabled}?'Active':'Blocked'"
+                      class="badge badge-pill"
+                      th:classappend="${user.isEnabled} ? badge-success : badge-danger">
+                </span>
+
+                                </td>
+                                <td><span th:each="role:${user.roles}"
+                                          th:text="${role.name=='ROLE_ADMIN'}?'Admin'"
+                                          class="badge badge-pill"
+                                          th:classappend="${role.name=='ROLE_ADMIN'} ? badge-success : badge-danger"></span>
+                                    <span class="badge badge-pill badge-secondary">User</span>
+                                </td>
+                                <td><input name="ids" th:value="${user.id}" type="checkbox" class="form-check-input">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <button name="action" value="block" class="btn btn-primary" type="submit">Block</button>
+                        <button name="action" value="unblock" class="btn btn-primary" type="submit">Unblock</button>
+                        <button name="action" value="addAdmin" class="btn btn-primary" type="submit">Add to Admin
+                        </button>
+                        <button name="action" value="removeAdmin" class="btn btn-primary" type="submit">Remove Admin
+                            Access
+                        </button>
+                        <button name="action" value="remove" class="btn btn-primary" type="submit">Remove User</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div th:replace="fragments/fragments::footer"></div>
+    </div>
+</div>
+<div th:replace="fragments/fragments::scripts"></div>
+</body>
+
+</html>

@@ -6,7 +6,6 @@ import com.bekzodkeldiyarov.collectionstore.converters.UserToUserCommand;
 import com.bekzodkeldiyarov.collectionstore.model.User;
 import com.bekzodkeldiyarov.collectionstore.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -30,11 +29,13 @@ class UserServiceImplTest {
     UserToUserCommand userToUserCommand;
     @Mock
     PasswordEncoder passwordEncoder;
+    @Mock
+    UserSession userSession;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        userService = new UserServiceImpl(userRepository, userCommandToUser, userToUserCommand, passwordEncoder);
+        userService = new UserServiceImpl(userRepository, userCommandToUser, userToUserCommand, passwordEncoder, userSession);
     }
 
     @Test

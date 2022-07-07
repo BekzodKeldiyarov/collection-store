@@ -33,7 +33,6 @@ public class RoleServiceImpl implements RoleService {
     public Role addUserCommand(Role role, UserCommand userCommand) {
         User userToAdd = userCommandToUser.convert(userCommand);
         role.getUsers().add(userToAdd);
-        log.info(role.toString());
         roleRepository.save(role);
         return role;
     }
@@ -42,7 +41,6 @@ public class RoleServiceImpl implements RoleService {
     public Role removeUserCommand(Role role, UserCommand userCommand) {
         User userToAdd = userCommandToUser.convert(userCommand);
         role.getUsers().remove(userToAdd);
-        log.info(role.toString());
         roleRepository.save(role);
         return role;
     }

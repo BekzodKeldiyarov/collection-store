@@ -153,7 +153,6 @@ public class ItemServiceImpl implements ItemService {
             }
             itemCommand.getTags().add(tagFromDb);
         }
-        log.info("Tags of itemCommand" + itemCommand.getTags());
         return itemCommand;
     }
 

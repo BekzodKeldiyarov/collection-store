@@ -27,7 +27,6 @@ public class ItemController {
 
     @GetMapping("/collections/{collectionId}/items/add")
     public String getAddNewItemPage(@PathVariable Long collectionId, Model model, Principal principal) {
-        log.info(principal + "");
         ItemCommand itemCommand = itemService.getNewItemCommandInstance(collectionId);
         model.addAttribute("tags", tagService.getAllTags());
         model.addAttribute("item", itemCommand);
@@ -40,7 +39,6 @@ public class ItemController {
         if (result.hasErrors()) {
             log.error(result.getAllErrors().toString());
         }
-        log.info(Arrays.toString(selectedTags));
         ItemCommand itemCommandToSave = itemService.bindTagsToItemCommand(itemCommand, selectedTags);
         ItemCommand savedItemCommand = itemService.saveItemCommand(itemCommandToSave);
         return "redirect:/dashboard/collections/" + savedItemCommand.getCollection().getId();

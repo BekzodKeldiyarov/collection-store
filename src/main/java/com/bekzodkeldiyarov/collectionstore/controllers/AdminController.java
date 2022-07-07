@@ -6,6 +6,7 @@ import com.bekzodkeldiyarov.collectionstore.repository.AttributeRepository;
 import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
 import com.bekzodkeldiyarov.collectionstore.service.RoleService;
 import com.bekzodkeldiyarov.collectionstore.service.UserService;
+import com.bekzodkeldiyarov.collectionstore.service.UserSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,26 +41,19 @@ public class AdminController {
     public String getAllUsers(Model model) {
         List<UserCommand> users = userService.findAll();
         model.addAttribute("users", users);
-        return "admin/index";
+        return "admin/users/users";
     }
 
 
     @PostMapping(value = "/users")
-    public String blockUsers(@RequestParam(required = false) Integer[] ids, @RequestParam String action) {
+    public String changeUsers(@RequestParam(required = false) Integer[] ids, @RequestParam String action) {
+        if (ids == null) {
+            return "redirect:/dashboard/users";
+        }
         for (Integer id : ids) {
             UserCommand userCommand = userService.findUserCommandById(id.longValue());
             changeUserStatus(action, userCommand);
-            userService.saveUserCommand(userCommand);
-        }
-        return "redirect:/dashboard/users";
-    }
 
-    @PostMapping(value = "/users", params = "action=add-admin")
-    public String addAdmin(@RequestParam(required = false) Integer[] ids) {
-        for (Integer id : ids) {
-            UserCommand userCommand = userService.findUserCommandById(id.longValue());
-            userCommand.setEnabled(true);
-            userService.saveUserCommand(userCommand);
         }
         return "redirect:/dashboard/users";
     }
@@ -68,22 +62,34 @@ public class AdminController {
         switch (action) {
             case "block": {
                 userCommand.setEnabled(false);
+                userService.saveUserCommand(userCommand);
+                log.info("calling expire method() in controller");
+                userService.refreshUserSession();
                 break;
             }
             case "unblock": {
                 userCommand.setEnabled(true);
+                userService.saveUserCommand(userCommand);
                 break;
             }
             case "addAdmin": {
                 Role admin = roleService.findByName("ROLE_ADMIN");
                 userCommand.getRoles().add(admin);
                 roleService.addUserCommand(admin, userCommand);
+                userService.saveUserCommand(userCommand);
                 break;
             }
             case "removeAdmin": {
                 Role admin = roleService.findByName("ROLE_ADMIN");
                 userCommand.getRoles().remove(admin);
                 roleService.removeUserCommand(admin, userCommand);
+                userService.saveUserCommand(userCommand);
+                userService.refreshUserSession();
+                break;
+            }
+            case "remove": {
+                userService.deleteById(userCommand.getId());
+                userService.refreshUserSession();
                 break;
             }
         }

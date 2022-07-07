@@ -38,7 +38,6 @@ public class LikeServiceImpl implements LikeService {
         userService.save(user);
         itemService.save(item);
         likeRepository.save(like);
-        log.info("Liked item");
     }
 
     @Override
@@ -51,6 +50,5 @@ public class LikeServiceImpl implements LikeService {
         userService.save(user);
         itemService.save(item);
         likeRepository.delete(like);
-        log.info(like + " was deleted");
     }
 }

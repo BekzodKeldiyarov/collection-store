@@ -7,6 +7,7 @@ import com.bekzodkeldiyarov.collectionstore.exceptions.UserExistsException;
 import com.bekzodkeldiyarov.collectionstore.model.User;
 import com.bekzodkeldiyarov.collectionstore.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +23,16 @@ public class UserServiceImpl implements UserService {
     private final UserToUserCommand userToUserCommand;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, UserCommandToUser userCommandToUser, UserToUserCommand userToUserCommand, PasswordEncoder passwordEncoder) {
+    private final UserSession userSession;
+
+    public UserServiceImpl(UserRepository userRepository, UserCommandToUser userCommandToUser, UserToUserCommand userToUserCommand, PasswordEncoder passwordEncoder, @Lazy UserSession userSession) {
         this.userRepository = userRepository;
         this.userCommandToUser = userCommandToUser;
         this.userToUserCommand = userToUserCommand;
         this.passwordEncoder = passwordEncoder;
+        this.userSession = userSession;
     }
+
 
     @Override
     public User findById(Long id) {
@@ -86,6 +91,11 @@ public class UserServiceImpl implements UserService {
         return usersToReturn;
     }
 
+    @Override
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
+    }
+
 
     @Override
     public UserCommand saveUserCommand(UserCommand userCommand) {
@@ -96,5 +106,10 @@ public class UserServiceImpl implements UserService {
         }
         log.error("Failed to save changes for user " + userCommand.getUsername());
         return userCommand;
+    }
+
+    @Override
+    public void refreshUserSession() {
+        userSession.expireSessionForNonActiveUsers();
     }
 }

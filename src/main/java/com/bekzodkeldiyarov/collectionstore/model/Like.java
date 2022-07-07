@@ -7,7 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity(name = "likes")
-@Table(uniqueConstraints=
+@Table(uniqueConstraints =
 @UniqueConstraint(columnNames = {"user_id", "item_id"}))
 @Getter
 @Setter
