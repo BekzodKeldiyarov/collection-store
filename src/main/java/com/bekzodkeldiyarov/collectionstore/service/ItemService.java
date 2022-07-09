@@ -25,4 +25,6 @@ public interface ItemService {
     Item findItemById(Long id);
 
     ItemCommand bindTagsToItemCommand(ItemCommand itemCommand, String[] tags);
+
+    List<Item> searchItems(String text, List<String> fields, int limit);
 }

@@ -5,35 +5,33 @@ import com.bekzodkeldiyarov.collectionstore.converters.CollectionCommandToCollec
 import com.bekzodkeldiyarov.collectionstore.converters.ItemCommandToItem;
 import com.bekzodkeldiyarov.collectionstore.converters.ItemToItemCommand;
 import com.bekzodkeldiyarov.collectionstore.model.*;
+import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.repository.ItemRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
 public class ItemServiceImpl implements ItemService {
+    private static final List<String> SEARCHABLE_FIELDS = Arrays.asList("name");
+
     private final ItemRepository itemRepository;
     private final ItemCommandToItem itemCommandToItem;
     private final ItemToItemCommand itemToItemCommand;
 
-    private final CollectionCommandToCollection collectionCommandToCollection;
 
     private final CollectionService collectionService;
     private final AttributeService attributeService;
     private final ItemAttributeValueService itemAttributeValueService;
     private final TagService tagService;
 
-    public ItemServiceImpl(ItemRepository itemRepository, ItemCommandToItem itemCommandToItem, ItemToItemCommand itemToItemCommand, CollectionCommandToCollection collectionCommandToCollection, CollectionService collectionService, AttributeService attributeService, ItemAttributeValueService itemAttributeValueService, TagService tagService) {
+    public ItemServiceImpl(ItemRepository itemRepository, ItemCommandToItem itemCommandToItem, ItemToItemCommand itemToItemCommand, CollectionService collectionService, AttributeService attributeService, ItemAttributeValueService itemAttributeValueService, TagService tagService) {
         this.itemRepository = itemRepository;
         this.itemCommandToItem = itemCommandToItem;
         this.itemToItemCommand = itemToItemCommand;
-        this.collectionCommandToCollection = collectionCommandToCollection;
         this.collectionService = collectionService;
 
         this.attributeService = attributeService;
@@ -85,7 +83,6 @@ public class ItemServiceImpl implements ItemService {
         tagService.save(savedItem.getTags());
         return itemToItemCommand.convert(savedItem);
     }
-
 
     @Override
     public List<ItemCommand> getAllItemsOfCollection(Long id) {
@@ -154,6 +151,13 @@ public class ItemServiceImpl implements ItemService {
             itemCommand.getTags().add(tagFromDb);
         }
         return itemCommand;
+    }
+
+    @Override
+    public List<Item> searchItems(String text, List<String> fields, int limit) {
+        List<String> fieldsToSearchBy = fields.isEmpty() ? SEARCHABLE_FIELDS : fields;
+        return itemRepository.searchBy(
+                text, limit, fieldsToSearchBy.toArray(new String[0]));
     }
 
     @Override

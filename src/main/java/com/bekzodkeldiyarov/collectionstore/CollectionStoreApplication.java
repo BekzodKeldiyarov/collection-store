@@ -44,7 +44,7 @@ public class CollectionStoreApplication {
     @Bean
     public ApplicationRunner buildIndex(Indexer indexer) throws Exception {
         return (ApplicationArguments args) -> {
-            indexer.indexPersistedData("com.bekzodkeldiyarov.collectionstore.model.Plant");
+            indexer.indexPersistedData("com.bekzodkeldiyarov.collectionstore.model.Item");
         };
     }
 }

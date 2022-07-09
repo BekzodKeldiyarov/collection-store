@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,11 +15,13 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Indexed
 @Getter
 @Setter
 @NoArgsConstructor
 public class Item extends BaseEntity {
     @JsonIgnore
+    @FullTextField()
     private String name;
 
     @ManyToMany
@@ -28,6 +32,7 @@ public class Item extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore
+//    @FullTextField()
     private Collection collection;
 
     @OneToMany(mappedBy = "item")
