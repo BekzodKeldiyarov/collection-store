@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -69,7 +70,12 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         userService.save(blockedUser);
 
 
-        CollectionCommand collectionCommand = CollectionCommand.builder().name("My book").description("My books collection").user(admin).items(new HashSet<>()).attributes(new HashSet<>()).build();
+        CollectionCommand collectionCommand = CollectionCommand.builder()
+                .name("My book")
+                .description("My books collection")
+                .user(admin)
+                .items(new HashSet<>())
+                .attributes(new ArrayList<>()).build();
 
         Set<AttributeCommand> attributeCommands = new HashSet<>();
         attributeCommands.add(AttributeCommand.builder().attributeName("Author").type("String").build());

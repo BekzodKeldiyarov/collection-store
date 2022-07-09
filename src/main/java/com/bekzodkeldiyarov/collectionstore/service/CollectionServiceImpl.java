@@ -5,15 +5,19 @@ import com.bekzodkeldiyarov.collectionstore.converters.CollectionCommandToCollec
 import com.bekzodkeldiyarov.collectionstore.converters.CollectionToCollectionCommand;
 import com.bekzodkeldiyarov.collectionstore.model.Attribute;
 import com.bekzodkeldiyarov.collectionstore.model.Collection;
+import com.bekzodkeldiyarov.collectionstore.model.User;
 import com.bekzodkeldiyarov.collectionstore.repository.CollectionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class CollectionServiceImpl implements CollectionService {
     private final CollectionRepository collectionRepository;
     private final CollectionToCollectionCommand collectionToCollectionCommand;
@@ -37,9 +41,17 @@ public class CollectionServiceImpl implements CollectionService {
 
     @Override
     public CollectionCommand saveCollectionCommand(CollectionCommand collectionCommand) {
-        Collection collectionToSave = collectionCommandToCollection.convert(collectionCommand);
+        Collection collectionToSave;
+        CollectionCommand savedCollectionCommand;
+        if (collectionCommand.getId() == null) {
+            collectionToSave = collectionCommandToCollection.convert(collectionCommand);
+        } else {
+            collectionToSave = collectionRepository.findById(collectionCommand.getId()).get();
+            collectionToSave.setName(collectionCommand.getName());
+            collectionToSave.setDescription(collectionCommand.getDescription());
+        }
         Collection savedCollection = collectionRepository.save(collectionToSave);
-        CollectionCommand savedCollectionCommand = collectionToCollectionCommand.convert(savedCollection);
+        savedCollectionCommand = collectionToCollectionCommand.convert(savedCollection);
         return savedCollectionCommand;
     }
 
@@ -88,5 +100,23 @@ public class CollectionServiceImpl implements CollectionService {
             collection = collectionRepository.findById(id).get();
         }
         return collection;
+    }
+
+    @Override
+    public void deleteCollectionsOfUserById(Long[] ids, Long userId) {
+        User user = userService.findById(userId);
+        for (Collection collection : user.getCollections()) {
+            for (Long id : ids) {
+                if (Objects.equals(collection.getId(), id)) {
+                    collectionRepository.deleteById(collection.getId());
+                    log.info("Collection with id deleted" + id);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void deleteCollectionById(Long id) {
+        collectionRepository.deleteById(id);
     }
 }

@@ -33,6 +33,7 @@
                                 <th>ID</th>
                                 <th>Collection Name</th>
                                 <th>Collection Description</th>
+                                <th sec:authorize="hasRole('ROLE_ADMIN')">User</th>
                                 <th>View</th>
                             </tr>
                             </thead>
@@ -41,6 +42,9 @@
                                 <td th:text="${collection.id}">User id</td>
                                 <td th:text="${collection.name}">Username</td>
                                 <td th:text="${collection.description}">Email</td>
+                                <td sec:authorize="hasRole('ROLE_ADMIN')">
+                                    <a th:href="@{'/dashboard/users/'+${collection.user.id}}"
+                                       th:text="${collection.user.username}"></a></td>
                                 <td><a th:href="@{/dashboard/collections/{id}(id=${collection.id})}"
                                        class="btn btn-outline-primary">View</a></td>
                             </tr>

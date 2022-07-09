@@ -88,4 +88,18 @@ public class AttributeServiceImpl implements AttributeService {
         }
         return attributes;
     }
+
+    @Override
+    public List<Attribute> saveAttributes(List<Attribute> attributes) {
+        List<Attribute> attributesToReturn = new ArrayList<>();
+        for (Attribute attribute : attributes) {
+            if (attribute.getId() != null) {
+                Attribute attributeToSave = attributeRepository.findById(attribute.getId()).get();
+                attributeToSave.setAttributeName(attribute.getAttributeName());
+                attributeToSave.setType(attribute.getType());
+                attributesToReturn.add(attributeRepository.save(attributeToSave));
+            }
+        }
+        return attributesToReturn;
+    }
 }

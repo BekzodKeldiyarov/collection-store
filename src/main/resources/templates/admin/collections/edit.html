@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/fragments::headerfiles"></head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <div th:replace="fragments/admin-sidebar.html :: sidebar"></div>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+
+            <nav th:replace="fragments/admin-topbar.html :: topbar"></nav>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Edit Collection</h1>
+                </div>
+
+                <!-- Content Row -->
+
+                <div class="row">
+                    <form action="/dashboard/collections/edit" method="post" class="form col-md-6">
+                        <div class="row">
+                            <input type="hidden" th:value="${collection.id}" name="id">
+                            <div class="col-md-6">
+                                <input th:value="${collection.name}" type="text" class="form-control"
+                                       placeholder="Enter name for collection" name="name">
+                            </div>
+                            <div class="col-md-6">
+                                <input th:value="${collection.description}" type="text" class="form-control"
+                                       placeholder="Enter description for collection" name="description">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary mt-2">Edit Collection</button>
+                    </form>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <div th:replace="fragments/fragments::scripts"></div>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+
+<div th:replace="fragments/fragments::scripts"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+</body>
+
+</html>

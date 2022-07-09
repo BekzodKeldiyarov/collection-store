@@ -21,4 +21,8 @@ public interface CollectionService {
     CollectionCommand findCollectionCommandById(Long id);
 
     Collection findCollectionById(Long id);
+
+    void deleteCollectionsOfUserById(Long[] ids, Long userId);
+
+    void deleteCollectionById(Long id);
 }

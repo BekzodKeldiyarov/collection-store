@@ -29,7 +29,7 @@ public class UserCommandToUser implements Converter<UserCommand, User> {
         user.setEmail(source.getEmail());
         user.setRoles(source.getRoles());
         user.setEnabled(source.isEnabled());
-
+        user.setCollections(source.getCollections());
         return user;
     }
 }

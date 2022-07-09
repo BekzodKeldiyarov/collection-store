@@ -44,6 +44,22 @@ public class AdminController {
         return "admin/users/users";
     }
 
+    @GetMapping("/users/{id}")
+    public String getSingleUserPage(@PathVariable Long id, Model model) {
+        UserCommand user = userService.findUserCommandById(id);
+        model.addAttribute("user", user);
+        return "admin/users/single-user";
+    }
+
+    @PostMapping(value = "/users/{idOfUser}", params = "action=delete-collections")
+    public String changeUserCollectionAndItems(@PathVariable Long idOfUser, @RequestParam(required = false) Long[] ids) {
+        if (ids == null) {
+            return "redirect:/dashboard/users/" + idOfUser;
+        }
+        collectionService.deleteCollectionsOfUserById(ids, idOfUser);
+        return "redirect:/dashboard/users/" + idOfUser;
+    }
+
 
     @PostMapping(value = "/users")
     public String changeUsers(@RequestParam(required = false) Integer[] ids, @RequestParam String action) {

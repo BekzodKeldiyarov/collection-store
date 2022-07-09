@@ -5,6 +5,8 @@ import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class CollectionToCollectionCommand implements Converter<Collection, CollectionCommand> {
     @Override
@@ -15,7 +17,7 @@ public class CollectionToCollectionCommand implements Converter<Collection, Coll
                 .description(source.getDescription())
                 .user(source.getUser())
                 .items(source.getItems())
-                .attributes(source.getAttributes()).build();
+                .attributes(new ArrayList<>(source.getAttributes())).build();
 
         return collectionCommand;
     }

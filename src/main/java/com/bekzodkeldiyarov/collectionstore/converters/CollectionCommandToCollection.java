@@ -5,6 +5,8 @@ import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+
 @Component
 public class CollectionCommandToCollection implements Converter<CollectionCommand, Collection> {
     @Override
@@ -14,7 +16,7 @@ public class CollectionCommandToCollection implements Converter<CollectionComman
         collection.setDescription(source.getDescription());
         collection.setId(source.getId());
         collection.setUser(source.getUser());
-        collection.setAttributes(source.getAttributes());
+        collection.setAttributes(new HashSet<>(source.getAttributes()));
 
         return collection;
     }

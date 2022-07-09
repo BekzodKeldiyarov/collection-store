@@ -16,6 +16,7 @@ public class UserToUserCommand implements Converter<User, UserCommand> {
         userCommand.setEmail(source.getEmail());
         userCommand.setEnabled(source.isEnabled());
         userCommand.setRoles(source.getRoles());
+        userCommand.setCollections(source.getCollections());
         return userCommand;
     }
 }

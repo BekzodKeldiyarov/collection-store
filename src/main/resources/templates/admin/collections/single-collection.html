@@ -3,9 +3,9 @@
 <head th:replace="fragments/fragments::headerfiles"></head>
 <body>
 <div class="container pt-3">
-    <div class="row mb-2">
-        <h2 class="col-md-4" th:text="${collection.name}"></h2>
-        <h3 class="col-md-4 offset-md-2" th:text="${collection.description}"></h3>
+    <div class="mb-2">
+        <h2 th:text="${collection.name}"></h2>
+        <p th:text="${collection.description}"></p>
     </div>
     <a th:href="@{/dashboard/collections/{id}/items/add(id=${collection.id})}" class="btn btn-primary mb-4">Add New
         Item</a>

@@ -1,6 +1,7 @@
 package com.bekzodkeldiyarov.collectionstore.commands;
 
 
+import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.model.Comment;
 import com.bekzodkeldiyarov.collectionstore.model.Role;
 import lombok.*;
@@ -31,6 +32,8 @@ public class UserCommand {
     @NotEmpty(message = "email cannot be empty")
     @Email(message = "enter valid email")
     private String email;
+
+    private Set<Collection> collections = new HashSet<>();
 
     private boolean isEnabled;
     private Set<Role> roles = new HashSet<>();

@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 @Slf4j
@@ -49,24 +46,32 @@ public class CollectionController {
     @GetMapping("/collections/add")
     public String getAddNewCollectionPage(Model model, CollectionCommand collectionCommand) {
         model.addAttribute("collection", collectionCommand);
+        model.addAttribute("action", "Add");
         return "admin/collections/add";
     }
+
 
     @PostMapping("/collections/add")
     public String addNewCollection(@ModelAttribute("collection") CollectionCommand collectionCommand, HttpServletRequest request, @AuthenticationPrincipal UserDetails currentUser) {
         User user = userService.findByUsername(currentUser.getUsername());
         collectionCommand.setUser(user);
-        Set<Attribute> attributes = attributeService.createAttributesForCollectionFromHttpServletRequest(request);
-        if (attributes.size() > 0) {
-            collectionService.saveCollectionCommand(collectionCommand, attributes);
+        Set<Attribute> newAttributes = attributeService.createAttributesForCollectionFromHttpServletRequest(request);
+        if (newAttributes.size() > 0) {
+            collectionService.saveCollectionCommand(collectionCommand, newAttributes);
         } else {
             collectionService.saveCollectionCommand(collectionCommand);
         }
         return "redirect:/dashboard/collections";
     }
 
+    @PostMapping("/collections/edit")
+    public String editCollection(@ModelAttribute("collection") CollectionCommand collectionCommand) {
+        collectionService.saveCollectionCommand(collectionCommand);
+        return "redirect:/dashboard/collections";
+    }
+
     @GetMapping("/collections/{id}")
-    public String getUpdateCollectionPage(@PathVariable Long id, Model model) {
+    public String getSingleCollectionPage(@PathVariable Long id, Model model) {
         CollectionCommand collectionCommand = collectionService.findCollectionCommandById(id);
         List<ItemCommand> items = itemService.getAllItemsOfCollection(id);
         model.addAttribute("collection", collectionCommand);
@@ -74,6 +79,19 @@ public class CollectionController {
             model.addAttribute("items", items);
         }
         return "admin/collections/single-collection";
+    }
+
+    @GetMapping("/collections/{collectionId}/{idOfUser}/delete")
+    public String deleteCollectionOfUser(@PathVariable Long idOfUser, @PathVariable Long collectionId) {
+        collectionService.deleteCollectionById(collectionId);
+        return "redirect:/dashboard/users/" + idOfUser;
+    }
+
+    @GetMapping("/collections/{collectionId}/edit")
+    public String getEditPage(@PathVariable Long collectionId, Model model) {
+        CollectionCommand collectionCommand = collectionService.findCollectionCommandById(collectionId);
+        model.addAttribute("collection", collectionCommand);
+        return "admin/collections/edit";
     }
 
 }

@@ -42,7 +42,8 @@
                                 <td th:text="${user.id}">User id</td>
                                 <td th:text="${user.username}">Username</td>
                                 <td th:text="${user.email}">Email</td>
-                                <td><a href="" class="btn btn-primary">View Profile</a></td>
+                                <td><a th:href="@{'/dashboard/users/'+${user.id}}" class="btn btn-primary">View
+                                    Profile</a></td>
                                 <td>
                 <span th:text="${user.isEnabled}?'Active':'Blocked'"
                       class="badge badge-pill"

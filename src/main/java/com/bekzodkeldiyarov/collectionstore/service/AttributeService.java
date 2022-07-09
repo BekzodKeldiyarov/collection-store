@@ -20,4 +20,6 @@ public interface AttributeService {
 //    void bindAttributesToCollection(Set<AttributeCommand> attributeCommands, CollectionCommand collectionCommand);
 
     Set<Attribute> createAttributesForCollectionFromHttpServletRequest(HttpServletRequest request);
+
+    List<Attribute> saveAttributes(List<Attribute> attributes);
 }

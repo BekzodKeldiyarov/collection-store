@@ -10,7 +10,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -35,9 +37,9 @@ public class CollectionCommand {
 
     private Set<Item> items = new HashSet<>();
 
-    private Set<Attribute> attributes = new HashSet<>();
+    private List<Attribute> attributes = new ArrayList<>();
 
-    public CollectionCommand(Long id, String name, String description, User user, Set<Item> items, Set<Attribute> attributes) {
+    public CollectionCommand(Long id, String name, String description, User user, Set<Item> items, List<Attribute> attributes) {
         this.id = id;
         this.name = name;
         this.description = description;
