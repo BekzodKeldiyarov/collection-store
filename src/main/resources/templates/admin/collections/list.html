@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/fragments::headerfiles"></head>
+<head th:replace="fragments/dashboard/fragments::headerfiles"></head>
 <body id="page-top">
 
 <!-- Page Wrapper -->
 <div id="wrapper">
 
-    <div th:replace="fragments/admin-sidebar.html :: sidebar"></div>
+    <div th:replace="fragments/dashboard/admin-sidebar.html :: sidebar"></div>
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
         <!-- Main Content -->
         <div id="content">
 
-            <nav th:replace="fragments/admin-topbar.html :: topbar"></nav>
+            <nav th:replace="fragments/dashboard/admin-topbar.html :: topbar"></nav>
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
@@ -60,29 +60,15 @@
         </div>
         <!-- End of Main Content -->
 
-        <!-- Footer -->
-        <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Bekzod Keldiyarov</span>
-                </div>
-            </div>
-        </footer>
-        <!-- End of Footer -->
 
+        <div th:replace="fragments/dashboard/fragments::footer"></div>
     </div>
     <!-- End of Content Wrapper -->
 
 </div>
-<!-- End of Page Wrapper -->
-
-<!-- Scroll to Top Button-->
-<a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-</a>
 
 
-<div th:replace="fragments/fragments::scripts"></div>
+<div th:replace="fragments/dashboard/fragments::scripts"></div>
 </body>
 
 </html>

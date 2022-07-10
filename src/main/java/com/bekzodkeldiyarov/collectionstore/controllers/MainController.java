@@ -1,9 +1,7 @@
 package com.bekzodkeldiyarov.collectionstore.controllers;
 
-import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.model.Comment;
 import com.bekzodkeldiyarov.collectionstore.model.Item;
-import com.bekzodkeldiyarov.collectionstore.model.Tag;
 import com.bekzodkeldiyarov.collectionstore.security.MyUserDetails;
 import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
 import com.bekzodkeldiyarov.collectionstore.service.ItemService;
@@ -36,13 +34,9 @@ public class MainController {
 
     @GetMapping("")
     public String index(Model model) {
-        List<Item> items = itemService.getAllItems(); //todo not all items but last n items
-        List<Collection> collections = collectionService.getBiggestCollections();
-        List<Tag> tags = tagService.getAllTags();
-
-        model.addAttribute("items", items);
-        model.addAttribute("collections", collections);
-        model.addAttribute("tags", tags);
+        model.addAttribute("items", itemService.getAllItems()); //todo not all items but last n items
+        model.addAttribute("collections", collectionService.getBiggestCollections());
+        model.addAttribute("tags", tagService.getAllTags());
         return "index";
     }
 
@@ -51,6 +45,9 @@ public class MainController {
         Item item = itemService.findItemById(id);
         model.addAttribute("item", item);
         model.addAttribute("comment", new Comment());
+        model.addAttribute("items", itemService.getAllItems()); //todo not all items but last n items
+        model.addAttribute("collections", collectionService.getBiggestCollections());
+        model.addAttribute("tags", tagService.getAllTags());
         return "item";
     }
 
