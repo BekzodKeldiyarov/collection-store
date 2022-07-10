@@ -51,7 +51,8 @@
                                  class="col-md-7">
 
                                 <div class="mt-2" th:switch="${itemAttributeValue.attribute.type}">
-                                    <label class="mb-0" th:text="${itemAttributeValue.attribute.attributeName}"></label>
+                                    <label class="mb-0"
+                                           th:text="${itemAttributeValue.attribute.attributeName}"></label>
                                     <input th:case="${'string'}"
                                            th:field="*{itemAttributeValues[__${itemStat.index}__].value}"
                                            type="text"

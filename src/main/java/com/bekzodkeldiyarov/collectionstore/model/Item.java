@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class Item extends BaseEntity {
     @FullTextField()
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "item_tags", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "tab_id"))
     @JsonIgnore
     private Set<Tag> tags = new HashSet<>();
@@ -32,14 +33,13 @@ public class Item extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore
-//    @FullTextField()
     private Collection collection;
 
     @OneToMany(mappedBy = "item")
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "item")
     @JsonIgnore
     private List<Like> likes = new ArrayList<>();
 
@@ -54,7 +54,7 @@ public class Item extends BaseEntity {
         this.likes = likes;
     }
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
     @JsonIgnore
     List<ItemAttributeValue> itemAttributeValues = new ArrayList<>();
 

@@ -22,11 +22,11 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 @EnableWebSecurity
 @Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    private OAuth2UserServiceImpl oAuth2UserService;
-    @Autowired
-    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    //
+//    @Autowired
+//    private OAuth2UserServiceImpl oAuth2UserService;
+//    @Autowired
+//    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final PasswordEncoder passwordEncoder;
 
     public SecurityConfig(PasswordEncoder passwordEncoder) {
@@ -35,28 +35,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        log.info("-------------" + oAuth2LoginSuccessHandler.toString() + "------------");
         http
-////                .csrf().disable()
+                .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/dashboard").authenticated()
-//                .antMatchers("/dashboard/collections/add").authenticated()
-//                .antMatchers("/dashboard/collections/**").hasRole("ADMIN")
-//                .antMatchers("/dashboard/collections/{collectionId}/**")
-//                .access("@userSecurity.hasUserId(authentication,#collectionId)")
-//                .antMatchers("/dashboard/**").authenticated()
-//                .antMatchers("**").permitAll()
-                .anyRequest().permitAll()
+                .antMatchers("/", "/**").permitAll()
+                .antMatchers("/dashboard/**").authenticated()
+                .antMatchers("/dashboard/users/").hasRole("ADMIN")
+                .antMatchers("/dashboard/collections/add").authenticated()
+                .antMatchers("/dashboard/collections/{collectionId}/**")
+                .access("@userSecurity.hasUserId(authentication,#collectionId)")
                 .and()
                 .formLogin()
                 .loginPage("/login")
                 .failureUrl("/login?error=true")
                 .defaultSuccessUrl("/")
-                .and()
-                .oauth2Login()
-                .loginPage("/login")
-                .userInfoEndpoint().userService(oAuth2UserService)
-                .and()
+//                .and()
+//                .oauth2Login()
+//                .loginPage("/login")
+//                .userInfoEndpoint().userService(oAuth2UserService)
+//                .and()
 //                .successHandler(oAuth2LoginSuccessHandler)
                 .and()
                 .sessionManagement()

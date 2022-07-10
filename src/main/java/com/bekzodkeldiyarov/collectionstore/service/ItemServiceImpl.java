@@ -10,6 +10,7 @@ import com.bekzodkeldiyarov.collectionstore.repository.ItemRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -79,8 +80,8 @@ public class ItemServiceImpl implements ItemService {
         }
 
         savedItem = itemRepository.save(itemToSave);
-        itemAttributeValueService.save(savedItem.getItemAttributeValues());
-        tagService.save(savedItem.getTags());
+        itemAttributeValueService.save(new ArrayList<>(savedItem.getItemAttributeValues()));
+        tagService.save(new HashSet<>(savedItem.getTags()));
         return itemToItemCommand.convert(savedItem);
     }
 
@@ -129,7 +130,9 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
+    @Transactional
     public Item findItemById(Long id) {
+        log.info("Found item tags size" + itemRepository.findById(id).orElse(null).getTags().size());
         return itemRepository.findById(id).get();
     }
 
@@ -141,14 +144,16 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemCommand bindTagsToItemCommand(ItemCommand itemCommand, String[] tags) {
         itemCommand.setTags(new ArrayList<>());
-        for (String tag : tags) {
-            Tag tagFromDb = tagService.findByName(tag);
-            if (tagFromDb == null) {
-                tagFromDb = new Tag();
-                tagFromDb.setName(tag);
-                tagService.save(tagFromDb);
+        if (tags != null) {
+            for (String tag : tags) {
+                Tag tagFromDb = tagService.findByName(tag);
+                if (tagFromDb == null) {
+                    tagFromDb = new Tag();
+                    tagFromDb.setName(tag);
+                    tagService.save(tagFromDb);
+                }
+                itemCommand.getTags().add(tagFromDb);
             }
-            itemCommand.getTags().add(tagFromDb);
         }
         return itemCommand;
     }
@@ -156,8 +161,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> searchItems(String text, List<String> fields, int limit) {
         List<String> fieldsToSearchBy = fields.isEmpty() ? SEARCHABLE_FIELDS : fields;
-        return itemRepository.searchBy(
-                text, limit, fieldsToSearchBy.toArray(new String[0]));
+        return itemRepository.searchBy(text, limit, fieldsToSearchBy.toArray(new String[0]));
     }
 
     @Override
@@ -165,6 +169,7 @@ public class ItemServiceImpl implements ItemService {
         List<Item> items = itemRepository.findAll();
         List<ItemCommand> itemsToReturn = new ArrayList<>();
         for (Item item : items) {
+            log.info(item.getTags().size() + "");
             itemsToReturn.add(itemToItemCommand.convert(item));
         }
         return itemsToReturn;

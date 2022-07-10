@@ -14,7 +14,7 @@ public class ItemToItemCommand implements Converter<Item, ItemCommand> {
         ItemCommand item = ItemCommand.builder()
                 .id(source.getId())
                 .name(source.getName())
-                .itemAttributeValues(source.getItemAttributeValues())
+                .itemAttributeValues(new ArrayList<>(source.getItemAttributeValues()))
                 .collection(source.getCollection())
                 .tags(new ArrayList<>(source.getTags()))
                 .comments(source.getComments())

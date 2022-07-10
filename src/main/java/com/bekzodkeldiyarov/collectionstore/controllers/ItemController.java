@@ -35,7 +35,7 @@ public class ItemController {
     }
 
     @PostMapping("/collections/{collectionId}/items/add")
-    public String postNewItemToCollection(@Valid ItemCommand itemCommand, BindingResult result, @RequestParam String[] selectedTags) {
+    public String postNewItemToCollection(@Valid ItemCommand itemCommand, BindingResult result, @RequestParam(required = false) String[] selectedTags) {
         if (result.hasErrors()) {
             log.error(result.getAllErrors().toString());
         }
@@ -47,6 +47,7 @@ public class ItemController {
     @GetMapping("/collections/{collectionId}/items/{itemId}/edit")
     public String getUpdateItemPage(@PathVariable Long collectionId, @PathVariable Long itemId, Model model) {
         ItemCommand itemCommand = itemService.findItemCommandById(itemId);
+        log.info("Number of tags " + itemCommand.getTags().size());
         model.addAttribute("tags", tagService.getAllTags());
         model.addAttribute("item", itemCommand);
         model.addAttribute("pageName", "Edit Item");

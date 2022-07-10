@@ -7,11 +7,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @Transactional
 @Component
 public class Indexer {
 
+    @PersistenceContext
     private EntityManager entityManager;
 
     private static final int THREAD_NUMBER = 4;
