@@ -32,7 +32,7 @@ public class Attribute extends BaseEntity {
     private Collection collection;
 
 
-    @OneToMany(mappedBy = "attribute")
+    @OneToMany(mappedBy = "attribute", cascade = CascadeType.REMOVE)
     @JsonIgnore
     @ToString.Exclude
     Set<ItemAttributeValue> itemAttributeValues = new HashSet<>();

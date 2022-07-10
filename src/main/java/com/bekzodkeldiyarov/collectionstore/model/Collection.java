@@ -25,12 +25,12 @@ public class Collection extends BaseEntity {
     @JsonIgnore
     private User user;
 
-    @OneToMany(mappedBy = "collection")
+    @OneToMany(mappedBy = "collection", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     @JsonIgnore
     private Set<Item> items = new HashSet<>();
 
-    @OneToMany(mappedBy = "collection")
+    @OneToMany(mappedBy = "collection", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     @JsonIgnore
     private Set<Attribute> attributes = new LinkedHashSet<>();

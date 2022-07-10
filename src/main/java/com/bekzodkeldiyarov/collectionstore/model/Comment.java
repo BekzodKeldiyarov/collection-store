@@ -3,6 +3,7 @@ package com.bekzodkeldiyarov.collectionstore.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.*;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;

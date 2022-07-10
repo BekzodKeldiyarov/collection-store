@@ -30,11 +30,11 @@ public class Item extends BaseEntity {
     @JsonIgnore
     private Collection collection;
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<Like> likes = new ArrayList<>();
 
@@ -49,7 +49,7 @@ public class Item extends BaseEntity {
         this.likes = likes;
     }
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
     @JsonIgnore
     List<ItemAttributeValue> itemAttributeValues = new ArrayList<>();
 

@@ -3,10 +3,7 @@ package com.bekzodkeldiyarov.collectionstore.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "item_attribute")
@@ -19,12 +16,12 @@ public class ItemAttributeValue extends BaseEntity {
 
     private String value;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "product_id")
     @JsonIgnore
     private Item item;
-    
-    @ManyToOne
+
+    @ManyToOne()
     @JoinColumn(name = "attribute_id")
     @JsonIgnore
     private Attribute attribute;
