@@ -35,7 +35,7 @@ public class ItemController {
     }
 
     @PostMapping("/collections/{collectionId}/items/add")
-    public String postNewItemToCollection(@Valid ItemCommand itemCommand, BindingResult result, @RequestParam String[] selectedTags) {
+    public String postNewItemToCollection(@Valid ItemCommand itemCommand, BindingResult result, @RequestParam(required = false) String[] selectedTags) {
         if (result.hasErrors()) {
             log.error(result.getAllErrors().toString());
         }

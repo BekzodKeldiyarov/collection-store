@@ -144,14 +144,16 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemCommand bindTagsToItemCommand(ItemCommand itemCommand, String[] tags) {
         itemCommand.setTags(new ArrayList<>());
-        for (String tag : tags) {
-            Tag tagFromDb = tagService.findByName(tag);
-            if (tagFromDb == null) {
-                tagFromDb = new Tag();
-                tagFromDb.setName(tag);
-                tagService.save(tagFromDb);
+        if (tags != null) {
+            for (String tag : tags) {
+                Tag tagFromDb = tagService.findByName(tag);
+                if (tagFromDb == null) {
+                    tagFromDb = new Tag();
+                    tagFromDb.setName(tag);
+                    tagService.save(tagFromDb);
+                }
+                itemCommand.getTags().add(tagFromDb);
             }
-            itemCommand.getTags().add(tagFromDb);
         }
         return itemCommand;
     }
