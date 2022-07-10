@@ -1,6 +1,5 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
-import com.bekzodkeldiyarov.collectionstore.commands.ItemCommand;
 import com.bekzodkeldiyarov.collectionstore.model.Item;
 
 import java.util.List;
@@ -9,19 +8,11 @@ import java.util.Map;
 public interface ItemService {
     Item save(Item collection);
 
-    ItemCommand saveItemCommand(ItemCommand command);
+    List<Item> getAllItems();
 
-    List<ItemCommand> getAllItemsOfCollection(Long id);
-
-    List<ItemCommand> getAllItemsOfUser(Long userId);
-
-    List<ItemCommand> getAllItems();
-
-    ItemCommand getNewItemCommandInstance(Long collectionId);
-
-    ItemCommand findItemCommandById(Long id);
+    Item getNewItemInstance(Long collectionId);
 
     Item findItemById(Long id);
 
-    ItemCommand bindTagsToItemCommand(ItemCommand itemCommand, String[] tags);
+    Item bindTagsToItem(Item item, String[] tags);
 }

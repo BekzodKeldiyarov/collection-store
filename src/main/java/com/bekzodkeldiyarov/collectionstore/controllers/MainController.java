@@ -1,8 +1,8 @@
 package com.bekzodkeldiyarov.collectionstore.controllers;
 
-import com.bekzodkeldiyarov.collectionstore.commands.ItemCommand;
 import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.model.Comment;
+import com.bekzodkeldiyarov.collectionstore.model.Item;
 import com.bekzodkeldiyarov.collectionstore.model.Tag;
 import com.bekzodkeldiyarov.collectionstore.security.MyUserDetails;
 import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
@@ -36,7 +36,7 @@ public class MainController {
 
     @GetMapping("")
     public String index(Model model) {
-        List<ItemCommand> items = itemService.getAllItems(); //todo not all items but last n items
+        List<Item> items = itemService.getAllItems(); //todo not all items but last n items
         List<Collection> collections = collectionService.getBiggestCollections();
         List<Tag> tags = tagService.getAllTags();
 
@@ -48,8 +48,8 @@ public class MainController {
 
     @GetMapping("/items/{id}")
     public String getItemPage(@PathVariable Long id, Model model) {
-        ItemCommand itemCommand = itemService.findItemCommandById(id);
-        model.addAttribute("item", itemCommand);
+        Item item = itemService.findItemById(id);
+        model.addAttribute("item", item);
         model.addAttribute("comment", new Comment());
         return "item";
     }
