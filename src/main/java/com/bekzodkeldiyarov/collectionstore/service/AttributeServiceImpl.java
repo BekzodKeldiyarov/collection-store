@@ -1,15 +1,11 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
 import com.bekzodkeldiyarov.collectionstore.commands.AttributeCommand;
-import com.bekzodkeldiyarov.collectionstore.commands.CollectionCommand;
 import com.bekzodkeldiyarov.collectionstore.converters.AttributeCommandToAttribute;
 import com.bekzodkeldiyarov.collectionstore.converters.AttributeToAttributeCommand;
-import com.bekzodkeldiyarov.collectionstore.converters.CollectionCommandToCollection;
 import com.bekzodkeldiyarov.collectionstore.model.Attribute;
-import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.repository.AttributeRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,14 +17,12 @@ public class AttributeServiceImpl implements AttributeService {
     private final AttributeRepository attributeRepository;
     private final AttributeCommandToAttribute attributeCommandToAttribute;
     private final AttributeToAttributeCommand attributeToAttributeCommand;
-    private final CollectionCommandToCollection collectionCommandToCollection;
 
 
-    public AttributeServiceImpl(AttributeRepository attributeRepository, AttributeCommandToAttribute attributeCommandToAttribute, AttributeToAttributeCommand attributeToAttributeCommand, CollectionCommandToCollection collectionCommandToCollection) {
+    public AttributeServiceImpl(AttributeRepository attributeRepository, AttributeCommandToAttribute attributeCommandToAttribute, AttributeToAttributeCommand attributeToAttributeCommand) {
         this.attributeRepository = attributeRepository;
         this.attributeCommandToAttribute = attributeCommandToAttribute;
         this.attributeToAttributeCommand = attributeToAttributeCommand;
-        this.collectionCommandToCollection = collectionCommandToCollection;
     }
 
     @Override
@@ -54,24 +48,9 @@ public class AttributeServiceImpl implements AttributeService {
         return attributes;
     }
 
-//
-//    @Override
-//    public void bindAttributesToCollection(Set<AttributeCommand> attributeCommands, CollectionCommand collectionCommand) {
-//        Collection collection = collectionCommandToCollection.convert(collectionCommand);
-//        log.info("Collection found : " + collection);
-//        for (AttributeCommand attributeCommand : attributeCommands) {
-//            Attribute attribute = attributeCommandToAttribute.convert(attributeCommand);
-//            if (attribute != null && collection != null) {
-//                attribute.setCollection(collection);
-//                collection.getAttributes().add(attribute);
-//                collectionService.save(collection);
-//                attributeRepository.save(attribute);
-//            }
-//        }
-//    }
 
     @Override
-    public Set<Attribute> createAttributesForCollectionFromHttpServletRequest(HttpServletRequest request) {
+    public Set<Attribute> createAttributesFromHttpServletRequest(HttpServletRequest request) {
         Set<Attribute> attributes = new HashSet<>();
         Enumeration<String> keys = request.getParameterNames();
         while (keys.hasMoreElements()) {

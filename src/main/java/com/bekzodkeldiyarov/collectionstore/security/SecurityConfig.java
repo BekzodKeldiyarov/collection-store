@@ -36,7 +36,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/dashboard/collections/add").authenticated()
-                .antMatchers("/dashboard/collections/**").hasRole("ADMIN")
                 .antMatchers("/dashboard/collections/{collectionId}/**")
                 .access("@userSecurity.hasUserId(authentication,#collectionId)")
                 .antMatchers("/dashboard/**").authenticated()

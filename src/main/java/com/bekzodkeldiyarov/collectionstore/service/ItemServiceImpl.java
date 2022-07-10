@@ -1,7 +1,6 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
 import com.bekzodkeldiyarov.collectionstore.commands.ItemCommand;
-import com.bekzodkeldiyarov.collectionstore.converters.CollectionCommandToCollection;
 import com.bekzodkeldiyarov.collectionstore.converters.ItemCommandToItem;
 import com.bekzodkeldiyarov.collectionstore.converters.ItemToItemCommand;
 import com.bekzodkeldiyarov.collectionstore.model.*;
@@ -22,18 +21,16 @@ public class ItemServiceImpl implements ItemService {
     private final ItemCommandToItem itemCommandToItem;
     private final ItemToItemCommand itemToItemCommand;
 
-    private final CollectionCommandToCollection collectionCommandToCollection;
 
     private final CollectionService collectionService;
     private final AttributeService attributeService;
     private final ItemAttributeValueService itemAttributeValueService;
     private final TagService tagService;
 
-    public ItemServiceImpl(ItemRepository itemRepository, ItemCommandToItem itemCommandToItem, ItemToItemCommand itemToItemCommand, CollectionCommandToCollection collectionCommandToCollection, CollectionService collectionService, AttributeService attributeService, ItemAttributeValueService itemAttributeValueService, TagService tagService) {
+    public ItemServiceImpl(ItemRepository itemRepository, ItemCommandToItem itemCommandToItem, ItemToItemCommand itemToItemCommand, CollectionService collectionService, AttributeService attributeService, ItemAttributeValueService itemAttributeValueService, TagService tagService) {
         this.itemRepository = itemRepository;
         this.itemCommandToItem = itemCommandToItem;
         this.itemToItemCommand = itemToItemCommand;
-        this.collectionCommandToCollection = collectionCommandToCollection;
         this.collectionService = collectionService;
 
         this.attributeService = attributeService;

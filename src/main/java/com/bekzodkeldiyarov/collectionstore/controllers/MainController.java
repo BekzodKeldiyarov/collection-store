@@ -1,7 +1,7 @@
 package com.bekzodkeldiyarov.collectionstore.controllers;
 
-import com.bekzodkeldiyarov.collectionstore.commands.CollectionCommand;
 import com.bekzodkeldiyarov.collectionstore.commands.ItemCommand;
+import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.model.Comment;
 import com.bekzodkeldiyarov.collectionstore.model.Tag;
 import com.bekzodkeldiyarov.collectionstore.security.MyUserDetails;
@@ -37,7 +37,7 @@ public class MainController {
     @GetMapping("")
     public String index(Model model) {
         List<ItemCommand> items = itemService.getAllItems(); //todo not all items but last n items
-        List<CollectionCommand> collections = collectionService.getAllCollectionCommands(); //todo not all collections but biggest 5 collections
+        List<Collection> collections = collectionService.getBiggestCollections();
         List<Tag> tags = tagService.getAllTags();
 
         model.addAttribute("items", items);

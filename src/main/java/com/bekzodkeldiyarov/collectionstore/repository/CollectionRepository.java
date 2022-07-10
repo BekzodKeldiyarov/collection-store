@@ -11,4 +11,9 @@ import java.util.List;
 public interface CollectionRepository extends JpaRepository<Collection, Long> {
     @Query("select c from Collection c where c.user.id = ?1")
     List<Collection> findAllByUserId(Long id);
+
+    @Query("select c from Collection c where c.user.username = ?1")
+    List<Collection> findAllByUserUsername(String username);
+
+
 }

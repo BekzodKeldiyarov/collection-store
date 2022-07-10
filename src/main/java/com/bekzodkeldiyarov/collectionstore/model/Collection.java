@@ -17,7 +17,7 @@ public class Collection extends BaseEntity {
     private String name;
 
 
-    @Column(columnDefinition="TEXT")
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @ManyToOne
@@ -33,7 +33,7 @@ public class Collection extends BaseEntity {
     @OneToMany(mappedBy = "collection")
     @ToString.Exclude
     @JsonIgnore
-    private Set<Attribute> attributes = new HashSet<>();
+    private Set<Attribute> attributes = new LinkedHashSet<>();
 
     @Builder
     public Collection(Long id, String name, String description, User user, Set<Item> items, Set<Attribute> attributes) {

@@ -19,11 +19,8 @@
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                            class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                    <h1 class="h3 mb-0 text-gray-800">My Collections</h1>
                 </div>
-
 
                 <div class="row">
                     <form class="col-md-12" action="/dashboard/collections" method="post">
@@ -35,6 +32,7 @@
                                 <th>Collection Description</th>
                                 <th sec:authorize="hasRole('ROLE_ADMIN')">User</th>
                                 <th>View</th>
+                                <th>Edit</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -47,11 +45,12 @@
                                        th:text="${collection.user.username}"></a></td>
                                 <td><a th:href="@{/dashboard/collections/{id}(id=${collection.id})}"
                                        class="btn btn-outline-primary">View</a></td>
+                                <td><a th:href="@{'/dashboard/collections/'+${collection.id}+'/edit'}"
+                                       class="btn btn-primary">Edit</a></td>
                             </tr>
                             </tbody>
                         </table>
                     </form>
-
                     <a href="/dashboard/collections/add" class="btn btn-primary">Add new collection</a>
                 </div>
 

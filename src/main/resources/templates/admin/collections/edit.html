@@ -25,7 +25,8 @@
                 <!-- Content Row -->
 
                 <div class="row">
-                    <form action="/dashboard/collections/edit" method="post" class="form col-md-6">
+                    <form th:action="'/dashboard/collections/'+${collection.id}+'/edit'" method="post"
+                          class="form col-md-6">
                         <div class="row">
                             <input type="hidden" th:value="${collection.id}" name="id">
                             <div class="col-md-6">

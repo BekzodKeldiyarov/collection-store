@@ -1,7 +1,6 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
 import com.bekzodkeldiyarov.collectionstore.commands.AttributeCommand;
-import com.bekzodkeldiyarov.collectionstore.commands.CollectionCommand;
 import com.bekzodkeldiyarov.collectionstore.model.Attribute;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +18,7 @@ public interface AttributeService {
 
 //    void bindAttributesToCollection(Set<AttributeCommand> attributeCommands, CollectionCommand collectionCommand);
 
-    Set<Attribute> createAttributesForCollectionFromHttpServletRequest(HttpServletRequest request);
+    Set<Attribute> createAttributesFromHttpServletRequest(HttpServletRequest request);
 
     List<Attribute> saveAttributes(List<Attribute> attributes);
 }

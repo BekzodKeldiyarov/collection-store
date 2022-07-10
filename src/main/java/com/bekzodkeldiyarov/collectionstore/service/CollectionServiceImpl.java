@@ -1,82 +1,55 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
-import com.bekzodkeldiyarov.collectionstore.commands.CollectionCommand;
-import com.bekzodkeldiyarov.collectionstore.converters.CollectionCommandToCollection;
-import com.bekzodkeldiyarov.collectionstore.converters.CollectionToCollectionCommand;
-import com.bekzodkeldiyarov.collectionstore.model.Attribute;
 import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.model.User;
 import com.bekzodkeldiyarov.collectionstore.repository.CollectionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Slf4j
 public class CollectionServiceImpl implements CollectionService {
     private final CollectionRepository collectionRepository;
-    private final CollectionToCollectionCommand collectionToCollectionCommand;
-    private final CollectionCommandToCollection collectionCommandToCollection;
 
     private final UserService userService;
     @Autowired
     private AttributeService attributeService;
 
-    public CollectionServiceImpl(CollectionRepository collectionRepository, CollectionToCollectionCommand collectionToCollectionCommand, CollectionCommandToCollection collectionCommandToCollection, UserService userService) {
+    public CollectionServiceImpl(CollectionRepository collectionRepository, UserService userService) {
         this.collectionRepository = collectionRepository;
-        this.collectionToCollectionCommand = collectionToCollectionCommand;
-        this.collectionCommandToCollection = collectionCommandToCollection;
         this.userService = userService;
     }
 
     @Override
     public Collection save(Collection collection) {
-        return collectionRepository.save(collection);
-    }
-
-    @Override
-    public CollectionCommand saveCollectionCommand(CollectionCommand collectionCommand) {
-        Collection collectionToSave;
-        CollectionCommand savedCollectionCommand;
-        if (collectionCommand.getId() == null) {
-            collectionToSave = collectionCommandToCollection.convert(collectionCommand);
+        Collection collectionFromDb;
+        if (collection.getId() != null) {
+            collectionFromDb = collectionRepository.findById(collection.getId()).orElse(null);
+            if (collectionFromDb != null) {
+                collectionFromDb.setName(collection.getName());
+                collectionFromDb.setDescription(collection.getDescription());
+            }
         } else {
-            collectionToSave = collectionRepository.findById(collectionCommand.getId()).get();
-            collectionToSave.setName(collectionCommand.getName());
-            collectionToSave.setDescription(collectionCommand.getDescription());
+            collectionFromDb = collection;
         }
-        Collection savedCollection = collectionRepository.save(collectionToSave);
-        savedCollectionCommand = collectionToCollectionCommand.convert(savedCollection);
-        return savedCollectionCommand;
+        assert collectionFromDb != null;
+        return collectionRepository.save(collectionFromDb);
     }
 
-    @Override
-    public CollectionCommand saveCollectionCommand(CollectionCommand collectionCommand, Set<Attribute> attributes) {
-        Collection collectionToSave = collectionCommandToCollection.convert(collectionCommand);
-        Collection savedCollection = new Collection();
-        for (Attribute attribute : attributes) {
-            attribute.setCollection(collectionToSave);
-            collectionToSave.getAttributes().add(attribute);
-            savedCollection = collectionRepository.save(collectionToSave);
-            attributeService.save(attribute);
-        }
-        CollectionCommand savedCollectionCommand = collectionToCollectionCommand.convert(savedCollection);
-        return savedCollectionCommand;
-    }
 
     @Override
-    public List<CollectionCommand> getAllCollectionCommands() {
-        List<Collection> collections = collectionRepository.findAll();
-        List<CollectionCommand> collectionCommands = new ArrayList<>();
-        for (Collection collection : collections) {
-            collectionCommands.add(collectionToCollectionCommand.convert(collection));
+    public List<Collection> getAllCollectionsOfUser(boolean isAdmin, String username) {
+        List<Collection> collections;
+        if (isAdmin) {
+            collections = collectionRepository.findAll();
+        } else {
+            collections = collectionRepository.findAllByUserUsername(username);
         }
-        return collectionCommands;
+        return collections;
     }
 
     @Override
@@ -85,12 +58,17 @@ public class CollectionServiceImpl implements CollectionService {
     }
 
     @Override
-    public CollectionCommand findCollectionCommandById(Long id) {
-        Collection foundCollection = new Collection();
-        if (collectionRepository.findById(id).isPresent()) {
-            foundCollection = collectionRepository.findById(id).get();
-        }
-        return collectionToCollectionCommand.convert(foundCollection);
+    public List<Collection> getBiggestCollections() {
+        List<Collection> collections = collectionRepository.findAll();
+        Collections.sort(collections, new Comparator<Collection>() {
+            @Override
+            public int compare(Collection o1, Collection o2) {
+                return o2.getItems().size() - o1.getItems().size();
+            }
+        });
+
+
+        return new ArrayList<>(collections.subList(0, 5));
     }
 
     @Override
@@ -101,6 +79,7 @@ public class CollectionServiceImpl implements CollectionService {
         }
         return collection;
     }
+
 
     @Override
     public void deleteCollectionsOfUserById(Long[] ids, Long userId) {
@@ -116,6 +95,7 @@ public class CollectionServiceImpl implements CollectionService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteCollectionById(Long id) {
         collectionRepository.deleteById(id);
     }
