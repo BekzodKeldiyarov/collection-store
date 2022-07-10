@@ -4,6 +4,7 @@ import com.bekzodkeldiyarov.collectionstore.commands.ItemCommand;
 import com.bekzodkeldiyarov.collectionstore.model.Tag;
 import com.bekzodkeldiyarov.collectionstore.service.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,6 +36,7 @@ public class ItemController {
     }
 
     @PostMapping("/collections/{collectionId}/items/add")
+    @PreAuthorize(value = "hasAuthority('ADMIN')" + "or authentication.principal.equals(#command.member) ")
     public String postNewItemToCollection(@Valid ItemCommand itemCommand, BindingResult result, @RequestParam(required = false) String[] selectedTags) {
         if (result.hasErrors()) {
             log.error(result.getAllErrors().toString());

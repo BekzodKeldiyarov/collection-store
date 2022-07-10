@@ -68,4 +68,9 @@ public class MainController {
         MyUserDetails userDetail = (MyUserDetails) auth.getPrincipal();
         likeService.dislike(id, userDetail.getUsername());
     }
+
+    @GetMapping("/dashboard")
+    public String getDashboardPage() {
+        return "admin/index";
+    }
 }
