@@ -53,6 +53,12 @@ public class ItemController {
         return "admin/items/add";
     }
 
+    @GetMapping("/collections/{collectionId}/items/{itemId}/delete")
+    public String deleteItem(@PathVariable Long collectionId, @PathVariable Long itemId, Model model) {
+        itemService.deleteById(itemId);
+        return "redirect:/dashboard/collections/" + collectionId;
+    }
+
 
     @GetMapping("/items/tags/{id}")
     public String getItemsByTag(@PathVariable Long id, Model model) {

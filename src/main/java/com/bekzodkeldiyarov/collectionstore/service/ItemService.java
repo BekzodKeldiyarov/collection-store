@@ -15,4 +15,6 @@ public interface ItemService {
     Item findItemById(Long id);
 
     Item bindTagsToItem(Item item, String[] tags);
+
+    void deleteById(Long id);
 }
