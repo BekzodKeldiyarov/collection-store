@@ -24,7 +24,7 @@ public class Item extends BaseEntity {
     @FullTextField()
     private String name;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "item_tags", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "tab_id"))
     @JsonIgnore
     private Set<Tag> tags = new HashSet<>();
@@ -39,7 +39,7 @@ public class Item extends BaseEntity {
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Like> likes = new ArrayList<>();
 

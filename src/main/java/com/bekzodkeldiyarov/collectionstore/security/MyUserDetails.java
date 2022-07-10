@@ -38,6 +38,7 @@ public class MyUserDetails implements UserDetails {
         return user.getUsername();
     }
 
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -61,5 +62,9 @@ public class MyUserDetails implements UserDetails {
     @Override
     public String toString() {
         return getUsername();
+    }
+
+    public String getName() {
+        return user.getUsername();
     }
 }

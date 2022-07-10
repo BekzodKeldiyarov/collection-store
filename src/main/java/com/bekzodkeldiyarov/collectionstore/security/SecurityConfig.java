@@ -1,7 +1,10 @@
 package com.bekzodkeldiyarov.collectionstore.security;
 
+import com.bekzodkeldiyarov.collectionstore.oauth2.OAuth2LoginSuccessHandler;
 import com.bekzodkeldiyarov.collectionstore.service.UserDetailsServiceImpl;
-import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
+import com.bekzodkeldiyarov.collectionstore.oauth2.OAuth2UserServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -9,19 +12,21 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.stereotype.Component;
 
 @Configuration
 @EnableWebSecurity
+@Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private OAuth2UserServiceImpl oAuth2UserService;
+    @Autowired
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final PasswordEncoder passwordEncoder;
 
     public SecurityConfig(PasswordEncoder passwordEncoder) {
@@ -30,20 +35,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        log.info("-------------" + oAuth2LoginSuccessHandler.toString() + "------------");
         http
-                .csrf().disable()
+////                .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/dashboard/collections/add").authenticated()
-                .antMatchers("/dashboard/collections/**").hasRole("ADMIN")
-                .antMatchers("/dashboard/collections/{collectionId}/**")
-                .access("@userSecurity.hasUserId(authentication,#collectionId)")
-                .antMatchers("/dashboard/**").authenticated()
-                .antMatchers("**").permitAll()
+                .antMatchers("/dashboard").authenticated()
+//                .antMatchers("/dashboard/collections/add").authenticated()
+//                .antMatchers("/dashboard/collections/**").hasRole("ADMIN")
+//                .antMatchers("/dashboard/collections/{collectionId}/**")
+//                .access("@userSecurity.hasUserId(authentication,#collectionId)")
+//                .antMatchers("/dashboard/**").authenticated()
+//                .antMatchers("**").permitAll()
+                .anyRequest().permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login")
                 .failureUrl("/login?error=true")
                 .defaultSuccessUrl("/")
+                .and()
+                .oauth2Login()
+                .loginPage("/login")
+                .userInfoEndpoint().userService(oAuth2UserService)
+                .and()
+//                .successHandler(oAuth2LoginSuccessHandler)
                 .and()
                 .sessionManagement()
                 .maximumSessions(-1)

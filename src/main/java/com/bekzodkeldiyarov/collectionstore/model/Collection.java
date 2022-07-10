@@ -30,7 +30,7 @@ public class Collection extends BaseEntity {
     @JsonIgnore
     private Set<Item> items = new HashSet<>();
 
-    @OneToMany(mappedBy = "collection")
+    @OneToMany(mappedBy = "collection", fetch = FetchType.EAGER)
     @ToString.Exclude
     @JsonIgnore
     private Set<Attribute> attributes = new HashSet<>();
