@@ -98,12 +98,10 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
 
         admin.getRoles().add(role);
 
-//        admin.getCollections().add(collection);
 
         userService.save(admin);
         roleService.save(role);
         collectionService.save(collectionCommand);
-//        attributeService.bindAttributesToCollection(attributeCommands, collectionCommand);
         ItemAttributeValue itemAttributeValue = new ItemAttributeValue();
         Collection collection = Collection.builder().name("New Collection").description("Collection for many-to-many relationship").user(admin).attributes(new HashSet<>()).build();
 
@@ -150,7 +148,6 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         attributeService.save(attribute);
         itemService.save(item);
         itemAttributeValueRepository.save(itemAttributeValue);
-//        itemService.save(item);
 
         log.info("Data Bootstrapped");
         try {

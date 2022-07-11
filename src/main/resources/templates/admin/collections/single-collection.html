@@ -29,6 +29,7 @@
                                      class="col-md-7">
                                     <th th:text="${attribute.attributeName}"></th>
                                 </div>
+                                <th>Likes</th>
                                 <th>Edit/view</th>
                                 <th>Delete</th>
                             </tr>
@@ -44,8 +45,11 @@
                                 </td>
                                 <div th:each="itemAttributeValue, itemStat: ${item.itemAttributeValues}"
                                      class="col-md-7">
-                                    <th th:text="${item.itemAttributeValues[__${itemStat.index}__].value}"></th>
+                                    <td th:text="${item.itemAttributeValues[__${itemStat.index}__].value}"></td>
                                 </div>
+                                <td>
+                                    <span th:text="${#lists.size(item.likes)}"></span>
+                                </td>
                                 <td>
                                     <a th:href="@{'/dashboard/collections/'+${item.collection.id}+'/items/'+${item.id}+'/edit'}"
                                        class="btn btn-primary">Edit</a>
