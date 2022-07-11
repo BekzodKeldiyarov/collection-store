@@ -39,7 +39,7 @@ public class MainController {
     @GetMapping("")
     public String index(Model model) {
         model.addAttribute("indexMessage", "last-items");
-        model.addAttribute("items", itemService.getAllItems()); //todo not all items but last n items
+        model.addAttribute("items", itemService.getAllItemsSortByLastAdded());
         model.addAttribute("collections", collectionService.getBiggestCollections());
         model.addAttribute("tags", tagService.getAllTags());
         return "index";
