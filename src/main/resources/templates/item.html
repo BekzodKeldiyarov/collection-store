@@ -15,24 +15,26 @@
     <div class="row">
 
         <div class="col-md-8">
-            
+
             <h1 class="mt-4" th:text="${item.name}"></h1>
 
 
             <p class="lead">
-                <a href="#" th:text="${item.collection.name}">Author of item</a>
+                <a href="#" th:text="${item.collection.name}">Collection item</a>
             </p>
             <p class="lead">
+                <span th:text="#{item.postedby}"></span>
                 <a href="#" th:text="${item.collection.user.username}">Author of item</a>
             </p>
 
             <div class="lead" th:each="attributeValue : ${item.itemAttributeValues}">
-                <p th:text="${attributeValue.attribute.attributeName}">Author of item</p>
+                <p style="font-weight: bold" th:text="${attributeValue.attribute.attributeName}">Author of item</p>
                 <p th:text="${attributeValue.value}">Author of item</p>
             </div>
-            <h6>Likes: <span id="likesCount" th:text="${#lists.size(item.likes)}"></span></h6>
+            <h6><span th:text="#{item.likes}">Likes</span>: <span id="likesCount"
+                                                                  th:text="${#lists.size(item.likes)}"></span></h6>
             <div sec:authorize="isAnonymous()">
-                <span>Only logged in users are able to like</span>
+                <span th:text="#{item.likes.nonauth}">Only logged in users are able to like</span>
             </div>
             <div sec:authorize="isAuthenticated()">
                 <div th:each="like:${item.likes}">
@@ -41,27 +43,33 @@
                         </button>
                     </div>
                 </div>
-                <button id="likeButton" onclick="likeItem()" class="btn btn-outline-primary">Like</button>
-                <button onclick="dislikeItem()" class="dislikeButton btn btn-outline-primary d-none">Dislike</button>
+                <button th:text="#{item.likes.likebutton}" id="likeButton" onclick="likeItem()"
+                        class="btn btn-outline-primary">Like
+                </button>
+                <button th:text="#{item.likes.dislikebutton}" onclick="dislikeItem()"
+                        class="dislikeButton btn btn-outline-primary d-none">Dislike
+                </button>
             </div>
             <div class="comments mt-2">
-                <h2>Comments</h2>
+                <h2 th:text="#{item.comments}">Comments</h2>
                 <input id="itemId" type="hidden" th:value="${item.id}">
                 <!-- Comments Form -->
                 <div sec:authorize="isAnonymous()">
-                    <span>Please, login for adding comment</span>
+                    <span th:text="#{item.comments.nonauth}">Please, login for adding comment</span>
                     <br>
-                    <a href="/login" class="btn btn-outline-primary">Login</a>
+                    <a href="/login" class="btn btn-outline-primary" th:text="#{index.login}">Login</a>
                 </div>
                 <div class="card my-4" sec:authorize="isAuthenticated()">
-                    <h5 class="card-header">Leave a Comment:</h5>
+                    <h5 class="card-header" th:text="#{item.leave-comment}">Leave a Comment:</h5>
                     <div class="card-body">
                         <form>
                             <div class="form-group">
                             <textarea id="messageBody" th:name="comment_text" class="form-control" rows="3"
                                       name="comment"></textarea>
                             </div>
-                            <button id="messageSendBtn" type="button" class="btn btn-primary">Submit</button>
+                            <button id="messageSendBtn" type="button" class="btn btn-primary"
+                                    th:text="#{item.comment-submit}">Submit
+                            </button>
                         </form>
                     </div>
                 </div>

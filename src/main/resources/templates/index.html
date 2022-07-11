@@ -12,23 +12,22 @@
         <select id="locales">
             <option value=""></option>
             <option value="en" th:text="#{lang.eng}"></option>
-            <option value="ru" th:text="#{lang.fr}"></option>
+            <option value="ru" th:text="#{lang.ru}"></option>
         </select>
         <div class="col-md-8">
             <h1 class="my-4">
                 See last added items
             </h1>
 
-
-            <!-- Blog Post -->
             <div class="card mb-4" th:each="item:${items}">
                 <div class="card-body">
                     <h2 class="card-title" th:text="${item.name}">Some title</h2>
                     <p class="card-text">Some description</p>
-                    <a th:href="@{'/items/'+${item.id}}" class="btn btn-primary">Read More &rarr;</a>
+                    <a th:href="@{'/items/'+${item.id}}" class="btn btn-primary" th:text="#{item.readmore}">Read More
+                        &rarr;</a>
                 </div>
                 <div class="card-footer text-muted">
-                    Posted by
+                    <p th:text="#{item.postedby}">Posted by</p>
                     <a th:href="@{'/users/'+${item.collection.user.id}}" th:text="${item.collection.user.username}">User
                         name</a>
                 </div>
