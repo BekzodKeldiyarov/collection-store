@@ -5,9 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
-import org.springframework.transaction.annotation.Transactional;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -16,13 +16,14 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Indexed
 @Getter
 @Setter
+@Indexed
+@Table(name = "item")
 @NoArgsConstructor
 public class Item extends BaseEntity {
     @JsonIgnore
-    @FullTextField()
+    @Field(termVector = TermVector.YES)
     private String name;
 
     @ManyToMany
@@ -33,13 +34,14 @@ public class Item extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore
+    @IndexedEmbedded
     private Collection collection;
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<Like> likes = new ArrayList<>();
 
@@ -54,7 +56,7 @@ public class Item extends BaseEntity {
         this.likes = likes;
     }
 
-    @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
     @JsonIgnore
     List<ItemAttributeValue> itemAttributeValues = new ArrayList<>();
 

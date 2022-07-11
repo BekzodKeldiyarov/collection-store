@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -111,5 +112,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void refreshUserSession() {
         userSession.expireSessionForNonActiveUsers();
+    }
+
+    @Override
+    public String getUsersPreferedLocaleOption(String username) {
+        return userRepository.findByUsername(username).getPreferLocale();
+    }
+
+    @Override
+    public void saveUsersPreferedLocaleOption(String username, Locale locale) {
+        User user = userRepository.findByUsername(username);
+        user.setPreferLocale(locale.getLanguage());
+        userRepository.save(user);
     }
 }

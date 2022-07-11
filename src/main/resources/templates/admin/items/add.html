@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/fragments::headerfiles"></head>
+<head th:replace="fragments/dashboard/fragments::headerfiles"></head>
 <body id="page-top">
 <!-- Page Wrapper -->
 <div id="wrapper">
-    <div th:replace="fragments/admin-sidebar.html :: sidebar"></div>
+    <div th:replace="fragments/dashboard/admin-sidebar.html :: sidebar"></div>
     <div id="content-wrapper" class="d-flex flex-column">
         <!-- Main Content -->
         <div id="content">
 
-            <nav th:replace="fragments/admin-topbar.html :: topbar"></nav>
+            <nav th:replace="fragments/dashboard/admin-topbar.html :: topbar"></nav>
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
@@ -31,7 +31,7 @@
                                        placeholder="Enter name of item">
                             </div>
                             <div class="col-md-6">
-                                <input th:field="*{collection}" type="text" class="form-control"
+                                <input th:field="*{collection}" type="hidden" class="form-control"
                                        th:value="${collection}" readonly>
                             </div>
                             <div class="col-md-6 mt-4">
@@ -61,6 +61,17 @@
                                            th:field="*{itemAttributeValues[__${itemStat.index}__].value}"
                                            type="date"
                                            class="form-control">
+                                    <input th:case="${'boolean'}"
+                                           th:field="*{itemAttributeValues[__${itemStat.index}__].value}"
+                                           type="checkbox"
+                                           class="form-control">
+                                    <input th:case="${'int'}"
+                                           th:field="*{itemAttributeValues[__${itemStat.index}__].value}"
+                                           type="number"
+                                           class="form-control">
+                                    <textarea th:case="${'text'}"
+                                              th:field="*{itemAttributeValues[__${itemStat.index}__].value}"
+                                              class="form-control"></textarea>
                                     <input th:field="*{itemAttributeValues[__${itemStat.index}__].item}"
                                            type="hidden"
                                            class="form-control">
@@ -81,13 +92,13 @@
 
         </div>
         <!-- End of Main Content -->
-        <div th:replace="fragments/fragments::scripts"></div>
+        <div th:replace="fragments/dashboard/fragments::scripts"></div>
     </div>
 
 </div>
 <!-- End of Page Wrapper -->
 
-<div th:replace="fragments/fragments::scripts"></div>
+<div th:replace="fragments/dashboard/fragments::scripts"></div>
 </body>
 
 </html>

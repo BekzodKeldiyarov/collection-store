@@ -3,6 +3,7 @@ package com.bekzodkeldiyarov.collectionstore.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
 import java.util.*;
@@ -14,10 +15,10 @@ import java.util.*;
 @NoArgsConstructor
 @ToString
 public class Collection extends BaseEntity {
+    @Field
     private String name;
-
-
-    @Column(columnDefinition="TEXT")
+    @Column(columnDefinition = "TEXT")
+    @Field
     private String description;
 
     @ManyToOne
@@ -25,15 +26,15 @@ public class Collection extends BaseEntity {
     @JsonIgnore
     private User user;
 
-    @OneToMany(mappedBy = "collection")
+    @OneToMany(mappedBy = "collection", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     @JsonIgnore
     private Set<Item> items = new HashSet<>();
 
-    @OneToMany(mappedBy = "collection", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "collection", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     @JsonIgnore
-    private Set<Attribute> attributes = new HashSet<>();
+    private Set<Attribute> attributes = new LinkedHashSet<>();
 
     @Builder
     public Collection(Long id, String name, String description, User user, Set<Item> items, Set<Attribute> attributes) {

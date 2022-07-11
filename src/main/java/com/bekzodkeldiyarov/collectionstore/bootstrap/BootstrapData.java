@@ -1,8 +1,10 @@
 package com.bekzodkeldiyarov.collectionstore.bootstrap;
 
 import com.bekzodkeldiyarov.collectionstore.commands.AttributeCommand;
-import com.bekzodkeldiyarov.collectionstore.commands.CollectionCommand;
+import com.bekzodkeldiyarov.collectionstore.config.IndexingService;
+import com.bekzodkeldiyarov.collectionstore.config.SearchService;
 import com.bekzodkeldiyarov.collectionstore.model.*;
+import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.repository.ItemAttributeValueRepository;
 import com.bekzodkeldiyarov.collectionstore.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -12,10 +14,9 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -30,9 +31,14 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     private final LikeService likeService;
 
     @Autowired
+    private SearchService searchService;
+    @Autowired
+    private IndexingService indexingService;
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ItemAttributeValueRepository itemAttributeValueRepository;
+
 
     public BootstrapData(UserService userService, RoleService roleService, CollectionService collectionService, ItemService itemService, AttributeService attributeService, TagService tagService, CommentService commentService, LikeService likeService) {
         this.userService = userService;
@@ -70,12 +76,12 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         userService.save(blockedUser);
 
 
-        CollectionCommand collectionCommand = CollectionCommand.builder()
+        Collection collectionCommand = Collection.builder()
                 .name("My book")
                 .description("My books collection")
                 .user(admin)
                 .items(new HashSet<>())
-                .attributes(new ArrayList<>()).build();
+                .attributes(new LinkedHashSet<>()).build();
 
         Set<AttributeCommand> attributeCommands = new HashSet<>();
         attributeCommands.add(AttributeCommand.builder().attributeName("Author").type("String").build());
@@ -96,7 +102,7 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
 
         userService.save(admin);
         roleService.save(role);
-        collectionService.saveCollectionCommand(collectionCommand);
+        collectionService.save(collectionCommand);
 //        attributeService.bindAttributesToCollection(attributeCommands, collectionCommand);
         ItemAttributeValue itemAttributeValue = new ItemAttributeValue();
         Collection collection = Collection.builder().name("New Collection").description("Collection for many-to-many relationship").user(admin).attributes(new HashSet<>()).build();
@@ -145,7 +151,13 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         itemService.save(item);
         itemAttributeValueRepository.save(itemAttributeValue);
 //        itemService.save(item);
-        log.info("Data Bootstrapped");
 
+        log.info("Data Bootstrapped");
+        try {
+            indexingService.initiateIndexing();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        log.info(searchService.getPostBasedOnWord(item.getName()).toString());
     }
 }

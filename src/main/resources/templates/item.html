@@ -2,121 +2,78 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<head>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Itra project</title>
-
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link th:href="@{/css/app.css}" rel="stylesheet">
-    <link th:href="@{/css/custom.css}" rel="stylesheet">
-    <link th:href="@{/css/blog-home.css}" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-</head>
+<head th:replace="fragments/public/fragments::headerfiles"></head>
 
 <body class="p-0">
 
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="">Collection-store</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="">Home
-                        <span class="sr-only">(current)</span>
-                    </a>
-                </li>
-                <div sec:authorize="isAuthenticated()">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/dashboard">Dashboard</a>
-                    </li>
-                </div>
-                <div sec:authorize="isAnonymous()">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
-                </div>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Services</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<nav th:replace="fragments/public/fragments::navigation"></nav>
 
 <!-- Page Content -->
 <div class="container">
 
     <div class="row">
 
-        <!-- Blog Entries Column -->
         <div class="col-md-8">
-
 
             <h1 class="mt-4" th:text="${item.name}"></h1>
 
 
             <p class="lead">
-                <a href="#" th:text="${item.collection.name}">Author of item</a>
+                <a href="#" th:text="${item.collection.name}">Collection item</a>
             </p>
             <p class="lead">
+                <span th:text="#{item.postedby}"></span>
                 <a href="#" th:text="${item.collection.user.username}">Author of item</a>
             </p>
 
-            <div class="lead" th:each="attributeValue : ${item.itemAttributeValues}">
-                <p th:text="${attributeValue.attribute.attributeName}">Author of item</p>
-                <p th:text="${attributeValue.value}">Author of item</p>
+            <div class="lead mb-1" th:each="attributeValue : ${item.itemAttributeValues}">
+                <span style="font-weight: bold" class="mb-0 mr-1" th:text="${attributeValue.attribute.attributeName}">Author of
+                    item</span>:
+                <span th:text="${attributeValue.value}" class="mb-0">Author of item</span>
             </div>
-            <h6>Likes: <span id="likesCount" th:text="${#lists.size(item.likes)}"></span></h6>
-            <div sec:authorize="isAnonymous()">
-                <span>Only logged in users are able to like</span>
-            </div>
-            <div sec:authorize="isAuthenticated()">
-                <div th:each="like:${item.likes}">
-                    <div th:if="${#strings.equals(#authentication.getPrincipal(), like.user.username)}">
-                        <button id="dislikeButton" onclick="dislikeItem()" class="btn btn-outline-primary">Dislike
-                        </button>
-                    </div>
+            <div class="likes-section mt-2">
+                <h6><span th:text="#{item.likes}">Likes</span>: <span id="likesCount"
+                                                                      th:text="${#lists.size(item.likes)}"></span></h6>
+                <div sec:authorize="isAnonymous()">
+                    <span th:text="#{item.likes.nonauth}">Only logged in users are able to like</span>
                 </div>
-                <button id="likeButton" onclick="likeItem()" class="btn btn-outline-primary">Like</button>
-                <button onclick="dislikeItem()" class="dislikeButton btn btn-outline-primary d-none">Dislike</button>
+                <div sec:authorize="isAuthenticated()">
+                    <div th:each="like:${item.likes}">
+                        <div th:if="${#strings.equals(#authentication.getPrincipal(), like.user.username)}">
+                            <button id="dislikeButton" onclick="dislikeItem()" class="btn btn-outline-primary">Dislike
+                            </button>
+                        </div>
+                    </div>
+                    <button th:text="#{item.likes.likebutton}" id="likeButton" onclick="likeItem()"
+                            class="btn btn-outline-primary">Like
+                    </button>
+                    <button th:text="#{item.likes.dislikebutton}" onclick="dislikeItem()"
+                            class="dislikeButton btn btn-outline-primary d-none">Dislike
+                    </button>
+                </div>
             </div>
-            <div class="comments mt-2">
-                <h2>Comments</h2>
+
+            <div class="comments mt-4">
+                <h2 th:text="#{item.comments}">Comments</h2>
                 <input id="itemId" type="hidden" th:value="${item.id}">
                 <!-- Comments Form -->
                 <div sec:authorize="isAnonymous()">
-                    <span>Please, login for adding comment</span>
+                    <span th:text="#{item.comments.nonauth}">Please, login for adding comment</span>
                     <br>
-                    <a href="/login" class="btn btn-outline-primary">Login</a>
+                    <a href="/login" class="btn btn-outline-primary" th:text="#{index.login}">Login</a>
                 </div>
                 <div class="card my-4" sec:authorize="isAuthenticated()">
-                    <h5 class="card-header">Leave a Comment:</h5>
+                    <h5 class="card-header" th:text="#{item.leave-comment}">Leave a Comment:</h5>
                     <div class="card-body">
                         <form>
                             <div class="form-group">
                             <textarea id="messageBody" th:name="comment_text" class="form-control" rows="3"
                                       name="comment"></textarea>
                             </div>
-                            <button id="messageSendBtn" type="button" class="btn btn-primary">Submit</button>
+                            <button id="messageSendBtn" type="button" class="btn btn-primary"
+                                    th:text="#{item.comment-submit}">Submit
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -135,73 +92,14 @@
 
         </div>
 
-        <!-- Sidebar Widgets Column -->
-        <div class="col-md-4">
-            <!-- Search Widget -->
-            <div class="card my-4">
-                <h5 class="card-header">Search</h5>
-                <div class="card-body">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                        <span class="input-group-btn">
-                <button class="btn btn-secondary" type="button">Go!</button>
-              </span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Categories Widget -->
-            <div class="card my-4">
-                <h5 class="card-header">Top collections</h5>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <ul class="list-unstyled mb-0">
-                                <li th:each="collection:${collections}">
-                                    <a th:href="@{'/collections/'+${collection.id}}" th:text="${collection.name}">Web
-                                        Design</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card my-4">
-                <h5 class="card-header">Tags</h5>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-12">
-                                <span th:each="tag:${tags}">
-                                    <a class="badge badge-secondary" th:href="@{'/tags/'+${tag.id}}"
-                                       th:text="${tag.name}">Tag</a>
-                                </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Side Widget -->
-
-
+        <div th:replace="fragments/public/fragments::sidebar"></div>
     </div>
-
 </div>
-<!-- /.row -->
 
-</div>
-<!-- /.container -->
-
-<!-- Footer -->
-<footer class="py-5 bg-dark">
-    <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2019</p>
-    </div>
-    <!-- /.container -->
-</footer>
+<div th:replace="fragments/public/fragments::footer"></div>
 
 <!-- Bootstrap core JavaScript -->
-<div th:replace="fragments/fragments::scripts"></div>
+<div th:replace="fragments/dashboard/fragments::scripts"></div>
 <script th:src="@{/js/chat.js}"></script>
 
 <script id="comment-template" type="text/x-handlebars-template">

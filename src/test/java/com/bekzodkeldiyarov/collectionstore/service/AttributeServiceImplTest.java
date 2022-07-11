@@ -3,7 +3,6 @@ package com.bekzodkeldiyarov.collectionstore.service;
 import com.bekzodkeldiyarov.collectionstore.commands.AttributeCommand;
 import com.bekzodkeldiyarov.collectionstore.converters.AttributeCommandToAttribute;
 import com.bekzodkeldiyarov.collectionstore.converters.AttributeToAttributeCommand;
-import com.bekzodkeldiyarov.collectionstore.converters.CollectionCommandToCollection;
 import com.bekzodkeldiyarov.collectionstore.model.Attribute;
 import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.repository.AttributeRepository;
@@ -31,14 +30,12 @@ class AttributeServiceImplTest {
     @Mock
     AttributeToAttributeCommand attributeToAttributeCommand;
     @Mock
-    CollectionCommandToCollection collectionCommandToCollection;
-    @Mock
     CollectionService collectionService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        attributeService = new AttributeServiceImpl(attributeRepository, attributeCommandToAttribute, attributeToAttributeCommand,  collectionCommandToCollection);
+        attributeService = new AttributeServiceImpl(attributeRepository, attributeCommandToAttribute, attributeToAttributeCommand);
     }
 
     @Test

@@ -94,6 +94,12 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search-orm</artifactId>
+            <version>5.11.6.Final</version>
+        </dependency>
+
     </dependencies>
 
     <build>

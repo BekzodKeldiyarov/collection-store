@@ -8,6 +8,8 @@ import com.bekzodkeldiyarov.collectionstore.service.RoleService;
 import com.bekzodkeldiyarov.collectionstore.service.UserService;
 import com.bekzodkeldiyarov.collectionstore.service.UserSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +17,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @Controller
 @Slf4j
-@RequestMapping("/dashboard")
+@RequestMapping("/dashboard/users")
 public class AdminController {
     private final UserService userService;
     private final RoleService roleService;
@@ -31,27 +34,25 @@ public class AdminController {
         this.attributeRepository = attributeRepository;
     }
 
-    @GetMapping("")
-    public String getAdminPage() {
-        return "admin/index";
-    }
 
-
-    @GetMapping("/users")
+    @GetMapping()
+    @Secured("ROLE_ADMIN")
     public String getAllUsers(Model model) {
         List<UserCommand> users = userService.findAll();
         model.addAttribute("users", users);
         return "admin/users/users";
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
+    @Secured("ROLE_ADMIN")
     public String getSingleUserPage(@PathVariable Long id, Model model) {
         UserCommand user = userService.findUserCommandById(id);
         model.addAttribute("user", user);
         return "admin/users/single-user";
     }
 
-    @PostMapping(value = "/users/{idOfUser}", params = "action=delete-collections")
+    @PostMapping(value = "/{idOfUser}", params = "action=delete-collections")
+    @Secured("ROLE_ADMIN")
     public String changeUserCollectionAndItems(@PathVariable Long idOfUser, @RequestParam(required = false) Long[] ids) {
         if (ids == null) {
             return "redirect:/dashboard/users/" + idOfUser;
@@ -61,7 +62,8 @@ public class AdminController {
     }
 
 
-    @PostMapping(value = "/users")
+    @PostMapping()
+    @Secured("ROLE_ADMIN")
     public String changeUsers(@RequestParam(required = false) Integer[] ids, @RequestParam String action) {
         if (ids == null) {
             return "redirect:/dashboard/users";

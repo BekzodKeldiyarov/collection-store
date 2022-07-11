@@ -9,25 +9,18 @@
     <div class="row">
 
         <div class="col-md-8">
-            <div th:if="${indexMessage!=null}">
-                <h1 class="my-4">
-                    See last added items
-                </h1>
-            </div>
             <div th:if="${pageName!=null}">
                 <h1 class="my-4" th:text="${pageName}"></h1>
             </div>
-            <div class="card mb-4" th:each="item:${items}">
+            <div class="card mb-4" th:each="collection:${collectionsOfUser}">
                 <div class="card-body">
-                    <h2 class="card-title" th:text="${item.name}">Some title</h2>
-                    <p class="card-text">Some description</p>
-                    <a th:href="@{'/items/'+${item.id}}" class="btn btn-primary" th:text="#{item.readmore}">Read More
+                    <h2 class="card-title" th:text="${collection.name}">Some title</h2>
+                    <p class="card-text" th:text="${collection.description}">Some description</p>
+                    <a th:href="@{'/collections/'+${collection.id}}" class="btn btn-primary" th:text="#{item.readmore}">See
+                        Items
                         &rarr;</a>
                 </div>
                 <div class="card-footer text-muted">
-                    <p th:text="#{item.postedby}">Posted by</p>
-                    <a th:href="@{'/users/'+${item.collection.user.id}}" th:text="${item.collection.user.username}">User
-                        name</a>
                 </div>
             </div>
         </div>
