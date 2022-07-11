@@ -39,6 +39,19 @@
     <script th:src="@{/js/sb-admin.min.js}"></script>
     <script th:src="@{/js/multiselect.js}"></script>
     <script th:src="@{/js/custom.js}"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#locales").change(function () {
+                var selectedOption = $('#locales').val();
+                if (selectedOption != '') {
+                    window.location.replace('/?lang=' + selectedOption);
+                }
+            });
+        });
+    </script>
 </div>
 
 

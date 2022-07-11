@@ -7,13 +7,7 @@
 <div class="container">
 
     <div class="row">
-        <h1 th:text="#{greeting}"></h1>
-        <span th:text="#{lang.change}"></span>:
-        <select id="locales">
-            <option value=""></option>
-            <option value="en" th:text="#{lang.eng}"></option>
-            <option value="ru" th:text="#{lang.ru}"></option>
-        </select>
+
         <div class="col-md-8">
             <h1 class="my-4">
                 See last added items
@@ -42,19 +36,6 @@
 
 <!-- Bootstrap core JavaScript -->
 <div th:replace="fragments/dashboard/fragments::scripts"></div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
-</script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("#locales").change(function () {
-            var selectedOption = $('#locales').val();
-            if (selectedOption != '') {
-                window.location.replace('/?lang=' + selectedOption);
-            }
-        });
-    });
-</script>
-
 </body>
 
 </html>
