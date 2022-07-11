@@ -1,7 +1,9 @@
 package com.bekzodkeldiyarov.collectionstore.controllers;
 
+import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.model.Comment;
 import com.bekzodkeldiyarov.collectionstore.model.Item;
+import com.bekzodkeldiyarov.collectionstore.model.Tag;
 import com.bekzodkeldiyarov.collectionstore.security.MyUserDetails;
 import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
 import com.bekzodkeldiyarov.collectionstore.service.ItemService;
@@ -14,7 +16,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @Slf4j
@@ -34,6 +38,7 @@ public class MainController {
 
     @GetMapping("")
     public String index(Model model) {
+        model.addAttribute("indexMessage", "last-items");
         model.addAttribute("items", itemService.getAllItems()); //todo not all items but last n items
         model.addAttribute("collections", collectionService.getBiggestCollections());
         model.addAttribute("tags", tagService.getAllTags());
@@ -70,4 +75,39 @@ public class MainController {
     public String getDashboardPage() {
         return "admin/index";
     }
+
+    @GetMapping("/tags/{tagId}")
+    public String getItemsByTag(@PathVariable Long tagId, Model model) {
+        Tag tag = tagService.findById(tagId);
+        Set<Item> items = tag.getItems();
+        model.addAttribute("pageName", tag.getName());
+        model.addAttribute("items", items);
+        model.addAttribute("collections", collectionService.getBiggestCollections());
+        model.addAttribute("tags", tagService.getAllTags());
+        return "index";
+    }
+
+    @GetMapping("/collections/{collectionId}")
+    public String getItemsByCollection(@PathVariable Long collectionId, Model model) {
+        Collection collection = collectionService.findCollectionById(collectionId);
+        Set<Item> items = collection.getItems();
+        model.addAttribute("pageName", collection.getName());
+        model.addAttribute("items", items);
+        model.addAttribute("collections", collectionService.getBiggestCollections());
+        model.addAttribute("tags", tagService.getAllTags());
+        return "index";
+    }
+
+    @GetMapping("/users/{userId}")
+    public String getCollectionsAndItemsOfUser(@PathVariable Long userId, Model model) {
+        List<Collection> allCollectionsOfUser = collectionService.getAllCollectionsOfUser(userId);
+        log.info(allCollectionsOfUser.size() + "");
+        model.addAttribute("pageName", allCollectionsOfUser.get(0).getUser().getUsername());
+        model.addAttribute("collectionsOfUser", allCollectionsOfUser);
+        model.addAttribute("collections", collectionService.getBiggestCollections());
+        model.addAttribute("tags", tagService.getAllTags());
+        return "collections";
+    }
+
+
 }

@@ -34,8 +34,6 @@ public class UserSecurity {
             User userFromDb = userService.findByUsername(user.getUsername());
             Role adminRole = roleService.findByName("ROLE_ADMIN");
             Collection collection = collectionService.findCollectionById(id);
-            log.info(userFromDb.getRoles().iterator().next().getName());
-            log.info(userFromDb.getRoles().contains(adminRole) + "");
             if (Objects.equals(collection.getUser().getId(), userFromDb.getId()) || userFromDb.getRoles().contains(adminRole)) {
                 log.info("returning true");
                 return true;

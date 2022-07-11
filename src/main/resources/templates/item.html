@@ -32,26 +32,29 @@
                     item</span>:
                 <span th:text="${attributeValue.value}" class="mb-0">Author of item</span>
             </div>
-            <h6><span th:text="#{item.likes}">Likes</span>: <span id="likesCount"
-                                                                  th:text="${#lists.size(item.likes)}"></span></h6>
-            <div sec:authorize="isAnonymous()">
-                <span th:text="#{item.likes.nonauth}">Only logged in users are able to like</span>
-            </div>
-            <div sec:authorize="isAuthenticated()">
-                <div th:each="like:${item.likes}">
-                    <div th:if="${#strings.equals(#authentication.getPrincipal(), like.user.username)}">
-                        <button id="dislikeButton" onclick="dislikeItem()" class="btn btn-outline-primary">Dislike
-                        </button>
-                    </div>
+            <div class="likes-section mt-2">
+                <h6><span th:text="#{item.likes}">Likes</span>: <span id="likesCount"
+                                                                      th:text="${#lists.size(item.likes)}"></span></h6>
+                <div sec:authorize="isAnonymous()">
+                    <span th:text="#{item.likes.nonauth}">Only logged in users are able to like</span>
                 </div>
-                <button th:text="#{item.likes.likebutton}" id="likeButton" onclick="likeItem()"
-                        class="btn btn-outline-primary">Like
-                </button>
-                <button th:text="#{item.likes.dislikebutton}" onclick="dislikeItem()"
-                        class="dislikeButton btn btn-outline-primary d-none">Dislike
-                </button>
+                <div sec:authorize="isAuthenticated()">
+                    <div th:each="like:${item.likes}">
+                        <div th:if="${#strings.equals(#authentication.getPrincipal(), like.user.username)}">
+                            <button id="dislikeButton" onclick="dislikeItem()" class="btn btn-outline-primary">Dislike
+                            </button>
+                        </div>
+                    </div>
+                    <button th:text="#{item.likes.likebutton}" id="likeButton" onclick="likeItem()"
+                            class="btn btn-outline-primary">Like
+                    </button>
+                    <button th:text="#{item.likes.dislikebutton}" onclick="dislikeItem()"
+                            class="dislikeButton btn btn-outline-primary d-none">Dislike
+                    </button>
+                </div>
             </div>
-            <div class="comments mt-2">
+
+            <div class="comments mt-4">
                 <h2 th:text="#{item.comments}">Comments</h2>
                 <input id="itemId" type="hidden" th:value="${item.id}">
                 <!-- Comments Form -->
