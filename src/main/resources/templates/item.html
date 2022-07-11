@@ -27,9 +27,10 @@
                 <a href="#" th:text="${item.collection.user.username}">Author of item</a>
             </p>
 
-            <div class="lead" th:each="attributeValue : ${item.itemAttributeValues}">
-                <p style="font-weight: bold" th:text="${attributeValue.attribute.attributeName}">Author of item</p>
-                <p th:text="${attributeValue.value}">Author of item</p>
+            <div class="lead mb-1" th:each="attributeValue : ${item.itemAttributeValues}">
+                <p style="font-weight: bold" class="mb-0" th:text="${attributeValue.attribute.attributeName}">Author of
+                    item</p>
+                <p th:text="${attributeValue.value}" class="mb-0">Author of item</p>
             </div>
             <h6><span th:text="#{item.likes}">Likes</span>: <span id="likesCount"
                                                                   th:text="${#lists.size(item.likes)}"></span></h6>
