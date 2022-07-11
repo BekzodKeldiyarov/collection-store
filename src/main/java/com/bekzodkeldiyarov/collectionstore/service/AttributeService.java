@@ -16,8 +16,6 @@ public interface AttributeService {
 
     List<Attribute> getAllAttributesOfCollection(Long collectionId);
 
-//    void bindAttributesToCollection(Set<AttributeCommand> attributeCommands, CollectionCommand collectionCommand);
-
     Set<Attribute> createAttributesFromHttpServletRequest(HttpServletRequest request);
 
     List<Attribute> saveAttributes(List<Attribute> attributes);
