@@ -109,6 +109,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public List<Item> getAllItemsSortByLastAdded() {
+        return itemRepository.findAllByOrderByIdDesc();
+    }
+
+    @Override
     public void deleteById(Long id) {
         itemRepository.deleteById(id);
     }

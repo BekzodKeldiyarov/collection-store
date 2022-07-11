@@ -9,7 +9,7 @@ public interface ItemService {
     Item save(Item collection);
 
     List<Item> getAllItems();
-
+    List<Item> getAllItemsSortByLastAdded();
     Item getNewItemInstance(Long collectionId);
 
     Item findItemById(Long id);

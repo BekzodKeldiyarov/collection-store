@@ -48,10 +48,12 @@
                                           th:errors="*{username}">Name Error</span>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <input type="email" class="form-control form-control-user" id="exampleInputEmail"
-                                       placeholder="Email Address" th:field="*{email}">
-                                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</span>
+                            <div class="form-group row">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <input type="email" class="form-control form-control-user" id="exampleInputEmail"
+                                           placeholder="Email Address" th:field="*{email}">
+                                    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</span>
+                                </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
