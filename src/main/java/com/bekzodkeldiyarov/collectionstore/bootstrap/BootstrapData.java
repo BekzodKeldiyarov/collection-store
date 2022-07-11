@@ -1,20 +1,24 @@
 package com.bekzodkeldiyarov.collectionstore.bootstrap;
 
 import com.bekzodkeldiyarov.collectionstore.commands.AttributeCommand;
+import com.bekzodkeldiyarov.collectionstore.config.Indexer;
 import com.bekzodkeldiyarov.collectionstore.model.*;
+import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.repository.ItemAttributeValueRepository;
 import com.bekzodkeldiyarov.collectionstore.service.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -28,12 +32,15 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     private final CommentService commentService;
     private final LikeService likeService;
 
+    private final EntityManager entityManager;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ItemAttributeValueRepository itemAttributeValueRepository;
+    @Autowired
+    private Indexer indexer;
 
-    public BootstrapData(UserService userService, RoleService roleService, CollectionService collectionService, ItemService itemService, AttributeService attributeService, TagService tagService, CommentService commentService, LikeService likeService) {
+    public BootstrapData(UserService userService, RoleService roleService, CollectionService collectionService, ItemService itemService, AttributeService attributeService, TagService tagService, CommentService commentService, LikeService likeService, EntityManager entityManager) {
         this.userService = userService;
         this.roleService = roleService;
         this.collectionService = collectionService;
@@ -42,6 +49,7 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         this.tagService = tagService;
         this.commentService = commentService;
         this.likeService = likeService;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -146,5 +154,46 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
 //        itemService.save(item);
         log.info("Data Bootstrapped");
 
+        itemService.save(Item.builder()
+                .name("New item")
+                .collection(collection)
+                .itemAttributeValues(new ArrayList<>())
+                .likes(new ArrayList<>())
+                .tags(new LinkedHashSet<>())
+                .comments(new ArrayList<>())
+                .build());
+
+        indexer.indexData();
+
+        log.info("search result size " + searchItems().size() + "");
+
     }
+
+
+    List<Item> searchItems() {
+        FullTextEntityManager fullTextEntityManager
+                = Search.getFullTextEntityManager(entityManager);
+
+        QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory()
+                .buildQueryBuilder()
+                .forEntity(Item.class)
+                .get();
+
+
+        org.apache.lucene.search.Query query = queryBuilder
+                .keyword()
+                .fuzzy()
+                .onFields("name", "collection.name", "collection.description")
+                .matching("robinzon")
+                .createQuery();
+
+        org.hibernate.search.jpa.FullTextQuery jpaQuery
+                = fullTextEntityManager.createFullTextQuery(query, Item.class);
+
+        log.info(jpaQuery.getResultSize() + "");
+        List<Item> results = jpaQuery.getResultList();
+
+        return results;
+    }
+
 }

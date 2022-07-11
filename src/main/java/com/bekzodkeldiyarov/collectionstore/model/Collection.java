@@ -3,6 +3,7 @@ package com.bekzodkeldiyarov.collectionstore.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
 import java.util.*;
@@ -14,10 +15,10 @@ import java.util.*;
 @NoArgsConstructor
 @ToString
 public class Collection extends BaseEntity {
+    @Field
     private String name;
-
-
     @Column(columnDefinition = "TEXT")
+    @Field
     private String description;
 
     @ManyToOne

@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,9 +18,12 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@Indexed
+@Table(name = "item")
 @NoArgsConstructor
 public class Item extends BaseEntity {
     @JsonIgnore
+    @Field(termVector = TermVector.YES)
     private String name;
 
     @ManyToMany
@@ -28,6 +34,7 @@ public class Item extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore
+    @IndexedEmbedded
     private Collection collection;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
