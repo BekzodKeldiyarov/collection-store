@@ -5,6 +5,7 @@ import com.bekzodkeldiyarov.collectionstore.exceptions.UserExistsException;
 import com.bekzodkeldiyarov.collectionstore.model.User;
 
 import java.util.List;
+import java.util.Locale;
 
 public interface UserService {
     User findById(Long id);
@@ -24,4 +25,8 @@ public interface UserService {
     void deleteById(Long id);
 
     void refreshUserSession();
+
+    String getUsersPreferedLocaleOption(String username);
+
+    void saveUsersPreferedLocaleOption(String username, Locale locale);
 }
