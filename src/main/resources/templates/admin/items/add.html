@@ -60,6 +60,17 @@
                                            th:field="*{itemAttributeValues[__${itemStat.index}__].value}"
                                            type="date"
                                            class="form-control">
+                                    <input th:case="${'boolean'}"
+                                           th:field="*{itemAttributeValues[__${itemStat.index}__].value}"
+                                           type="checkbox"
+                                           class="form-control">
+                                    <input th:case="${'int'}"
+                                           th:field="*{itemAttributeValues[__${itemStat.index}__].value}"
+                                           type="number"
+                                           class="form-control">
+                                    <textarea th:case="${'text'}"
+                                              th:field="*{itemAttributeValues[__${itemStat.index}__].value}"
+                                              class="form-control"></textarea>
                                     <input th:field="*{itemAttributeValues[__${itemStat.index}__].item}"
                                            type="hidden"
                                            class="form-control">

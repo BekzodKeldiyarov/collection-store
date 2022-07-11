@@ -31,7 +31,6 @@
                                 </div>
                                 <th>Edit/view</th>
                                 <th>Delete</th>
-                                <th>Check</th>
                             </tr>
                             <tbody>
                             <tr th:each="item:${collection.items}">
@@ -54,9 +53,6 @@
                                 <td>
                                     <a th:href="@{'/dashboard/collections/'+${item.collection.id}+'/items/'+${item.id}+'/delete'}"
                                        class="btn btn-outline-danger">Delete</a>
-                                </td>
-                                <td><input name="ids" th:value="${collection.id}" type="checkbox"
-                                           class="form-check-input">
                                 </td>
                             </tr>
                             </tbody>

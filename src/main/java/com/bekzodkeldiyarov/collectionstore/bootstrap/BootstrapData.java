@@ -158,15 +158,6 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        itemService.save(Item.builder()
-                .name("New item")
-                .collection(collection)
-                .itemAttributeValues(new ArrayList<>())
-                .likes(new ArrayList<>())
-                .tags(new LinkedHashSet<>())
-                .comments(new ArrayList<>())
-                .build());
-
         log.info(searchService.getPostBasedOnWord(item.getName()).toString());
     }
 }

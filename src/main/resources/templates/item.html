@@ -28,9 +28,9 @@
             </p>
 
             <div class="lead mb-1" th:each="attributeValue : ${item.itemAttributeValues}">
-                <p style="font-weight: bold" class="mb-0" th:text="${attributeValue.attribute.attributeName}">Author of
-                    item</p>
-                <p th:text="${attributeValue.value}" class="mb-0">Author of item</p>
+                <span style="font-weight: bold" class="mb-0 mr-1" th:text="${attributeValue.attribute.attributeName}">Author of
+                    item</span>:
+                <span th:text="${attributeValue.value}" class="mb-0">Author of item</span>
             </div>
             <h6><span th:text="#{item.likes}">Likes</span>: <span id="likesCount"
                                                                   th:text="${#lists.size(item.likes)}"></span></h6>
