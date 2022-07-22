@@ -9,6 +9,7 @@ import com.bekzodkeldiyarov.collectionstore.service.AttributeService;
 import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
 import com.bekzodkeldiyarov.collectionstore.service.ItemService;
 import com.bekzodkeldiyarov.collectionstore.service.UserService;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,16 +25,15 @@ import java.util.Set;
 @RestController
 @Slf4j
 @RequestMapping("/api/dashboard")
+@Api(description = "Collections data")
 public class CollectionController {
     private final CollectionService collectionService;
     private final UserService userService;
-    private final AttributeService attributeService;
     private final UserSecurity userSecurity;
 
-    public CollectionController(CollectionService collectionService, UserService userService, AttributeService attributeService, UserSecurity userSecurity) {
+    public CollectionController(CollectionService collectionService, UserService userService, UserSecurity userSecurity) {
         this.collectionService = collectionService;
         this.userService = userService;
-        this.attributeService = attributeService;
         this.userSecurity = userSecurity;
     }
 
@@ -45,9 +45,18 @@ public class CollectionController {
         return ResponseEntity.ok(collections);
     }
 
+    @GetMapping("/collections/{id}")
+    public ResponseEntity<Collection> getCollection(@PathVariable Long id, Authentication authentication) {
+        MyUserDetails user = (MyUserDetails) authentication.getPrincipal();
+        boolean isUserAdmin = userSecurity.userIsAdmin(user.getUsername());
+        Collection collection = collectionService.findCollectionById(id);
+        if (user.getUsername().equals(collection.getUser().getUsername()) || isUserAdmin) {
+            return ResponseEntity.ok(collection);
+        } else return ResponseEntity.badRequest().build();
+    }
+
     @GetMapping("/collections/add")
     public ResponseEntity<Collection> addCollection(Model model, Collection collection) {
-        model.addAttribute("action", "Add");
         return ResponseEntity.ok(collection);
     }
 
@@ -59,22 +68,6 @@ public class CollectionController {
         return ResponseEntity.ok(savedCollection);
     }
 
-
-    @GetMapping("/collections/{id}")
-    public ResponseEntity<Collection> getCollection(@PathVariable Long id, Authentication authentication) {
-        MyUserDetails user = (MyUserDetails) authentication.getPrincipal();
-        boolean isUserAdmin = userSecurity.userIsAdmin(user.getUsername());
-        Collection collection = collectionService.findCollectionById(id);
-        if (user.getUsername().equals(collection.getUser().getUsername()) || isUserAdmin) {
-            return ResponseEntity.ok(collection);
-        } else return ResponseEntity.badRequest().build();
-    }
-
-    @DeleteMapping("/collections/{collectionId}")
-    public void deleteCollection(@PathVariable Long collectionId) {
-        collectionService.deleteCollectionById(collectionId);
-    }
-
     @GetMapping("/collections/{collectionId}/edit")
     public String editCollection(@PathVariable Long collectionId, Model model) {
         Collection collection = collectionService.findCollectionById(collectionId);
@@ -83,9 +76,14 @@ public class CollectionController {
     }
 
     @PutMapping("/collections/{collectionId}")
-    public ResponseEntity<Collection> updateCollection(@RequestBody Collection collection) {
+    public ResponseEntity<Collection> updateCollection(@PathVariable Long collectionId, @RequestBody Collection collection) {
         log.info("Collection in controller " + collection.getAttributes());
         Collection savedCollection = collectionService.save(collection);
         return ResponseEntity.ok(savedCollection);
+    }
+
+    @DeleteMapping("/collections/{collectionId}")
+    public void deleteCollection(@PathVariable Long collectionId) {
+        collectionService.deleteCollectionById(collectionId);
     }
 }

@@ -30,8 +30,8 @@ public class SpringfoxConfig {
                 "Api for Collection Store",
                 "1.0",
                 "test.com",
-                new Contact("API owner", "ownersite.com", "owner@gmail.com"),
-                "http://www.licence.edu.org",
+                new Contact("API owner", "https://www.bkeldiyarov.com", "owner@gmail.com"),
+                "https://www.licence.edu.org",
                 "API licence",
                 new ArrayList<>()
         );

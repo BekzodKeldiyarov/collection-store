@@ -11,6 +11,8 @@ public interface ItemService {
 
     List<Item> getAllItemsSortByLastAdded();
 
+    List<Item> getItemsOfCollectionId(Long id);
+
     Item getNewItemInstance(Long collectionId);
 
     Item findItemById(Long id);

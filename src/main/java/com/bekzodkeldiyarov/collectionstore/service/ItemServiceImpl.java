@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -25,58 +26,74 @@ public class ItemServiceImpl implements ItemService {
         this.tagService = tagService;
     }
 
+//    @Override
+//    public Item save(Item item) {
+//        Item savedItem;
+//        Item itemToSave = new Item();
+//        if (item.getId() == null) {
+//            itemToSave = item;
+//            for (ItemAttributeValue itemAttributeValue : item.getItemAttributeValues()) {
+//                itemAttributeValue.setItem(item);
+//            }
+//        } else {
+//            Optional<Item> optionalItem = itemRepository.findById(item.getId());
+//            if (optionalItem.isPresent()) {
+//                itemToSave = optionalItem.get();
+//                itemToSave.setName(item.getName());
+//                itemToSave.setItemAttributeValues(item.getItemAttributeValues());
+//                itemToSave.setTags(item.getTags());
+//                for (Tag tag : itemToSave.getTags()) {
+//                    Tag tagToSave = tagService.findByName(tag.getName());
+//                    tagToSave.getItems().add(itemToSave);
+//                    tagService.save(tagToSave);
+//                }
+//                for (ItemAttributeValue itemAttributeValue : itemToSave.getItemAttributeValues()) {
+//                    ItemAttributeValue itemAttributeValueToSave = itemAttributeValueService.findById(itemAttributeValue.getId());
+//                    itemAttributeValueToSave.setItem(itemAttributeValue.getItem());
+//                    itemAttributeValueToSave.setValue(itemAttributeValue.getValue());
+//                    itemAttributeValue.setAttribute(itemAttributeValue.getAttribute());
+//                    itemAttributeValueService.save(itemAttributeValueToSave);
+//                }
+//            }
+//        }
+//        savedItem = itemRepository.save(itemToSave);
+//        itemAttributeValueService.save(savedItem.getItemAttributeValues());
+//        tagService.save(savedItem.getTags());
+//        return savedItem;
+//    }
+//
+
+
     @Override
     public Item save(Item item) {
-        Item savedItem;
-        Item itemToSave = new Item();
-        if (item.getId() == null) {
-            itemToSave = item;
-            for (ItemAttributeValue itemAttributeValue : item.getItemAttributeValues()) {
-                itemAttributeValue.setItem(item);
-            }
+        Item itemToSave;
+        if (item.getId() != null) {
+            itemToSave = itemRepository.findById(item.getId()).orElse(null);
         } else {
-            Optional<Item> optionalItem = itemRepository.findById(item.getId());
-            if (optionalItem.isPresent()) {
-                itemToSave = optionalItem.get();
-                itemToSave.setName(item.getName());
-                itemToSave.setItemAttributeValues(item.getItemAttributeValues());
-                itemToSave.setTags(item.getTags());
-                for (Tag tag : itemToSave.getTags()) {
-                    Tag tagToSave = tagService.findByName(tag.getName());
-                    tagToSave.getItems().add(itemToSave);
-                    tagService.save(tagToSave);
-                }
-                for (ItemAttributeValue itemAttributeValue : itemToSave.getItemAttributeValues()) {
-                    ItemAttributeValue itemAttributeValueToSave = itemAttributeValueService.findById(itemAttributeValue.getId());
-                    itemAttributeValueToSave.setItem(itemAttributeValue.getItem());
-                    itemAttributeValueToSave.setValue(itemAttributeValue.getValue());
-                    itemAttributeValue.setAttribute(itemAttributeValue.getAttribute());
-                    itemAttributeValueService.save(itemAttributeValueToSave);
-                }
-            }
+            itemToSave = new Item();
         }
-        savedItem = itemRepository.save(itemToSave);
-        itemAttributeValueService.save(savedItem.getItemAttributeValues());
-        tagService.save(savedItem.getTags());
-        return savedItem;
+        assert itemToSave != null;
+        itemToSave.setCollection(item.getCollection()); //todo make getCollection.addItem(itemToSave)
+        itemToSave.setName(item.getName());
+        itemToSave.setTags(item.getTags());
+        itemToSave.setComments(item.getComments());
+        itemToSave.setItemAttributeValues(item.getItemAttributeValues());
+        itemToSave.setLikes(item.getLikes());
+        log.info("item to save: " + itemToSave);
+        return itemRepository.save(itemToSave);
     }
-
 
     @Override
     public Item getNewItemInstance(Long collectionId) {
-        Collection collection = collectionService.findCollectionById(collectionId);
-        List<Attribute> attributesForCollection = collection.getAttributesAsList();
         Item item = new Item();
-        for (Attribute attribute : attributesForCollection) {
+        Collection collection = collectionService.findCollectionById(collectionId);
+        Set<Attribute> attributesOfCollection = collection.getAttributes();
+        collection.addItemToCollection(item);
+        for (Attribute attribute : attributesOfCollection) {
             ItemAttributeValue itemAttributeValue = new ItemAttributeValue();
-            itemAttributeValue.setItem(item);
-            item.getItemAttributeValues().add(itemAttributeValue);
-
-            itemAttributeValue.setAttribute(attribute);
-            attribute.getItemAttributeValues().add(itemAttributeValue);
+            itemAttributeValue.setItemOfItemAttributeValue(item);
+            itemAttributeValue.setAttributeOfItemAttributeValue(attribute);
         }
-        item.setCollection(collection);
-
         return item;
     }
 
@@ -106,6 +123,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> getAllItems() {
         return itemRepository.findAll();
+    }
+
+    @Override
+    public List<Item> getItemsOfCollectionId(Long id) {
+        return itemRepository.findByCollectionId(id);
     }
 
     @Override

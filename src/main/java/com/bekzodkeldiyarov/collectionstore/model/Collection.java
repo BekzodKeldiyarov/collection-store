@@ -26,7 +26,7 @@ public class Collection extends BaseEntity {
     @JsonIgnore
     private User user;
 
-    @OneToMany(mappedBy = "collection", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "collection", cascade = CascadeType.ALL)
     @ToString.Exclude
     @JsonIgnore
     private Set<Item> items = new HashSet<>();
@@ -68,5 +68,10 @@ public class Collection extends BaseEntity {
     public void addAttributeToCollection(Attribute attribute) {
         attribute.setCollection(this);
         this.getAttributes().add(attribute);
+    }
+
+    public void addItemToCollection(Item item){
+        item.setCollection(this);
+        this.getItems().add(item);
     }
 }

@@ -25,4 +25,14 @@ public class ItemAttributeValue extends BaseEntity {
     @JoinColumn(name = "attribute_id")
     @JsonIgnore
     private Attribute attribute;
+
+    public void setItemOfItemAttributeValue(Item item) {
+        this.item = item;
+        item.getItemAttributeValues().add(this);
+    }
+
+    public void setAttributeOfItemAttributeValue(Attribute attribute) {
+        this.attribute = attribute;
+        attribute.getItemAttributeValues().add(this);
+    }
 }

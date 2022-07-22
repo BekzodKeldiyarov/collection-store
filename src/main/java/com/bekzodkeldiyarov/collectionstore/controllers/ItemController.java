@@ -1,56 +1,63 @@
 package com.bekzodkeldiyarov.collectionstore.controllers;
 
+import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.model.Item;
 import com.bekzodkeldiyarov.collectionstore.model.Tag;
 import com.bekzodkeldiyarov.collectionstore.service.*;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.*;
 
 @RestController
 @RequestMapping("/api/dashboard")
 @Slf4j
-@Api(description = "items data")
+@Api(description = "Items data")
 public class ItemController {
     private final ItemService itemService;
     private final TagService tagService;
+    private final CollectionService collectionService;
 
-    public ItemController(ItemService itemService, TagService tagService) {
+    public ItemController(ItemService itemService, TagService tagService, CollectionService collectionService) {
         this.itemService = itemService;
         this.tagService = tagService;
+        this.collectionService = collectionService;
+    }
+
+    @GetMapping("/collections/{collectionsId}/items")
+    public ResponseEntity<List<Item>> getAllItems(@PathVariable Long collectionsId) {
+        List<Item> items = itemService.getItemsOfCollectionId(collectionsId);
+        return ResponseEntity.ok(items);
+    }
+
+    @GetMapping("/collections/{collectionId}/items/{itemId}")
+    public ResponseEntity<Item> getItemById(@PathVariable Long collectionId, @PathVariable Long itemId) {
+        return ResponseEntity.ok(itemService.findItemById(itemId));
     }
 
     @GetMapping("/collections/{collectionId}/items/add")
-    public ResponseEntity<Item> getAddNewItemPage(@PathVariable Long collectionId, Model model) {
+    public ResponseEntity<Item> addItem(@PathVariable Long collectionId) {
+
         Item item = itemService.getNewItemInstance(collectionId);
-        model.addAttribute("tags", tagService.getAllTags());
-        model.addAttribute("item", item);
-        model.addAttribute("pageName", "Add Item");
 
         return ResponseEntity.ok(item);
-//        return "admin/items/add";
     }
 
     @PostMapping("/collections/{collectionId}/items/add")
-    public String postNewItemToCollection(@Valid Item item, BindingResult result, @RequestParam(required = false) String[] selectedTags) {
-        if (result.hasErrors()) {
-            log.error(result.getAllErrors().toString());
-        }
-        Item itemToSave = itemService.bindTagsToItem(item, selectedTags);
-        Item savedItem = itemService.save(itemToSave);
-        return "redirect:/dashboard/collections/" + savedItem.getCollection().getId();
+    public ResponseEntity<Item> postItem(@PathVariable Long collectionId, @RequestBody Item item, @RequestParam(required = false) String[] selectedTags) {
+//        Item itemToSave = itemService.bindTagsToItem(item, selectedTags);
+        Collection collection = collectionService.findCollectionById(collectionId);
+        collection.addItemToCollection(item);
+        log.info("Saving ");
+        Item savedItem = itemService.save(item);
+        return ResponseEntity.ok(savedItem);
     }
 
     @GetMapping("/collections/{collectionId}/items/{itemId}/edit")
-    public String getUpdateItemPage(@PathVariable Long collectionId, @PathVariable Long itemId, Model model) {
+    public String updateItem(@PathVariable Long collectionId, @PathVariable Long itemId, Model model) {
         Item item = itemService.findItemById(itemId);
         model.addAttribute("tags", tagService.getAllTags());
         model.addAttribute("item", item);
