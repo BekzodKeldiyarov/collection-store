@@ -1,4 +1,4 @@
-package com.bekzodkeldiyarov.collectionstore.config;
+package com.bekzodkeldiyarov.collectionstore.config.search;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

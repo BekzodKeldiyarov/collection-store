@@ -1,22 +1,15 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
-import com.bekzodkeldiyarov.collectionstore.commands.AttributeCommand;
 import com.bekzodkeldiyarov.collectionstore.model.Attribute;
+import org.w3c.dom.Attr;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Set;
+
 
 public interface AttributeService {
     Attribute save(Attribute attribute);
 
-    AttributeCommand saveAttributeCommand(AttributeCommand attributeCommand);
-
     List<Attribute> findAll();
 
-    List<Attribute> getAllAttributesOfCollection(Long collectionId);
-
-    Set<Attribute> createAttributesFromHttpServletRequest(HttpServletRequest request);
-
-    List<Attribute> saveAttributes(List<Attribute> attributes);
+    Attribute findById(Long id);
 }

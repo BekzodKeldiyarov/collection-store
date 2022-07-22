@@ -22,27 +22,22 @@ import java.util.Set;
 @Table(name = "item")
 @NoArgsConstructor
 public class Item extends BaseEntity {
-    @JsonIgnore
     @Field(termVector = TermVector.YES)
     private String name;
 
     @ManyToMany
     @JoinTable(name = "item_tags", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "tab_id"))
-    @JsonIgnore
     private Set<Tag> tags = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = false)
-    @JsonIgnore
     @IndexedEmbedded
     private Collection collection;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
-    @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
-    @JsonIgnore
     private List<Like> likes = new ArrayList<>();
 
     @Builder
@@ -64,5 +59,11 @@ public class Item extends BaseEntity {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + "id = " + getId() + ", " + "name = " + getName() + ", " + "collection = " + getCollection() + ")";
+    }
+
+
+    public void addLikeToItem(Like like) {
+        like.setItem(this);
+        this.getLikes().add(like);
     }
 }

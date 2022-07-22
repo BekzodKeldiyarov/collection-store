@@ -1,4 +1,4 @@
-package com.bekzodkeldiyarov.collectionstore.config;
+package com.bekzodkeldiyarov.collectionstore.config.search;
 
 import com.bekzodkeldiyarov.collectionstore.model.Item;
 import lombok.RequiredArgsConstructor;

@@ -1,5 +1,6 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
+import com.bekzodkeldiyarov.collectionstore.model.Attribute;
 import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.model.User;
 import com.bekzodkeldiyarov.collectionstore.repository.CollectionRepository;
@@ -24,20 +25,79 @@ public class CollectionServiceImpl implements CollectionService {
         this.userService = userService;
     }
 
+//    @Override
+//    public Collection save(Collection collection) {
+//        log.info("attributes of collection " + collection.getAttributes());
+//        Collection collectionFromDb;
+//        if (collection.getId() != null) {
+//            collectionFromDb = collectionRepository.findById(collection.getId()).orElse(null);
+//            if (collectionFromDb != null) {
+//                collectionFromDb.setName(collection.getName());
+//                collectionFromDb.setDescription(collection.getDescription());
+//                collectionFromDb.setAttributes(new LinkedHashSet<>());
+//                for (Attribute attribute : collection.getAttributes()) {
+//                    Attribute attributeToSave;
+//                    if (attribute.getId() != null) {
+//                        attributeToSave = attributeService.findById(attribute.getId());
+//                    } else {
+//                        attributeToSave = new Attribute();
+//                    }
+//                    attributeToSave.setCollection(collectionFromDb);
+//                    attributeToSave.setAttributeName(attribute.getAttributeName());
+//                    attributeToSave.setType(attribute.getType());
+//                    Attribute savedAttribute = attributeService.save(attributeToSave);
+//                    collectionFromDb.getAttributes().add(savedAttribute);
+//                }
+//            }
+//        } else {
+//            collectionFromDb = new Collection();
+//        }
+//        assert collectionFromDb != null;
+//        Collection savedCollection = collectionRepository.save(collectionFromDb);
+////        for (Attribute attribute : savedCollection.getAttributes()) {
+////            log.info(attribute.toString());
+////            Attribute attributeToSave;
+////            if (attribute.getId() != null) {
+////                attributeToSave = attributeService.findById(attribute.getId());
+////                attributeToSave.setAttributeName(attribute.getAttributeName());
+////                attributeToSave.setType(attribute.getType());
+////            } else {
+////                attributeToSave = attribute;
+////            }
+////            attributeToSave.setCollection(savedCollection);
+////            attributeService.save(attributeToSave);
+////        }
+//        return savedCollection;
+//    }
+//
+//
+
     @Override
     public Collection save(Collection collection) {
         Collection collectionFromDb;
         if (collection.getId() != null) {
             collectionFromDb = collectionRepository.findById(collection.getId()).orElse(null);
-            if (collectionFromDb != null) {
-                collectionFromDb.setName(collection.getName());
-                collectionFromDb.setDescription(collection.getDescription());
-            }
         } else {
-            collectionFromDb = collection;
+            collectionFromDb = new Collection();
         }
-        assert collectionFromDb != null;
-        return collectionRepository.save(collectionFromDb);
+        collectionFromDb.setName(collection.getName());
+        collectionFromDb.setDescription(collection.getDescription());
+        collectionFromDb.setAttributes(new LinkedHashSet<>());
+        collectionFromDb.setUser(userService.findByUsername("admin"));
+        //todo implement setting user depending on logged in user
+        for (Attribute attribute : collection.getAttributes()) {
+            Attribute attributeToSave;
+            if (attribute.getId() != null) {
+                attributeToSave = attributeService.findById(attribute.getId());
+            } else {
+                attributeToSave = new Attribute();
+            }
+            attributeToSave.setAttributeName(attribute.getAttributeName());
+            attributeToSave.setType(attribute.getType());
+            collectionFromDb.addAttributeToCollection(attribute);
+        }
+        Collection savedCollection = collectionRepository.save(collectionFromDb);
+        return savedCollection;
     }
 
 

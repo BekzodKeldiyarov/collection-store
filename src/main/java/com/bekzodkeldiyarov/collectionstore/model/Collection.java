@@ -26,14 +26,13 @@ public class Collection extends BaseEntity {
     @JsonIgnore
     private User user;
 
-    @OneToMany(mappedBy = "collection", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "collection", cascade = CascadeType.PERSIST)
     @ToString.Exclude
     @JsonIgnore
     private Set<Item> items = new HashSet<>();
 
-    @OneToMany(mappedBy = "collection", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "collection", cascade = CascadeType.ALL)
     @ToString.Exclude
-    @JsonIgnore
     private Set<Attribute> attributes = new LinkedHashSet<>();
 
     @Builder
@@ -65,8 +64,9 @@ public class Collection extends BaseEntity {
         return attributes;
     }
 
-    @JsonIgnore
-    public void setAttributesAsList(List<Attribute> attributes) {
-        this.attributes = new HashSet<>(attributes);
+
+    public void addAttributeToCollection(Attribute attribute) {
+        attribute.setCollection(this);
+        this.getAttributes().add(attribute);
     }
 }

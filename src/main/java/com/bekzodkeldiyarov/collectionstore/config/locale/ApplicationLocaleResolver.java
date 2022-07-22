@@ -1,4 +1,4 @@
-package com.bekzodkeldiyarov.collectionstore.config;
+package com.bekzodkeldiyarov.collectionstore.config.locale;
 
 import com.bekzodkeldiyarov.collectionstore.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +38,7 @@ public class ApplicationLocaleResolver extends SessionLocaleResolver {
 
     @Override
     public void setLocale(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+        log.info("Locale changed to " + locale.getLanguage());
         super.setLocale(request, response, locale);
         SecurityContext securityContext = SecurityContextHolder.getContext();
         String userName = securityContext.getAuthentication().getName();

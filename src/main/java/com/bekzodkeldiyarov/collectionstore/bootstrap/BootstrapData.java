@@ -1,8 +1,7 @@
 package com.bekzodkeldiyarov.collectionstore.bootstrap;
 
-import com.bekzodkeldiyarov.collectionstore.commands.AttributeCommand;
-import com.bekzodkeldiyarov.collectionstore.config.IndexingService;
-import com.bekzodkeldiyarov.collectionstore.config.SearchService;
+import com.bekzodkeldiyarov.collectionstore.config.search.IndexingService;
+import com.bekzodkeldiyarov.collectionstore.config.search.SearchService;
 import com.bekzodkeldiyarov.collectionstore.model.*;
 import com.bekzodkeldiyarov.collectionstore.model.Collection;
 import com.bekzodkeldiyarov.collectionstore.repository.ItemAttributeValueRepository;
@@ -14,7 +13,6 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -61,6 +59,7 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         admin.setPassword(passwordEncoder.encode("admin"));
         admin.setEnabled(true);
 
+
         User user = new User();
         user.setUsername("bekzod");
         user.setEmail("bekzod@gmail.com");
@@ -83,11 +82,6 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
                 .items(new HashSet<>())
                 .attributes(new LinkedHashSet<>()).build();
 
-        Set<AttributeCommand> attributeCommands = new HashSet<>();
-        attributeCommands.add(AttributeCommand.builder().attributeName("Author").type("String").build());
-        attributeCommands.add(AttributeCommand.builder().attributeName("Published in").type("Date").build());
-
-
         Item item = new Item();
         item.setName("Robinzon");
 
@@ -108,53 +102,47 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         Attribute attribute = Attribute.builder().attributeName("Test").type("string").collection(collection).build();
         collection.getAttributes().add(attribute);
 
-        Tag tag = Tag.builder().name("books").build();
-        item.getTags().add(tag);
-        tag.getItems().add(item);
+//        Tag tag = Tag.builder().name("books").build();
+//        item.getTags().add(tag);
+//        tag.getItems().add(item);
+//
+//        tagService.save(Tag.builder().name("wines").build());
+//        tagService.save(Tag.builder().name("phones").build());
+//        tagService.save(Tag.builder().name("mac").build());
+//        tagService.save(Tag.builder().name("summer").build());
 
-        tagService.save(Tag.builder().name("wines").build());
-        tagService.save(Tag.builder().name("phones").build());
-        tagService.save(Tag.builder().name("mac").build());
-        tagService.save(Tag.builder().name("summer").build());
-
-        itemAttributeValue.setAttribute(attribute);
-        itemAttributeValue.setItem(item);
-
-        item.getItemAttributeValues().add(itemAttributeValue);
-        item.setCollection(collection);
-
-        attribute.getItemAttributeValues().add(itemAttributeValue);
+//        itemAttributeValue.setAttribute(attribute);
+//        itemAttributeValue.setItem(item);
+//
+//        item.getItemAttributeValues().add(itemAttributeValue);
+//        item.setCollection(collection);
+//
+//        attribute.getItemAttributeValues().add(itemAttributeValue);
 
 
-        Like like = new Like();
-        like.setUser(user);
-        like.setItem(item);
-        user.getLikes().add(like);
-        item.getLikes().add(like);
+//        Like like = new Like();
+//        like.setUser(user);
+//        like.setItem(item);
+//
+//        user.getLikes().add(like);
+//        item.getLikes().add(like);
+//
+//        Like like2 = new Like();
+//        like2.setUser(blockedUser);
+//        like2.setItem(item);
+//        blockedUser.getLikes().add(like2);
+//        item.getLikes().add(like2);
+//
+//        likeService.save(like);
+//        likeService.save(like2);
 
-        Like like2 = new Like();
-        like2.setUser(blockedUser);
-        like2.setItem(item);
-        blockedUser.getLikes().add(like2);
-        item.getLikes().add(like2);
-
-        likeService.save(like);
-        likeService.save(like2);
-        commentService.save(Comment.builder().user(admin).text("test comment").item(item).build());
-        commentService.save(Comment.builder().user(admin).text("second test comment").item(item).build());
-        commentService.save(Comment.builder().user(admin).text("third test comment").item(item).build());
-        tagService.save(tag);
+        //todo make relation user->likes->item many-to-many instead of one-to-many and one-to-many
+//        commentService.save(Comment.builder().user(admin).text("test comment").item(item).build());
+//        commentService.save(Comment.builder().user(admin).text("second test comment").item(item).build());
+//        commentService.save(Comment.builder().user(admin).text("third test comment").item(item).build());
+        //todo problems with saving comments -- save the transient instance before flushing : com.bekzodkeldiyarov.collectionstore.model.Comment.item -> com.bekzodkeldiyarov.collectionstore.model.Item; nested exception is java.lang.IllegalStateException: org.hibernate.TransientPropertyValueException: object references an unsaved transient instance - save the transient instance before flushing : com.bekzodkeldiyarov.collectionstore.model.Comment.item -> com.bekzodkeldiyarov.collectionstore.model.Item
+//        tagService.save(tag);
         collectionService.save(collection);
-        attributeService.save(attribute);
-        itemService.save(item);
-        itemAttributeValueRepository.save(itemAttributeValue);
-
         log.info("Data Bootstrapped");
-        try {
-            indexingService.initiateIndexing();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        log.info(searchService.getPostBasedOnWord(item.getName()).toString());
     }
 }

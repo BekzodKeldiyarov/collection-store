@@ -13,7 +13,6 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Attribute extends BaseEntity {
     private String attributeName;
     private String type;
@@ -32,7 +31,7 @@ public class Attribute extends BaseEntity {
     private Collection collection;
 
 
-    @OneToMany(mappedBy = "attribute", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "attribute", cascade = CascadeType.PERSIST)
     @JsonIgnore
     @ToString.Exclude
     Set<ItemAttributeValue> itemAttributeValues = new HashSet<>();
@@ -58,4 +57,13 @@ public class Attribute extends BaseEntity {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "Attribute{" +
+                ", id='" + getId() + '\'' +
+                ",attributeName='" + attributeName + '\'' +
+                ", type='" + type + '\'' +
+                ", collection=" + collection +
+                "} " + super.toString();
+    }
 }

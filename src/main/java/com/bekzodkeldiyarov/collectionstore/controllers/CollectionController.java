@@ -10,11 +10,10 @@ import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
 import com.bekzodkeldiyarov.collectionstore.service.ItemService;
 import com.bekzodkeldiyarov.collectionstore.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,83 +21,71 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Set;
 
-@Controller
+@RestController
 @Slf4j
-@RequestMapping("/dashboard")
+@RequestMapping("/api/dashboard")
 public class CollectionController {
     private final CollectionService collectionService;
     private final UserService userService;
     private final AttributeService attributeService;
-    private final ItemService itemService;
     private final UserSecurity userSecurity;
 
-    public CollectionController(CollectionService collectionService, UserService userService, AttributeService attributeService, ItemService itemService, UserSecurity userSecurity) {
+    public CollectionController(CollectionService collectionService, UserService userService, AttributeService attributeService, UserSecurity userSecurity) {
         this.collectionService = collectionService;
         this.userService = userService;
         this.attributeService = attributeService;
-        this.itemService = itemService;
         this.userSecurity = userSecurity;
     }
 
     @GetMapping("/collections")
-    public String getAllCollections(Authentication authentication, Model model) {
+    public ResponseEntity<List<Collection>> getCollections(Authentication authentication) {
         MyUserDetails user = (MyUserDetails) authentication.getPrincipal();
         boolean isUserAdmin = userSecurity.userIsAdmin(user.getUsername());
         List<Collection> collections = collectionService.getAllCollectionsOfUser(isUserAdmin, user.getUsername());
-        model.addAttribute("collections", collections);
-        return "admin/collections/list";
+        return ResponseEntity.ok(collections);
     }
 
     @GetMapping("/collections/add")
-    public String getAddNewCollectionPage(Model model, Collection collection) {
-        model.addAttribute("collection", collection);
+    public ResponseEntity<Collection> addCollection(Model model, Collection collection) {
         model.addAttribute("action", "Add");
-        return "admin/collections/add";
+        return ResponseEntity.ok(collection);
     }
 
-
     @PostMapping("/collections/add")
-    public String addNewCollection(@ModelAttribute("collection") Collection collection, HttpServletRequest request, @AuthenticationPrincipal UserDetails currentUser) {
+    public ResponseEntity<Collection> postCollection(@RequestBody Collection collection, @AuthenticationPrincipal UserDetails currentUser) {
         User user = userService.findByUsername(currentUser.getUsername());
         collection.setUser(user);
-        Set<Attribute> newAttributes = attributeService.createAttributesFromHttpServletRequest(request);
-        collection.setAttributes(newAttributes);
-        collectionService.save(collection);
-        for (Attribute attribute : newAttributes) {
-            attribute.setCollection(collection);
-            attributeService.save(attribute);
-        }
-        return "redirect:/dashboard/collections";
+        Collection savedCollection = collectionService.save(collection);
+        return ResponseEntity.ok(savedCollection);
     }
 
 
     @GetMapping("/collections/{id}")
-    public String getSingleCollectionPage(@PathVariable Long id, Model model, Authentication authentication) {
+    public ResponseEntity<Collection> getCollection(@PathVariable Long id, Authentication authentication) {
         MyUserDetails user = (MyUserDetails) authentication.getPrincipal();
         boolean isUserAdmin = userSecurity.userIsAdmin(user.getUsername());
         Collection collection = collectionService.findCollectionById(id);
         if (user.getUsername().equals(collection.getUser().getUsername()) || isUserAdmin) {
-            model.addAttribute("collection", collection);
-        }
-        return "admin/collections/single-collection";
+            return ResponseEntity.ok(collection);
+        } else return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/collections/{collectionId}/delete")
-    public String deleteCollection(@PathVariable Long collectionId) {
+    @DeleteMapping("/collections/{collectionId}")
+    public void deleteCollection(@PathVariable Long collectionId) {
         collectionService.deleteCollectionById(collectionId);
-        return "redirect:/dashboard/collections/";
     }
 
     @GetMapping("/collections/{collectionId}/edit")
-    public String getEditPage(@PathVariable Long collectionId, Model model) {
+    public String editCollection(@PathVariable Long collectionId, Model model) {
         Collection collection = collectionService.findCollectionById(collectionId);
         model.addAttribute("collection", collection);
         return "admin/collections/edit";
     }
 
-    @PostMapping("/collections/{collectionId}/edit")
-    public String editCollection(@ModelAttribute("collection") Collection collection) {
-        collectionService.save(collection);
-        return "redirect:/dashboard/collections";
+    @PutMapping("/collections/{collectionId}")
+    public ResponseEntity<Collection> updateCollection(@RequestBody Collection collection) {
+        log.info("Collection in controller " + collection.getAttributes());
+        Collection savedCollection = collectionService.save(collection);
+        return ResponseEntity.ok(savedCollection);
     }
 }

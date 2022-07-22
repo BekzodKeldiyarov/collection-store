@@ -1,4 +1,4 @@
-package com.bekzodkeldiyarov.collectionstore.config;
+package com.bekzodkeldiyarov.collectionstore.config.locale;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

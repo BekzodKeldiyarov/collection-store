@@ -3,7 +3,9 @@ package com.bekzodkeldiyarov.collectionstore.controllers;
 import com.bekzodkeldiyarov.collectionstore.model.Item;
 import com.bekzodkeldiyarov.collectionstore.model.Tag;
 import com.bekzodkeldiyarov.collectionstore.service.*;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.*;
 
-@Controller
-@RequestMapping("/dashboard")
+@RestController
+@RequestMapping("/api/dashboard")
 @Slf4j
+@Api(description = "items data")
 public class ItemController {
     private final ItemService itemService;
     private final TagService tagService;
@@ -26,12 +29,14 @@ public class ItemController {
     }
 
     @GetMapping("/collections/{collectionId}/items/add")
-    public String getAddNewItemPage(@PathVariable Long collectionId, Model model) {
+    public ResponseEntity<Item> getAddNewItemPage(@PathVariable Long collectionId, Model model) {
         Item item = itemService.getNewItemInstance(collectionId);
         model.addAttribute("tags", tagService.getAllTags());
         model.addAttribute("item", item);
         model.addAttribute("pageName", "Add Item");
-        return "admin/items/add";
+
+        return ResponseEntity.ok(item);
+//        return "admin/items/add";
     }
 
     @PostMapping("/collections/{collectionId}/items/add")

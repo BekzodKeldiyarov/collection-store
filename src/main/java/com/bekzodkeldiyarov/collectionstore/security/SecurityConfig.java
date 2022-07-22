@@ -33,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/dashboard/collections/add").authenticated()
@@ -41,10 +42,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/dashboard/**").authenticated()
                 .antMatchers("**").permitAll()
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .failureUrl("/login?error=true")
-                .defaultSuccessUrl("/")
+//                .formLogin()
+//                .loginPage("/login")
+//                .failureUrl("/login?error=true")
+//                .defaultSuccessUrl("/")
+                .httpBasic()
                 .and()
                 .sessionManagement()
                 .maximumSessions(-1)
