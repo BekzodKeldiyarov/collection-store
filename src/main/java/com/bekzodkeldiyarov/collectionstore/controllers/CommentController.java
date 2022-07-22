@@ -16,12 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class CommentController {
     private final CommentService commentService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-    @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
-
-    public CommentController(CommentService commentService) {
+    public CommentController(CommentService commentService, SimpMessagingTemplate simpMessagingTemplate) {
         this.commentService = commentService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     @MessageMapping("/chat/{id}")

@@ -33,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
         User user = userService.findByUsername(username);
         Item item = itemService.findItemById(itemId);
         Comment commentToSave = Comment.builder().item(item).text(commentText).user(user).build();
-        Comment savedComment = commentRepository.save(commentToSave);
-        return savedComment;
+
+        return commentRepository.save(commentToSave);
     }
 }

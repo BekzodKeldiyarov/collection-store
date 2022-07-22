@@ -44,11 +44,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     @JsonIgnore
-    private List<Comment> comments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    @ToString.Exclude
-    @JsonIgnore
     private List<Like> likes = new ArrayList<>();
 
     @Override
