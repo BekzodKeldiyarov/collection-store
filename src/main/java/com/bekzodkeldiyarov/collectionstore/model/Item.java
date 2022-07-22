@@ -29,7 +29,7 @@ public class Item extends BaseEntity {
     @JoinTable(name = "item_tags", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "tab_id"))
     private Set<Tag> tags = new HashSet<>();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = false)
     @IndexedEmbedded
     private Collection collection;

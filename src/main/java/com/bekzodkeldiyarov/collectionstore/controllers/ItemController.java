@@ -48,10 +48,16 @@ public class ItemController {
 
     @PostMapping("/collections/{collectionId}/items/add")
     public ResponseEntity<Item> postItem(@PathVariable Long collectionId, @RequestBody Item item, @RequestParam(required = false) String[] selectedTags) {
-//        Item itemToSave = itemService.bindTagsToItem(item, selectedTags);
         Collection collection = collectionService.findCollectionById(collectionId);
         collection.addItemToCollection(item);
         log.info("Saving ");
+        Item savedItem = itemService.save(item);
+        return ResponseEntity.ok(savedItem);
+    }
+
+    @PutMapping("/collections/{collectionId}/items/edit")
+    public ResponseEntity<Item> editItem(@PathVariable Long collectionId, @RequestBody Item item) {
+        log.info("Updating ");
         Item savedItem = itemService.save(item);
         return ResponseEntity.ok(savedItem);
     }

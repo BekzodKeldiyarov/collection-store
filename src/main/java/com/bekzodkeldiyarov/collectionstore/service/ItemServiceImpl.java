@@ -71,9 +71,9 @@ public class ItemServiceImpl implements ItemService {
             itemToSave = itemRepository.findById(item.getId()).orElse(null);
         } else {
             itemToSave = new Item();
+            itemToSave.setCollection(item.getCollection());
         }
         assert itemToSave != null;
-        itemToSave.setCollection(item.getCollection()); //todo make getCollection.addItem(itemToSave)
         itemToSave.setName(item.getName());
         itemToSave.setTags(item.getTags());
         itemToSave.setComments(item.getComments());
