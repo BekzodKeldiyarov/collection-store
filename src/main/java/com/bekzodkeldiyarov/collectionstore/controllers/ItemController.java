@@ -6,7 +6,9 @@ import com.bekzodkeldiyarov.collectionstore.model.Tag;
 import com.bekzodkeldiyarov.collectionstore.service.*;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +28,7 @@ public class ItemController {
         this.tagService = tagService;
         this.collectionService = collectionService;
     }
+
 
     @GetMapping("/collections/{collectionsId}/items")
     public ResponseEntity<List<Item>> getAllItems(@PathVariable Long collectionsId) {
@@ -85,5 +88,10 @@ public class ItemController {
         model.addAttribute("pageName", tag.getName());
 
         return "admin/items/list";
+    }
+
+    @GetMapping("/items/")
+    public ResponseEntity<List<Item>> getAllItems(@RequestParam Integer offset, @RequestParam Integer limit) {
+        return ResponseEntity.ok(itemService.getPageOfItems(offset, limit).getContent());
     }
 }

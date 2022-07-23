@@ -1,6 +1,7 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
 import com.bekzodkeldiyarov.collectionstore.model.Item;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface ItemService {
     Item findItemById(Long id);
 
     void deleteById(Long id);
+
+    public Page<Item> getPageOfItems(Integer offset, Integer limit);
 }

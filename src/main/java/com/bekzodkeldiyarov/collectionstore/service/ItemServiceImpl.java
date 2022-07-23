@@ -3,6 +3,9 @@ package com.bekzodkeldiyarov.collectionstore.service;
 import com.bekzodkeldiyarov.collectionstore.model.*;
 import com.bekzodkeldiyarov.collectionstore.repository.ItemRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -127,5 +130,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void deleteById(Long id) {
         itemRepository.deleteById(id);
+    }
+
+    public Page<Item> getPageOfItems(Integer offset, Integer limit) {
+        Pageable nextPage = PageRequest.of(offset, limit);
+        return itemRepository.findAll(nextPage);
     }
 }
