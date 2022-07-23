@@ -15,4 +15,6 @@ public interface TagService {
     List<Tag> getAllTags();
 
     Tag findByName(String name);
+
+    void deleteById(Long id);
 }
