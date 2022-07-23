@@ -31,8 +31,8 @@ public class SpringfoxConfig {
                 "1.0",
                 "test.com",
                 new Contact("API owner", "https://www.bkeldiyarov.com", "owner@gmail.com"),
-                "https://www.licence.edu.org",
                 "API licence",
+                "https://www.licence.edu.org",
                 new ArrayList<>()
         );
     }

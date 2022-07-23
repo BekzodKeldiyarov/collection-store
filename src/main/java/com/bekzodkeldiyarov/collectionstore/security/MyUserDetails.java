@@ -67,4 +67,8 @@ public class MyUserDetails implements UserDetails {
     public String getName() {
         return user.getUsername();
     }
+
+    public User getUser() {
+        return this.user;
+    }
 }
