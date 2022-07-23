@@ -5,6 +5,7 @@ import com.bekzodkeldiyarov.collectionstore.repository.ItemRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -77,7 +78,11 @@ public class ItemServiceImpl implements ItemService {
         itemToSave.setName(item.getName());
         itemToSave.setTags(item.getTags());
         itemToSave.setComments(item.getComments());
-        itemToSave.setItemAttributeValues(item.getItemAttributeValues());
+        log.info(item.getItemAttributeValues().toString());
+        itemToSave.setItemAttributeValues(new ArrayList<>());
+        for (ItemAttributeValue itemAttributeValue : item.getItemAttributeValues()) {
+            itemToSave.addItemAttributeValue(itemAttributeValue);
+        }
         itemToSave.setLikes(item.getLikes());
         log.info("item to save: " + itemToSave);
         return itemRepository.save(itemToSave);
