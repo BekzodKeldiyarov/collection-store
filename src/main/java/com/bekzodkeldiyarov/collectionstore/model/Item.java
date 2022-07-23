@@ -52,7 +52,6 @@ public class Item extends BaseEntity {
     }
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
-    @JsonIgnore
     List<ItemAttributeValue> itemAttributeValues = new ArrayList<>();
 
 

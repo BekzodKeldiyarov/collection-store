@@ -29,8 +29,7 @@ public class ItemController {
 
     @GetMapping("/collections/{collectionsId}/items")
     public ResponseEntity<List<Item>> getAllItems(@PathVariable Long collectionsId) {
-        List<Item> items = itemService.getItemsOfCollectionId(collectionsId);
-        return ResponseEntity.ok(items);
+        return ResponseEntity.ok(itemService.getItemsOfCollectionId(collectionsId));
     }
 
     @GetMapping("/collections/{collectionId}/items/{itemId}")
@@ -40,26 +39,26 @@ public class ItemController {
 
     @GetMapping("/collections/{collectionId}/items/add")
     public ResponseEntity<Item> addItem(@PathVariable Long collectionId) {
-
-        Item item = itemService.getNewItemInstance(collectionId);
-
-        return ResponseEntity.ok(item);
+        return ResponseEntity.ok(itemService.getNewItemInstance(collectionId));
     }
 
     @PostMapping("/collections/{collectionId}/items/add")
     public ResponseEntity<Item> postItem(@PathVariable Long collectionId, @RequestBody Item item, @RequestParam(required = false) String[] selectedTags) {
         Collection collection = collectionService.findCollectionById(collectionId);
         collection.addItemToCollection(item);
-        log.info("Saving ");
         Item savedItem = itemService.save(item);
         return ResponseEntity.ok(savedItem);
     }
 
     @PutMapping("/collections/{collectionId}/items/edit")
     public ResponseEntity<Item> editItem(@PathVariable Long collectionId, @RequestBody Item item) {
-        log.info("Updating ");
-        Item savedItem = itemService.save(item);
-        return ResponseEntity.ok(savedItem);
+        return ResponseEntity.ok(itemService.save(item));
+    }
+
+    @DeleteMapping("/collections/{collectionId}/items/{itemId}/delete")
+    public String deleteItem(@PathVariable Long collectionId, @PathVariable Long itemId, Model model) {
+        itemService.deleteById(itemId);
+        return "redirect:/dashboard/collections/" + collectionId;
     }
 
     @GetMapping("/collections/{collectionId}/items/{itemId}/edit")
@@ -69,12 +68,6 @@ public class ItemController {
         model.addAttribute("item", item);
         model.addAttribute("pageName", "Edit Item");
         return "admin/items/add";
-    }
-
-    @GetMapping("/collections/{collectionId}/items/{itemId}/delete")
-    public String deleteItem(@PathVariable Long collectionId, @PathVariable Long itemId, Model model) {
-        itemService.deleteById(itemId);
-        return "redirect:/dashboard/collections/" + collectionId;
     }
 
 
@@ -93,5 +86,4 @@ public class ItemController {
 
         return "admin/items/list";
     }
-
 }

@@ -105,22 +105,6 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    public Item bindTagsToItem(Item item, String[] tags) {
-        if (tags != null) {
-            for (String tag : tags) {
-                Tag tagFromDb = tagService.findByName(tag);
-                if (tagFromDb == null) {
-                    tagFromDb = new Tag();
-                    tagFromDb.setName(tag);
-                    tagService.save(tagFromDb);
-                }
-                item.getTags().add(tagFromDb);
-            }
-        }
-        return item;
-    }
-
-    @Override
     public List<Item> getAllItems() {
         return itemRepository.findAll();
     }

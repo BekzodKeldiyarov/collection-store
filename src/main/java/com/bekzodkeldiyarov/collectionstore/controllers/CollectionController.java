@@ -56,7 +56,7 @@ public class CollectionController {
     }
 
     @GetMapping("/collections/add")
-    public ResponseEntity<Collection> addCollection(Model model, Collection collection) {
+    public ResponseEntity<Collection> addCollection(Collection collection) {
         return ResponseEntity.ok(collection);
     }
 
