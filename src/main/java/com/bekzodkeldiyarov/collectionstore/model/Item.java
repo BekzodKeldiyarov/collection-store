@@ -1,12 +1,10 @@
 package com.bekzodkeldiyarov.collectionstore.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.search.annotations.*;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
@@ -15,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 @Entity
 @Getter
 @Setter
@@ -22,7 +21,6 @@ import java.util.Set;
 @Table(name = "item")
 @NoArgsConstructor
 public class Item extends BaseEntity {
-    @Field(termVector = TermVector.YES)
     private String name;
 
     @ManyToMany
@@ -37,7 +35,7 @@ public class Item extends BaseEntity {
     @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<Like> likes = new ArrayList<>();
 
     @Builder
@@ -51,7 +49,7 @@ public class Item extends BaseEntity {
         this.likes = likes;
     }
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     List<ItemAttributeValue> itemAttributeValues = new ArrayList<>();
 
 
@@ -65,4 +63,12 @@ public class Item extends BaseEntity {
         like.setItem(this);
         this.getLikes().add(like);
     }
+
+    public void addItemAttributeValue(ItemAttributeValue itemAttributeValue) {
+        this.getItemAttributeValues().add(itemAttributeValue);
+        itemAttributeValue.setItem(this);
+    }
 }
+
+
+
