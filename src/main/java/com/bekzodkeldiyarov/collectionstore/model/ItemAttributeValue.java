@@ -1,6 +1,9 @@
 package com.bekzodkeldiyarov.collectionstore.model;
 
+import com.bekzodkeldiyarov.collectionstore.deserializer.ItemAttributeValueDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,6 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@JsonDeserialize(using = ItemAttributeValueDeserializer.class)
 public class ItemAttributeValue extends BaseEntity {
 
     private String value;
@@ -23,7 +27,6 @@ public class ItemAttributeValue extends BaseEntity {
 
     @ManyToOne()
     @JoinColumn(name = "attribute_id")
-    @JsonIgnore
     private Attribute attribute;
 
     public void setItemOfItemAttributeValue(Item item) {
@@ -36,3 +39,4 @@ public class ItemAttributeValue extends BaseEntity {
         attribute.getItemAttributeValues().add(this);
     }
 }
+
