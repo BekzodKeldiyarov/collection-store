@@ -1,11 +1,10 @@
 package com.bekzodkeldiyarov.collectionstore.controllers;
 
-import com.bekzodkeldiyarov.collectionstore.commands.CommentCommand;
+import com.bekzodkeldiyarov.collectionstore.dto.CommentCommand;
 import com.bekzodkeldiyarov.collectionstore.model.Comment;
 import com.bekzodkeldiyarov.collectionstore.security.MyUserDetails;
 import com.bekzodkeldiyarov.collectionstore.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

@@ -1,6 +1,6 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
-import com.bekzodkeldiyarov.collectionstore.commands.UserCommand;
+import com.bekzodkeldiyarov.collectionstore.dto.UserDto;
 import com.bekzodkeldiyarov.collectionstore.exceptions.UserExistsException;
 import com.bekzodkeldiyarov.collectionstore.model.User;
 
@@ -10,17 +10,17 @@ import java.util.Locale;
 public interface UserService {
     User findById(Long id);
 
-    UserCommand findUserCommandById(Long id);
+    UserDto findUserCommandById(Long id);
 
     User findByUsername(String username);
 
     User save(User user);
 
-    UserCommand registerUserCommand(UserCommand userCommand) throws UserExistsException;
+    UserDto registerUserCommand(UserDto userDto) throws UserExistsException;
 
-    UserCommand saveUserCommand(UserCommand userCommand);
+    UserDto saveUserCommand(UserDto userDto);
 
-    List<UserCommand> findAll();
+    List<UserDto> findAll();
 
     void deleteById(Long id);
 

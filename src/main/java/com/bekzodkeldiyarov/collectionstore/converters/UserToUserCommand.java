@@ -1,22 +1,22 @@
 package com.bekzodkeldiyarov.collectionstore.converters;
 
-import com.bekzodkeldiyarov.collectionstore.commands.UserCommand;
+import com.bekzodkeldiyarov.collectionstore.dto.UserDto;
 import com.bekzodkeldiyarov.collectionstore.model.User;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserToUserCommand implements Converter<User, UserCommand> {
+public class UserToUserCommand implements Converter<User, UserDto> {
     @Override
-    public UserCommand convert(User source) {
-        UserCommand userCommand = new UserCommand();
-        userCommand.setId(source.getId());
-        userCommand.setUsername(source.getUsername());
-        userCommand.setPassword(source.getPassword());
-        userCommand.setEmail(source.getEmail());
-        userCommand.setEnabled(source.isEnabled());
-        userCommand.setRoles(source.getRoles());
-        userCommand.setCollections(source.getCollections());
-        return userCommand;
+    public UserDto convert(User source) {
+        UserDto userDto = new UserDto();
+        userDto.setId(source.getId());
+        userDto.setUsername(source.getUsername());
+        userDto.setPassword(source.getPassword());
+        userDto.setEmail(source.getEmail());
+        userDto.setEnabled(source.isEnabled());
+        userDto.setRoles(source.getRoles());
+        userDto.setCollections(source.getCollections());
+        return userDto;
     }
 }

@@ -1,8 +1,7 @@
 package com.bekzodkeldiyarov.collectionstore.controllers;
 
-import com.bekzodkeldiyarov.collectionstore.commands.UserCommand;
+import com.bekzodkeldiyarov.collectionstore.dto.UserDto;
 import com.bekzodkeldiyarov.collectionstore.exceptions.UserExistsException;
-import com.bekzodkeldiyarov.collectionstore.model.User;
 import com.bekzodkeldiyarov.collectionstore.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,21 +27,19 @@ public class RegisterController {
 
     @GetMapping("/register")
     public String getRegisterPage(Model model) {
-        UserCommand userCommand = new UserCommand();
-        model.addAttribute("user", userCommand);
+        UserDto userDto = new UserDto();
+        model.addAttribute("userDto", userDto);
         return "register";
     }
 
 
     @PostMapping("/register")
-    public String handleRegisterRequest(@Valid UserCommand user, BindingResult bindingResult) {
+    public String handleRegisterRequest(@Valid UserDto user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            log.error("UserCommand has errors");
-            log.error(Collections.singletonList(bindingResult.getAllErrors()) + "");
-            return "redirect:/register";
+            return "register";
         }
         try {
-            UserCommand savedUserCommand = userService.registerUserCommand(user);
+            userService.registerUserCommand(user);
         } catch (UserExistsException e) {
             return "redirect:/register";
         }

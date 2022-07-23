@@ -1,6 +1,6 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
-import com.bekzodkeldiyarov.collectionstore.commands.UserCommand;
+import com.bekzodkeldiyarov.collectionstore.dto.UserDto;
 import com.bekzodkeldiyarov.collectionstore.model.Role;
 
 public interface RoleService {
@@ -8,6 +8,6 @@ public interface RoleService {
 
     Role findByName(String name);
 
-    Role addUserCommand(Role role, UserCommand userCommand);
-    Role removeUserCommand(Role role, UserCommand userCommand);
+    Role addUserCommand(Role role, UserDto userDto);
+    Role removeUserCommand(Role role, UserDto userDto);
 }

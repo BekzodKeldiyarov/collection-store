@@ -33,33 +33,32 @@
         <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-                <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
-                <div class="col-lg-7">
+                <div class="col-lg-7 d-none d-lg-block bg-register-image"></div>
+                <div class="col-lg-5">
                     <div class="p-5">
                         <div class="text-center">
                             <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
                         </div>
-                        <form method="post" action="/register" th:object="${user}" class="user">
+                        <form method="post" action="/register" th:object="${userDto}" class="user">
                             <div class="form-group row">
-                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                <div class="col-sm-12 mb-3 mb-sm-0">
                                     <input type="text" class="form-control form-control-user" th:field="*{username}"
-                                           placeholder="First Name">
-                                    <span th:if="${#fields.hasErrors('username')}"
-                                          th:errors="*{username}">Name Error</span>
+                                           placeholder="Username">
+                                    <span class="badge badge-danger m-2" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name Error</span>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                <div class="col-sm-12 mb-3 mb-sm-0">
                                     <input type="email" class="form-control form-control-user" id="exampleInputEmail"
                                            placeholder="Email Address" th:field="*{email}">
-                                    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</span>
+                                    <span class="badge badge-danger m-2" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</span>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                <div class="col-sm-12 mb-3 mb-sm-0">
                                     <input type="password" class="form-control form-control-user" th:field="*{password}"
                                            id="exampleInputPassword" placeholder="Password">
-                                    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</span>
+                                    <span class="badge badge-danger m-2" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</span>
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary btn-user btn-block">

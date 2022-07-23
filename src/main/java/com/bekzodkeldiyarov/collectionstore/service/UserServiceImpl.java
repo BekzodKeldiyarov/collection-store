@@ -1,6 +1,6 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
-import com.bekzodkeldiyarov.collectionstore.commands.UserCommand;
+import com.bekzodkeldiyarov.collectionstore.dto.UserDto;
 import com.bekzodkeldiyarov.collectionstore.converters.UserCommandToUser;
 import com.bekzodkeldiyarov.collectionstore.converters.UserToUserCommand;
 import com.bekzodkeldiyarov.collectionstore.exceptions.UserExistsException;
@@ -42,13 +42,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserCommand findUserCommandById(Long id) {
+    public UserDto findUserCommandById(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
-        UserCommand userCommand = null;
+        UserDto userDto = null;
         if (optionalUser.isPresent()) {
-            userCommand = userToUserCommand.convert(optionalUser.get());
+            userDto = userToUserCommand.convert(optionalUser.get());
         }
-        return userCommand;
+        return userDto;
     }
 
     @Override
@@ -62,10 +62,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserCommand registerUserCommand(UserCommand userCommand) throws UserExistsException {
+    public UserDto registerUserCommand(UserDto userDto) throws UserExistsException {
         User userToSave;
-        if (findByUsername(userCommand.getUsername()) == null) {
-            userToSave = userCommandToUser.convert(userCommand);
+        if (findByUsername(userDto.getUsername()) == null) {
+            userToSave = userCommandToUser.convert(userDto);
             if (userToSave != null) {
                 userToSave.setPassword(passwordEncoder.encode(userToSave.getPassword()));
                 userToSave.setEnabled(true);
@@ -74,19 +74,19 @@ public class UserServiceImpl implements UserService {
                 log.error("Failed to save");
             }
         } else {
-            throw new UserExistsException("The user with username " + userCommand.getUsername() + " exists");
+            throw new UserExistsException("The user with username " + userDto.getUsername() + " exists");
         }
         return userToUserCommand.convert(userToSave);
     }
 
     @Override
-    public List<UserCommand> findAll() {
+    public List<UserDto> findAll() {
         List<User> users = userRepository.findAll();
-        List<UserCommand> usersToReturn = new ArrayList<>();
+        List<UserDto> usersToReturn = new ArrayList<>();
         for (User user : users) {
-            UserCommand userCommand = userToUserCommand.convert(user);
-            if (userCommand != null) {
-                usersToReturn.add(userCommand);
+            UserDto userDto = userToUserCommand.convert(user);
+            if (userDto != null) {
+                usersToReturn.add(userDto);
             }
         }
         return usersToReturn;
@@ -99,14 +99,14 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserCommand saveUserCommand(UserCommand userCommand) {
-        User userToSave = userCommandToUser.convert(userCommand);
+    public UserDto saveUserCommand(UserDto userDto) {
+        User userToSave = userCommandToUser.convert(userDto);
         if (userToSave != null) {
             User savedUser = userRepository.save(userToSave);
             return userToUserCommand.convert(savedUser);
         }
-        log.error("Failed to save changes for user " + userCommand.getUsername());
-        return userCommand;
+        log.error("Failed to save changes for user " + userDto.getUsername());
+        return userDto;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.bekzodkeldiyarov.collectionstore.commands;
+package com.bekzodkeldiyarov.collectionstore.dto;
 
 public class CommentCommand {
     private String text;

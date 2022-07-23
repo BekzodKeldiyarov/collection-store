@@ -1,4 +1,4 @@
-package com.bekzodkeldiyarov.collectionstore.commands;
+package com.bekzodkeldiyarov.collectionstore.dto;
 
 
 import com.bekzodkeldiyarov.collectionstore.model.Collection;
@@ -18,7 +18,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserCommand {
+public class UserDto {
     private Long id;
     @NotNull(message = "Username cannot be empty.")
     @NotEmpty(message = "Username name cannot be empty.")

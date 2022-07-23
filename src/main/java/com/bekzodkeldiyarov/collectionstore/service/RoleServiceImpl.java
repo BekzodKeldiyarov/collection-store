@@ -1,6 +1,6 @@
 package com.bekzodkeldiyarov.collectionstore.service;
 
-import com.bekzodkeldiyarov.collectionstore.commands.UserCommand;
+import com.bekzodkeldiyarov.collectionstore.dto.UserDto;
 import com.bekzodkeldiyarov.collectionstore.converters.UserCommandToUser;
 import com.bekzodkeldiyarov.collectionstore.model.Role;
 import com.bekzodkeldiyarov.collectionstore.model.User;
@@ -30,16 +30,16 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role addUserCommand(Role role, UserCommand userCommand) {
-        User userToAdd = userCommandToUser.convert(userCommand);
+    public Role addUserCommand(Role role, UserDto userDto) {
+        User userToAdd = userCommandToUser.convert(userDto);
         role.getUsers().add(userToAdd);
         roleRepository.save(role);
         return role;
     }
 
     @Override
-    public Role removeUserCommand(Role role, UserCommand userCommand) {
-        User userToAdd = userCommandToUser.convert(userCommand);
+    public Role removeUserCommand(Role role, UserDto userDto) {
+        User userToAdd = userCommandToUser.convert(userDto);
         role.getUsers().remove(userToAdd);
         roleRepository.save(role);
         return role;

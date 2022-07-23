@@ -1,15 +1,13 @@
 package com.bekzodkeldiyarov.collectionstore.controllers;
 
-import com.bekzodkeldiyarov.collectionstore.commands.UserCommand;
+import com.bekzodkeldiyarov.collectionstore.dto.UserDto;
 import com.bekzodkeldiyarov.collectionstore.model.Role;
 import com.bekzodkeldiyarov.collectionstore.repository.AttributeRepository;
 import com.bekzodkeldiyarov.collectionstore.service.CollectionService;
 import com.bekzodkeldiyarov.collectionstore.service.RoleService;
 import com.bekzodkeldiyarov.collectionstore.service.UserService;
-import com.bekzodkeldiyarov.collectionstore.service.UserSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +36,7 @@ public class AdminController {
     @GetMapping()
     @Secured("ROLE_ADMIN")
     public String getAllUsers(Model model) {
-        List<UserCommand> users = userService.findAll();
+        List<UserDto> users = userService.findAll();
         model.addAttribute("users", users);
         return "admin/users/users";
     }
@@ -46,7 +44,7 @@ public class AdminController {
     @GetMapping("/{id}")
     @Secured("ROLE_ADMIN")
     public String getSingleUserPage(@PathVariable Long id, Model model) {
-        UserCommand user = userService.findUserCommandById(id);
+        UserDto user = userService.findUserCommandById(id);
         model.addAttribute("user", user);
         return "admin/users/single-user";
     }
@@ -69,44 +67,44 @@ public class AdminController {
             return "redirect:/dashboard/users";
         }
         for (Integer id : ids) {
-            UserCommand userCommand = userService.findUserCommandById(id.longValue());
-            changeUserStatus(action, userCommand);
+            UserDto userDto = userService.findUserCommandById(id.longValue());
+            changeUserStatus(action, userDto);
 
         }
         return "redirect:/dashboard/users";
     }
 
-    private void changeUserStatus(String action, UserCommand userCommand) {
+    private void changeUserStatus(String action, UserDto userDto) {
         switch (action) {
             case "block": {
-                userCommand.setEnabled(false);
-                userService.saveUserCommand(userCommand);
+                userDto.setEnabled(false);
+                userService.saveUserCommand(userDto);
                 log.info("calling expire method() in controller");
                 userService.refreshUserSession();
                 break;
             }
             case "unblock": {
-                userCommand.setEnabled(true);
-                userService.saveUserCommand(userCommand);
+                userDto.setEnabled(true);
+                userService.saveUserCommand(userDto);
                 break;
             }
             case "addAdmin": {
                 Role admin = roleService.findByName("ROLE_ADMIN");
-                userCommand.getRoles().add(admin);
-                roleService.addUserCommand(admin, userCommand);
-                userService.saveUserCommand(userCommand);
+                userDto.getRoles().add(admin);
+                roleService.addUserCommand(admin, userDto);
+                userService.saveUserCommand(userDto);
                 break;
             }
             case "removeAdmin": {
                 Role admin = roleService.findByName("ROLE_ADMIN");
-                userCommand.getRoles().remove(admin);
-                roleService.removeUserCommand(admin, userCommand);
-                userService.saveUserCommand(userCommand);
+                userDto.getRoles().remove(admin);
+                roleService.removeUserCommand(admin, userDto);
+                userService.saveUserCommand(userDto);
                 userService.refreshUserSession();
                 break;
             }
             case "remove": {
-                userService.deleteById(userCommand.getId());
+                userService.deleteById(userDto.getId());
                 userService.refreshUserSession();
                 break;
             }
